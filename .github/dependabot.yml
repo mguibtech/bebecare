@@ -45,6 +45,15 @@ updates:
           - '@types/jest'
           - 'supertest'
           - '@types/supertest'
+    # Bloqueia majors que costumam ter breaking changes pesadas.
+    # Atualizamos manualmente após ler release notes.
+    ignore:
+      - dependency-name: 'typeorm'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@nestjs/typeorm'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@nestjs/*'
+        update-types: ['version-update:semver-major']
 
   # Mobile (React Native CLI) — habilitar depois que o init for feito
   - package-ecosystem: npm

@@ -13,6 +13,7 @@ import { BabiesModule } from './modules/babies/babies.module';
 import { RefreshTokensModule } from './modules/refresh-tokens/refresh-tokens.module';
 import { VaccinesModule } from './modules/vaccines/vaccines.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
+import { MedicationsModule } from './modules/medications/medications.module';
 
 // Módulo raiz da aplicação. A partir daqui, cada feature do BebeCare
 // (auth, users, couples, babies, vaccines, etc.) entra como um módulo importado.
@@ -40,6 +41,7 @@ import { AppointmentsModule } from './modules/appointments/appointments.module';
     BabiesModule,
     VaccinesModule,
     AppointmentsModule,
+    MedicationsModule,
     HealthModule,
   ],
   providers: [
