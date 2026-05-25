@@ -9,7 +9,7 @@ import { FamiliesService } from '../families/families.service';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { RefreshTokenService } from './refresh-token.service';
+import { RefreshTokenService } from '../refresh-tokens/refresh-tokens.service';
 import { AvatarStyle } from '../../common/enums/avatar-style.enum';
 
 // Mock factories — mantidas locais ao arquivo pra facilitar a leitura.

@@ -5,19 +5,19 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FamilyInvite } from '../families/entities/family-invite.entity';
 import { FamiliesModule } from '../families/families.module';
+import { RefreshTokensModule } from '../refresh-tokens/refresh-tokens.module';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { RefreshToken } from './entities/refresh-token.entity';
-import { RefreshTokenService } from './refresh-token.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
     UsersModule,
     FamiliesModule,
+    RefreshTokensModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    // JWT só com access token. Refresh é gerenciado pela própria app (não é JWT).
+    // JWT só com access token. Refresh é gerenciado pelo RefreshTokensModule.
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -34,11 +34,11 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         },
       }),
     }),
-    // RefreshToken precisa estar registrada no escopo do módulo
-    TypeOrmModule.forFeature([RefreshToken, FamilyInvite]),
+    // FamilyInvite usado pelo AuthService para validar inviteCode no register
+    TypeOrmModule.forFeature([FamilyInvite]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, RefreshTokenService, JwtStrategy],
+  providers: [AuthService, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

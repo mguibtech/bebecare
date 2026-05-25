@@ -23,7 +23,7 @@ import {
   MeResponseDto,
   UserPublicDto,
 } from './dto/auth-response.dto';
-import { RefreshTokenService } from './refresh-token.service';
+import { RefreshTokenService } from '../refresh-tokens/refresh-tokens.service';
 import { JwtPayload } from './types/jwt-payload.type';
 
 export interface AuthContext {
