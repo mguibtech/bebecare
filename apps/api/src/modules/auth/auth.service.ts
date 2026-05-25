@@ -119,8 +119,9 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas');
     }
 
-    // Não devolve o hash em nenhum cenário.
-    const { passwordHash: _ph, ...safe } = user;
+    // Não devolve o hash em nenhum cenário (descarta com rest spread).
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, ...safe } = user;
     return safe as User;
   }
 
@@ -212,16 +213,16 @@ export class AuthService {
     if (!match) return 900;
     const value = parseInt(match[1], 10);
     const unit = (match[2] ?? 's').toLowerCase();
-    return unit === 'd' ? value * 86400 :
-           unit === 'h' ? value * 3600 :
-           unit === 'm' ? value * 60 :
-           value;
+    return unit === 'd'
+      ? value * 86400
+      : unit === 'h'
+        ? value * 3600
+        : unit === 'm'
+          ? value * 60
+          : value;
   }
 
-  private async findValidInvite(
-    code: string,
-    manager: EntityManager,
-  ): Promise<FamilyInvite> {
+  private async findValidInvite(code: string, manager: EntityManager): Promise<FamilyInvite> {
     const invite = await manager.findOne(FamilyInvite, {
       where: { code },
     });

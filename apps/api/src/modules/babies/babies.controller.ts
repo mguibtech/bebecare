@@ -10,12 +10,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { differenceInCalendarDays, differenceInMonths, parseISO } from './utils/age.util';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
@@ -35,10 +30,7 @@ export class BabiesController {
   @Post()
   @ApiOperation({ summary: 'Cadastra um bebê na família atual' })
   @ApiResponse({ status: 201, type: BabyResponseDto })
-  async create(
-    @CurrentUser() user: User,
-    @Body() dto: CreateBabyDto,
-  ): Promise<BabyResponseDto> {
+  async create(@CurrentUser() user: User, @Body() dto: CreateBabyDto): Promise<BabyResponseDto> {
     const baby = await this.babies.create(user.familyId, dto);
     return this.toResponse(baby);
   }
@@ -81,10 +73,7 @@ export class BabiesController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Soft-delete do bebê (pode ser recuperado em até 30 dias)' })
-  async remove(
-    @CurrentUser() user: User,
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  async remove(@CurrentUser() user: User, @Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.babies.remove(id, user.familyId);
   }
 

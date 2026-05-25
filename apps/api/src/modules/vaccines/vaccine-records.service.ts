@@ -107,10 +107,7 @@ export class VaccineRecordsService {
   // -------------------------------------------------------------------
   // HELPERS
   // -------------------------------------------------------------------
-  private async assertBabyBelongsToFamily(
-    babyId: string,
-    familyId: string,
-  ): Promise<void> {
+  private async assertBabyBelongsToFamily(babyId: string, familyId: string): Promise<void> {
     const baby = await this.babies.findOne({ where: { id: babyId } });
     if (!baby) throw new NotFoundException('Bebê não encontrado');
     if (baby.familyId !== familyId) {

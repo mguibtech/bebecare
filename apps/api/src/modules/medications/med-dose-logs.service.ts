@@ -72,12 +72,7 @@ export class MedDoseLogsService {
   }
 
   // ----- Marcar como TOMADA -----
-  async take(
-    logId: string,
-    babyId: string,
-    familyId: string,
-    userId: string,
-  ): Promise<MedDoseLog> {
+  async take(logId: string, babyId: string, familyId: string, userId: string): Promise<MedDoseLog> {
     const log = await this.findOne(logId, babyId, familyId);
     if (log.status === DoseStatus.TAKEN) {
       // idempotente — não erra se já estava marcada
@@ -104,9 +99,7 @@ export class MedDoseLogsService {
   ): Promise<MedDoseLog> {
     const log = await this.findOne(logId, babyId, familyId);
     if (log.status === DoseStatus.TAKEN) {
-      throw new BadRequestException(
-        'Dose já marcada como tomada. Edite no PATCH se foi engano.',
-      );
+      throw new BadRequestException('Dose já marcada como tomada. Edite no PATCH se foi engano.');
     }
 
     log.status = DoseStatus.SKIPPED;
@@ -178,11 +171,12 @@ export class MedDoseLogsService {
         });
         await this.doseLogs.save(log);
         created += 1;
-      } catch (err: any) {
-        // Erro 23505 = unique_violation. Significa que já existe (rodou 2x). OK.
-        if (err?.code !== '23505') {
+      } catch (err) {
+        // Erro 23505 = unique_violation do Postgres (já existe — idempotente).
+        const pgErr = err as { code?: string; message?: string };
+        if (pgErr?.code !== '23505') {
           this.logger.error(
-            `Falha ao criar dose log para schedule=${schedule.id}: ${err?.message}`,
+            `Falha ao criar dose log para schedule=${schedule.id}: ${pgErr?.message ?? String(err)}`,
           );
         }
       }
@@ -194,11 +188,7 @@ export class MedDoseLogsService {
   // -------------------------------------------------------------------
   // HELPERS
   // -------------------------------------------------------------------
-  private async findOne(
-    logId: string,
-    babyId: string,
-    familyId: string,
-  ): Promise<MedDoseLog> {
+  private async findOne(logId: string, babyId: string, familyId: string): Promise<MedDoseLog> {
     const log = await this.doseLogs.findOne({
       where: { id: logId },
       relations: { medication: true, loggedByUser: true },

@@ -9,9 +9,7 @@ import { Public } from '../modules/auth/decorators/public.decorator';
 @ApiTags('health')
 @Controller('health')
 export class HealthController {
-  constructor(
-    @InjectDataSource() private readonly dataSource: DataSource,
-  ) {}
+  constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   @Public()
   @Get()

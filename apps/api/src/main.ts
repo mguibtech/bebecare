@@ -45,4 +45,4 @@ async function bootstrap() {
   Logger.log(`🍼 BebeCare API rodando em http://localhost:${port}/api`, 'Bootstrap');
 }
 
-bootstrap();
+void bootstrap();

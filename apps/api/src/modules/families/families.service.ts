@@ -92,9 +92,7 @@ export class FamiliesService {
   // Qualquer membro pode remover outro (decisão de produto: família opera em conjunto).
   async removeMember(memberId: string, currentUser: User): Promise<void> {
     if (memberId === currentUser.id) {
-      throw new BadRequestException(
-        'Para sair da própria família, use POST /families/me/leave',
-      );
+      throw new BadRequestException('Para sair da própria família, use POST /families/me/leave');
     }
 
     const member = await this.users.findOne({ where: { id: memberId } });

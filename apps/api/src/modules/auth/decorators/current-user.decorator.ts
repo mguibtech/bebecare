@@ -7,9 +7,7 @@ import { AuthenticatedRequest } from '../types/authenticated-request.type';
 // Uso:
 //   @Get('me')
 //   me(@CurrentUser() user: User) { ... }
-export const CurrentUser = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext): User => {
-    const request = ctx.switchToHttp().getRequest<AuthenticatedRequest>();
-    return request.user;
-  },
-);
+export const CurrentUser = createParamDecorator((_data: unknown, ctx: ExecutionContext): User => {
+  const request = ctx.switchToHttp().getRequest<AuthenticatedRequest>();
+  return request.user;
+});

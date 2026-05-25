@@ -20,7 +20,7 @@ describe('Medications + doses (e2e)', () => {
   let mguibToken: string;
   let intrusoToken: string;
   let babyId: string;
-  let intrusoBabyId: string;
+  let _intrusoBabyId: string;
   let medId: string;
   let scheduleId: string;
 
@@ -66,7 +66,7 @@ describe('Medications + doses (e2e)', () => {
       .set('Authorization', `Bearer ${intrusoToken}`)
       .send({ name: 'Outro', sex: 'female', birthDate: '2024-01-10' })
       .expect(201);
-    intrusoBabyId = ibaby.body.id;
+    _intrusoBabyId = ibaby.body.id;
   });
 
   afterAll(async () => {

@@ -17,12 +17,12 @@ describe('Vaccines / PNI (e2e)', () => {
 
   let mguibToken: string;
   let intrusoToken: string;
-  let mguibFamilyId: string;
+  let _mguibFamilyId: string;
 
   // Bebês com idades distintas pra exercitar todos os status
   let newbornId: string; // 0 meses
   let nineMonthsId: string; // 9 meses (cenário do Mguib)
-  let toddlerId: string; // 24 meses (vai ter overdue)
+  let _toddlerId: string; // 24 meses (vai ter overdue)
 
   // Vacinas conhecidas (por code) pra usar nos asserts
   let bcgVaccineId: string;
@@ -51,7 +51,7 @@ describe('Vaccines / PNI (e2e)', () => {
       .send({ email: mguibEmail, name: 'Mguib', password })
       .expect(201);
     mguibToken = r1.body.accessToken;
-    mguibFamilyId = r1.body.user.familyId;
+    _mguibFamilyId = r1.body.user.familyId;
 
     const r2 = await request(http)
       .post('/api/auth/register')
@@ -84,7 +84,7 @@ describe('Vaccines / PNI (e2e)', () => {
       .set('Authorization', `Bearer ${mguibToken}`)
       .send({ name: 'Toddler', sex: 'female', birthDate: isoFromMonthsAgo(24) })
       .expect(201);
-    toddlerId = tod.body.id;
+    _toddlerId = tod.body.id;
   });
 
   afterAll(async () => {

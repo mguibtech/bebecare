@@ -83,9 +83,7 @@ export class FamilyInvitesService {
     }
 
     const code = await this.generateUniqueCode();
-    const expiresAt = new Date(
-      Date.now() + INVITE_CONFIG.EXPIRES_IN_DAYS * 86400 * 1000,
-    );
+    const expiresAt = new Date(Date.now() + INVITE_CONFIG.EXPIRES_IN_DAYS * 86400 * 1000);
 
     const invite = this.invites.create({
       code,

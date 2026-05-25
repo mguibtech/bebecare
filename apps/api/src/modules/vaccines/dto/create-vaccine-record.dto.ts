@@ -1,18 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsDateString,
-  IsOptional,
-  IsString,
-  IsUUID,
-  MaxLength,
-} from 'class-validator';
+import { IsDateString, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator';
 
 export class CreateVaccineRecordDto {
   @ApiProperty({ format: 'uuid', description: 'ID da vacina (do catálogo PNI)' })
   @IsUUID()
   vaccineId!: string;
 
-  @ApiProperty({ example: '2025-10-15', description: 'Data em que a dose foi aplicada (YYYY-MM-DD)' })
+  @ApiProperty({
+    example: '2025-10-15',
+    description: 'Data em que a dose foi aplicada (YYYY-MM-DD)',
+  })
   @IsDateString()
   appliedAt!: string;
 

@@ -10,20 +10,12 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { maskToDayNames } from '../../common/utils/days-of-week.util';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { CreateMedicationDto } from './dto/create-medication.dto';
-import {
-  MedicationResponseDto,
-  MedScheduleResponseDto,
-} from './dto/medication-response.dto';
+import { MedicationResponseDto, MedScheduleResponseDto } from './dto/medication-response.dto';
 import { UpdateMedicationDto } from './dto/update-medication.dto';
 import { Medication } from './entities/medication.entity';
 import { MedSchedule } from './entities/med-schedule.entity';

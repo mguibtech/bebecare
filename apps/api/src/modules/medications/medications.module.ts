@@ -13,20 +13,9 @@ import { Medication } from './entities/medication.entity';
 import { CreateDailyDoseLogsJob } from './jobs/create-daily-dose-logs.job';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Medication, MedSchedule, MedDoseLog, Baby]),
-  ],
-  controllers: [
-    MedicationsController,
-    MedSchedulesController,
-    MedDoseLogsController,
-  ],
-  providers: [
-    MedicationsService,
-    MedSchedulesService,
-    MedDoseLogsService,
-    CreateDailyDoseLogsJob,
-  ],
+  imports: [TypeOrmModule.forFeature([Medication, MedSchedule, MedDoseLog, Baby])],
+  controllers: [MedicationsController, MedSchedulesController, MedDoseLogsController],
+  providers: [MedicationsService, MedSchedulesService, MedDoseLogsService, CreateDailyDoseLogsJob],
   exports: [MedicationsService, MedSchedulesService, MedDoseLogsService],
 })
 export class MedicationsModule {}

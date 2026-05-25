@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { MedDoseLogsService } from '../med-dose-logs.service';
 
 // Roda diariamente à 0h05 (Manaus) — atraso de 5min depois da meia-noite

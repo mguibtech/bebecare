@@ -27,10 +27,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
           // @nestjs/jwt v11 tipa expiresIn como `StringValue` do pacote `ms`
           // (literal type tipo '15m', '1h', '30d'). Como lemos do .env (string
           // genérica), forçamos o tipo aqui — o jsonwebtoken aceita perfeitamente.
-          expiresIn: config.get<string>(
-            'JWT_ACCESS_EXPIRES_IN',
-            '15m',
-          ) as unknown as number,
+          expiresIn: config.get<string>('JWT_ACCESS_EXPIRES_IN', '15m') as unknown as number,
         },
       }),
     }),

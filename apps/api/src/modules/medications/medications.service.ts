@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Baby } from '../babies/entities/baby.entity';
@@ -18,11 +14,7 @@ export class MedicationsService {
     @InjectRepository(Baby) private readonly babies: Repository<Baby>,
   ) {}
 
-  async create(
-    babyId: string,
-    familyId: string,
-    dto: CreateMedicationDto,
-  ): Promise<Medication> {
+  async create(babyId: string, familyId: string, dto: CreateMedicationDto): Promise<Medication> {
     await this.assertBabyInFamily(babyId, familyId);
 
     const med = this.medications.create({

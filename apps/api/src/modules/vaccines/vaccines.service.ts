@@ -3,14 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VaccineStatus } from '../../common/enums/vaccine-status.enum';
 import { Baby } from '../babies/entities/baby.entity';
-import {
-  differenceInMonths,
-  parseISO,
-} from '../babies/utils/age.util';
-import {
-  BabyVaccineScheduleDto,
-  ScheduleEntryDto,
-} from './dto/baby-vaccine-schedule.dto';
+import { differenceInMonths, parseISO } from '../babies/utils/age.util';
+import { BabyVaccineScheduleDto, ScheduleEntryDto } from './dto/baby-vaccine-schedule.dto';
 import { VaccineCatalogItemDto } from './dto/vaccine-catalog-item.dto';
 import { VaccineRecord } from './entities/vaccine-record.entity';
 import { Vaccine } from './entities/vaccine.entity';
@@ -42,10 +36,7 @@ export class VaccinesService {
   // -------------------------------------------------------------------
   // SCHEDULE POR BEBÊ
   // -------------------------------------------------------------------
-  async buildScheduleForBaby(
-    babyId: string,
-    familyId: string,
-  ): Promise<BabyVaccineScheduleDto> {
+  async buildScheduleForBaby(babyId: string, familyId: string): Promise<BabyVaccineScheduleDto> {
     const baby = await this.babies.findOne({ where: { id: babyId } });
     if (!baby || baby.familyId !== familyId) {
       throw new NotFoundException('Bebê não encontrado nesta família');
@@ -70,10 +61,7 @@ export class VaccinesService {
       const record = recordByVaccineId.get(vaccine.id);
 
       const status = this.computeStatus(vaccine, ageMonths, !!record);
-      const expectedAt = this.computeExpectedDate(
-        baby.birthDate,
-        vaccine.recommendedAgeMonths,
-      );
+      const expectedAt = this.computeExpectedDate(baby.birthDate, vaccine.recommendedAgeMonths);
 
       return {
         vaccine: this.toCatalogItem(vaccine),
@@ -135,18 +123,14 @@ export class VaccinesService {
     }
 
     // Tolerância padrão após o recomendado
-    const overdueThreshold =
-      vaccine.recommendedAgeMonths + OVERDUE_TOLERANCE_MONTHS;
+    const overdueThreshold = vaccine.recommendedAgeMonths + OVERDUE_TOLERANCE_MONTHS;
     if (babyAgeMonths > overdueThreshold) return VaccineStatus.OVERDUE;
 
     return VaccineStatus.DUE;
   }
 
   // Calcula a data esperada (birthDate + recommendedAgeMonths) em 'YYYY-MM-DD'.
-  private computeExpectedDate(
-    birthDateISO: string,
-    recommendedAgeMonths: number,
-  ): string {
+  private computeExpectedDate(birthDateISO: string, recommendedAgeMonths: number): string {
     const birth = parseISO(birthDateISO);
     const expected = new Date(birth);
     expected.setUTCMonth(expected.getUTCMonth() + recommendedAgeMonths);

@@ -10,22 +10,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { FamilyInvite } from './entities/family-invite.entity';
-import { Family } from './entities/family.entity';
 import { FamilyInvitesService, FAMILY_LIMITS } from './family-invites.service';
 import { FamiliesService } from './families.service';
-import {
-  FamilyDetailsDto,
-  FamilyMemberDto,
-} from './dto/family-details.dto';
+import { FamilyDetailsDto, FamilyMemberDto } from './dto/family-details.dto';
 import { InviteResponseDto } from './dto/invite-response.dto';
 import { UpdateFamilyDto } from './dto/update-family.dto';
 
@@ -69,10 +60,7 @@ export class FamiliesController {
   @Patch('me')
   @ApiOperation({ summary: 'Renomeia a família (passa null em name para limpar)' })
   @ApiResponse({ status: 200, type: FamilyDetailsDto })
-  async update(
-    @CurrentUser() user: User,
-    @Body() dto: UpdateFamilyDto,
-  ): Promise<FamilyDetailsDto> {
+  async update(@CurrentUser() user: User, @Body() dto: UpdateFamilyDto): Promise<FamilyDetailsDto> {
     if (dto.name !== undefined) {
       await this.families.updateName(user.familyId, dto.name ?? null);
     }
@@ -126,8 +114,7 @@ export class FamiliesController {
   @Post('me/leave')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary:
-      'Sai da família atual (cria nova família solo). Falha se for o único membro.',
+    summary: 'Sai da família atual (cria nova família solo). Falha se for o único membro.',
   })
   async leave(@CurrentUser() user: User): Promise<void> {
     await this.families.leaveFamily(user);
