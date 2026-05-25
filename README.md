@@ -27,18 +27,19 @@ Além de uso pessoal diário, o projeto serve como **portfólio técnico** demon
 
 ## 📱 Funcionalidades
 
-| Fase | Funcionalidade                                        | Status         |
-| ---- | ----------------------------------------------------- | -------------- |
-| 1    | Setup do monorepo + infraestrutura Docker             | ✅ Concluído    |
-| 1    | Autenticação JWT + convite de casal                   | 🚧 Em andamento |
-| 1    | Cadastro do perfil do bebê                            | 📅 Planejado    |
-| 2    | Calendário de vacinas seguindo o **PNI** brasileiro   | 📅 Planejado    |
-| 2    | Agenda de consultas pediátricas                       | 📅 Planejado    |
-| 3    | Lista de remédios com lembretes push                  | 📅 Planejado    |
-| 3    | Upload de receitas médicas (foto / PDF)               | 📅 Planejado    |
-| 4    | Lista de compras compartilhada em tempo real          | 📅 Planejado    |
-| 5    | Diário de marcos do desenvolvimento                   | 📅 Planejado    |
-| 5    | Exportar histórico em PDF                             | 📅 Planejado    |
+**V1 — primeira versão publicável na Play Store** ([roadmap completo](./docs/V1_ROADMAP.md)):
+
+| # | Funcionalidade                                          | Status         |
+| - | ------------------------------------------------------- | -------------- |
+| 1 | Setup do monorepo + infraestrutura Docker               | ✅ Concluído    |
+| 2 | Autenticação JWT + convite de casal                     | 🚧 Em andamento |
+| 3 | Cadastro do perfil do bebê                              | 📅 Planejado    |
+| 4 | Calendário de vacinas seguindo o **PNI** brasileiro     | 📅 Planejado    |
+| 5 | Agenda de consultas pediátricas                         | 📅 Planejado    |
+| 6 | Lista de remédios com lembretes push (Firebase)         | 📅 Planejado    |
+| 7 | Dashboard "Hoje" — vacinas, consultas e doses do dia    | 📅 Planejado    |
+
+**Reservado para V2:** upload de receitas médicas, lista de compras em tempo real (WebSocket), diário de marcos, exportar histórico em PDF e versão iOS.
 
 ## 🛠 Stack
 
@@ -89,11 +90,12 @@ Em seguida, acesse `http://localhost:3000/api/health` — deve retornar `{ "stat
 
 ## 🗺 Roadmap
 
-- **Fase 1 — Fundação:** monorepo, Docker, banco, auth JWT, convite de casal, perfil do bebê
-- **Fase 2 — Saúde básica:** calendário de vacinas (PNI) + agenda de consultas
-- **Fase 3 — Medicação:** remédios com alertas + upload de receitas médicas
-- **Fase 4 — Compras compartilhadas:** lista em tempo real via WebSocket
-- **Fase 5 — Memória & polish:** diário de marcos, exportar PDF, publicação
+**Objetivo da V1:** publicar na Google Play Store com as 7 funcionalidades acima. Cronograma e checklist detalhado em [`docs/V1_ROADMAP.md`](./docs/V1_ROADMAP.md).
+
+- **Bloco A — Back end:** entities, auth JWT, casal, bebê, vacinas PNI, consultas, remédios, FCM
+- **Bloco B — Mobile:** RN CLI init, navegação, telas de auth, dashboard "Hoje", vacinas, consultas, remédios, push
+- **Bloco C — Infra:** banco gerenciado (Neon), API em produção (Render), Firebase
+- **Bloco D — Publicação:** conta Google Play Developer, política de privacidade, internal testing → closed → production
 
 ## 🧭 Decisões de arquitetura
 
