@@ -32,7 +32,7 @@ Além de uso pessoal diário, o projeto serve como **portfólio técnico** demon
 | # | Funcionalidade                                                                     | Status         |
 | - | ---------------------------------------------------------------------------------- | -------------- |
 | 1 | Setup do monorepo + infraestrutura Docker                                          | ✅ Concluído    |
-| 2 | Autenticação JWT + convite de casal                                                | 🚧 Em andamento |
+| 2 | Autenticação JWT + convite da família                                                | 🚧 Em andamento |
 | 3 | Avatar customizável via **DiceBear** (8 estilos + seed regenerável)                | 📅 Planejado    |
 | 4 | Cadastro do perfil do bebê                                                         | 📅 Planejado    |
 | 5 | Calendário de vacinas seguindo o **PNI** brasileiro                                | 📅 Planejado    |
@@ -104,6 +104,7 @@ Em seguida, acesse `http://localhost:3000/api/health` — deve retornar `{ "stat
 
 - **Monorepo "de pobre"** — `apps/api` e `apps/mobile` são projetos independentes (sem npm workspaces). Evita atrito do React Native CLI com hoisting de `node_modules`, mantém o repositório único como vitrine.
 - **React Native CLI (bare), não Expo** — controle total do projeto nativo, liberdade para configurar Firebase, Keychain e libs nativas sem ejetar.
+- **Família, não "casal"** — a unidade de cuidado é `Family`, suportando 1 ou mais usuários. Cobre mãe/pai solo, casais hetero/homo, avós cuidando ou qualquer outra configuração de cuidado.
 - **Sempre migrations TypeORM** — `synchronize: false`. Schema é versionado.
 - **Convenções:** nomes em inglês, comentários em português, [Conventional Commits](https://www.conventionalcommits.org/) em todos os commits.
 

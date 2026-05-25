@@ -53,21 +53,26 @@ A ordem é estritamente bottom-up: dado → camada de serviço → controller �
 #### A1. Fundação do domínio
 - [ ] `BaseEntity` abstrata (id UUID v7, `created_at`, `updated_at`, `deleted_at` para soft delete)
 - [ ] Entity `User` (email único, senha hash com bcrypt, nome, FCM token, **`avatar_style`** default `adventurer`, **`avatar_seed`** default = email)
-- [ ] Entity `Couple` (1 a 2 users; representa o casal)
-- [ ] Entity `CoupleInvite` (código de 6 dígitos, expira em 7 dias, status pending/accepted/expired)
-- [ ] Entity `Baby` (nome, sexo, data nascimento, peso/altura, FK para Couple)
+- [ ] Entity `Family` (1+ users — cobre solo, casal hetero/homo, multigeracional; representa a unidade de cuidado do bebê)
+- [ ] Entity `FamilyInvite` (código de 6 dígitos, expira em 7 dias, status pending/accepted/expired)
+- [ ] Entity `Baby` (nome, sexo, data nascimento, peso/altura, FK para Family)
 - [ ] Migration inicial `0001_initial_schema`
 
-#### A2. Auth
+#### A2. Auth (com refresh token rotativo)
 - [ ] Módulo `auth/`
-- [ ] DTOs: `RegisterDto`, `LoginDto`, `JwtPayload`
-- [ ] `AuthService` (register, login, validateUser, hashPassword)
-- [ ] `AuthController` (POST `/auth/register`, POST `/auth/login`, GET `/auth/me`)
-- [ ] `JwtStrategy` (Passport)
-- [ ] `JwtAuthGuard` global + decorator `@Public()` para rotas abertas
+- [ ] Entity `RefreshToken` (hash sha256, userId, expiresAt, revokedAt, replacedById) + migration
+- [ ] DTOs: `RegisterDto` (com convite opcional), `LoginDto`, `RefreshDto`, `AuthResponseDto`
+- [ ] `UsersService` (create, findByEmail, findById) e `CouplesService` (create)
+- [ ] `RefreshTokenService` (issue, rotate, revoke, revokeAllForUser)
+- [ ] `AuthService` (register, login, refresh, logout, logoutAll, validateUser)
+- [ ] `AuthController` (POST `/auth/register`, `/auth/login`, `/auth/refresh`, `/auth/logout`, `/auth/logout-all`; GET `/auth/me`)
+- [ ] `JwtStrategy` (Passport) com payload `{ sub: userId }`
+- [ ] `JwtAuthGuard` **global** (`APP_GUARD`) + decorator `@Public()` para rotas abertas
 - [ ] Decorator `@CurrentUser()` para extrair user do request
-- [ ] Testes unitários do `AuthService`
-- [ ] Testes e2e dos endpoints
+- [ ] Política de senha: mínimo 8 chars (validado via `class-validator`)
+- [ ] Access token 15min / Refresh token 30 dias com rotação a cada uso
+- [ ] Testes unitários do `AuthService` e `RefreshTokenService`
+- [ ] Testes e2e do fluxo register → login → /me → refresh → logout
 
 #### A3. Convite de casal
 - [ ] Módulo `couples/`
@@ -112,7 +117,7 @@ A ordem é estritamente bottom-up: dado → camada de serviço → controller �
 - [ ] Módulo `notifications/`
 - [ ] Service que envia para o FCM token do user
 - [ ] Endpoint POST `/users/me/fcm-token` para o app registrar o token
-- [ ] Uso: lembrete de consulta 24h antes, convite de casal aceito, alarmes de remédio como **backup** caso o device esteja sem alarme local registrado (ex: trocou de telefone)
+- [ ] Uso: lembrete de consulta 24h antes, convite da família aceito, alarmes de remédio como **backup** caso o device esteja sem alarme local registrado (ex: trocou de telefone)
 
 #### A10. Avatares (DiceBear)
 - [ ] Endpoint `PATCH /users/me/avatar` com body `{ style, seed }`

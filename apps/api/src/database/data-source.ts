@@ -8,7 +8,10 @@ loadEnv();
 // DataSource standalone usado pelo CLI do TypeORM para rodar migrations.
 // O AppModule usa a factory em src/config/database.config.ts; mantemos os dois
 // alinhados manualmente para evitar acoplar o CLI ao container do Nest.
-export const AppDataSource = new DataSource({
+//
+// IMPORTANTE: o CLI exige UM ÚNICO export de DataSource neste arquivo.
+// Por isso só temos `export default` — não criar `export const` adicional.
+export default new DataSource({
   type: 'postgres',
   host: process.env.POSTGRES_HOST ?? 'localhost',
   port: Number(process.env.POSTGRES_PORT ?? 5432),
@@ -21,5 +24,3 @@ export const AppDataSource = new DataSource({
   synchronize: false,
   logging: process.env.NODE_ENV !== 'production',
 });
-
-export default AppDataSource;

@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { ApiTags } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
+import { Public } from '../modules/auth/decorators/public.decorator';
 
 // Endpoint simples para confirmar que a API está viva e o banco conectado.
 // Útil para liveness/readiness em deploys, e para sanity check do dev.
@@ -12,6 +13,7 @@ export class HealthController {
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
+  @Public()
   @Get()
   async check() {
     let dbStatus: 'up' | 'down' = 'down';
