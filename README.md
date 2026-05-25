@@ -29,17 +29,20 @@ Além de uso pessoal diário, o projeto serve como **portfólio técnico** demon
 
 **V1 — primeira versão publicável na Play Store** ([roadmap completo](./docs/V1_ROADMAP.md)):
 
-| # | Funcionalidade                                          | Status         |
-| - | ------------------------------------------------------- | -------------- |
-| 1 | Setup do monorepo + infraestrutura Docker               | ✅ Concluído    |
-| 2 | Autenticação JWT + convite de casal                     | 🚧 Em andamento |
-| 3 | Cadastro do perfil do bebê                              | 📅 Planejado    |
-| 4 | Calendário de vacinas seguindo o **PNI** brasileiro     | 📅 Planejado    |
-| 5 | Agenda de consultas pediátricas                         | 📅 Planejado    |
-| 6 | Lista de remédios com lembretes push (Firebase)         | 📅 Planejado    |
-| 7 | Dashboard "Hoje" — vacinas, consultas e doses do dia    | 📅 Planejado    |
+| # | Funcionalidade                                                                     | Status         |
+| - | ---------------------------------------------------------------------------------- | -------------- |
+| 1 | Setup do monorepo + infraestrutura Docker                                          | ✅ Concluído    |
+| 2 | Autenticação JWT + convite de casal                                                | 🚧 Em andamento |
+| 3 | Avatar customizável via **DiceBear** (8 estilos + seed regenerável)                | 📅 Planejado    |
+| 4 | Cadastro do perfil do bebê                                                         | 📅 Planejado    |
+| 5 | Calendário de vacinas seguindo o **PNI** brasileiro                                | 📅 Planejado    |
+| 6 | Agenda de consultas pediátricas                                                    | 📅 Planejado    |
+| 7 | Remédios com **despertador eficaz** (alarme local, toca com app fechado)           | 📅 Planejado    |
+| 8 | **Despertador da mamada** (mamada, troca, soneca) com sons internos ou do device   | 📅 Planejado    |
+| 9 | **Modo Soninho** — ruído branco com 8 sons curados, timer e fade out               | 📅 Planejado    |
+| 10 | Dashboard "Hoje" — vacinas, consultas, doses e próximos alarmes                   | 📅 Planejado    |
 
-**Reservado para V2:** upload de receitas médicas, lista de compras em tempo real (WebSocket), diário de marcos, exportar histórico em PDF e versão iOS.
+**Reservado para V2:** upload de receitas médicas, lista de compras em tempo real (WebSocket), diário de marcos, exportar histórico em PDF, versão iOS e modo escuro.
 
 ## 🛠 Stack
 

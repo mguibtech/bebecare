@@ -19,13 +19,16 @@ Estas são as funcionalidades **essenciais** para o app ser útil de verdade des
 | # | Funcionalidade | Diferencial |
 |---|---|---|
 | 1 | **Cadastro + login** (email/senha) com JWT | Base de tudo |
-| 2 | **Convite de casal** (código de 6 dígitos) | Dois usuários veem os mesmos dados do bebê |
-| 3 | **Cadastro do bebê** (nome, sexo, data de nascimento, peso/altura iniciais) | Tela inicial pós-login |
-| 4 | **Calendário de vacinas PNI** com checklist | Diferencial principal vs. apps internacionais |
-| 5 | **Agenda de consultas pediátricas** | Lembretes 1 dia antes via push |
-| 6 | **Lista de remédios com lembretes push** | Horário/dose, com snooze |
-| 7 | **Tela "Hoje"** consolidando vacinas atrasadas + consultas próximas + remédios do dia | Dashboard que o usuário abre primeiro |
-| 8 | **Configurações** (perfil, gerenciar casal, logout) | |
+| 2 | **Avatar DiceBear** com seleção de estilo + regenerar seed | Personalização sem precisar tirar foto |
+| 3 | **Convite de casal** (código de 6 dígitos) | Dois usuários veem os mesmos dados do bebê |
+| 4 | **Cadastro do bebê** (nome, sexo, data de nascimento, peso/altura iniciais) | Tela inicial pós-login |
+| 5 | **Calendário de vacinas PNI** com checklist | Diferencial principal vs. apps internacionais |
+| 6 | **Agenda de consultas pediátricas** | Lembretes 1 dia antes via push |
+| 7 | **Lista de remédios com despertador eficaz** (alarme local, toca com app fechado/silenciado, som customizável) | Diferencial: não é só push notification |
+| 8 | **Despertador da mamada** (mamada, troca de fralda, soneca) — mesma stack do alarme de remédios | Cobertura prática para pais cansados |
+| 9 | **Modo Soninho** — ruído branco com 8 sons curados, timer e fade out | Recurso que apps premium cobram |
+| 10 | **Tela "Hoje"** consolidando vacinas atrasadas + consultas próximas + remédios do dia + próximos alarmes | Dashboard que o usuário abre primeiro |
+| 11 | **Configurações** (perfil + avatar, gerenciar casal, sons do despertador, logout) | |
 
 ### 📅 Vai para V2
 
@@ -48,8 +51,8 @@ Estas são as funcionalidades **essenciais** para o app ser útil de verdade des
 A ordem é estritamente bottom-up: dado → camada de serviço → controller → autorização.
 
 #### A1. Fundação do domínio
-- [ ] `BaseEntity` abstrata (id UUID, `created_at`, `updated_at`, `deleted_at` para soft delete)
-- [ ] Entity `User` (email único, senha hash com bcrypt, nome, FCM token)
+- [ ] `BaseEntity` abstrata (id UUID v7, `created_at`, `updated_at`, `deleted_at` para soft delete)
+- [ ] Entity `User` (email único, senha hash com bcrypt, nome, FCM token, **`avatar_style`** default `adventurer`, **`avatar_seed`** default = email)
 - [ ] Entity `Couple` (1 a 2 users; representa o casal)
 - [ ] Entity `CoupleInvite` (código de 6 dígitos, expira em 7 dias, status pending/accepted/expired)
 - [ ] Entity `Baby` (nome, sexo, data nascimento, peso/altura, FK para Couple)
@@ -94,19 +97,30 @@ A ordem é estritamente bottom-up: dado → camada de serviço → controller �
 
 #### A7. Medicações
 - [ ] Entity `Medication` (FK Baby, nome, dose, unidade, instruções)
-- [ ] Entity `MedSchedule` (FK Medication, horários, dias da semana, data início/fim, ativo)
+- [ ] Entity `MedSchedule` (FK Medication, horários, dias da semana, data início/fim, ativo, **`use_alarm: boolean`** — se true, dispara alarme local; se false, só push)
 - [ ] Módulo `medications/`
 - [ ] CRUD + endpoint "doses de hoje"
-- [ ] Job de push para os horários ativos
+- [ ] Endpoint para o mobile sincronizar a lista de horários e re-agendar alarmes locais
 
-#### A8. Push notifications (FCM)
+#### A8. Alarmes / despertadores customizados
+- [ ] Entity `Alarm` (FK User, label, horários, dias da semana, ativo, `sound_key` ou `sound_uri`, categoria: `feeding`/`diaper`/`nap`/`custom`)
+- [ ] Módulo `alarms/`
+- [ ] CRUD `/alarms`
+- [ ] Endpoint para sincronização (mesmo padrão dos medications — mobile pega lista e agenda local)
+
+#### A9. Push notifications (FCM) — backup e lembretes não-críticos
 - [ ] Módulo `notifications/`
 - [ ] Service que envia para o FCM token do user
 - [ ] Endpoint POST `/users/me/fcm-token` para o app registrar o token
-- [ ] Integração com `appointments` e `medications` para disparar lembretes
+- [ ] Uso: lembrete de consulta 24h antes, convite de casal aceito, alarmes de remédio como **backup** caso o device esteja sem alarme local registrado (ex: trocou de telefone)
 
-#### A9. Dashboard "Hoje"
-- [ ] Endpoint GET `/dashboard/today` que retorna: vacinas atrasadas, próximas consultas (7 dias), doses do dia
+#### A10. Avatares (DiceBear)
+- [ ] Endpoint `PATCH /users/me/avatar` com body `{ style, seed }`
+- [ ] Validação: `style` precisa ser de uma whitelist (`adventurer`, `lorelei`, `micah`, `personas`, `notionists`, `avataaars`, `bottts`, `croodles`)
+- [ ] Sem armazenamento de imagem — só os dois campos no DB; URL é construída no client
+
+#### A11. Dashboard "Hoje"
+- [ ] Endpoint GET `/dashboard/today` que retorna: vacinas atrasadas, próximas consultas (7 dias), doses do dia, próximos alarmes (8 horas)
 - [ ] Otimizado para uma chamada só do mobile
 
 ### Fase B — Mobile (React Native CLI)
@@ -127,6 +141,10 @@ A ordem é estritamente bottom-up: dado → camada de serviço → controller �
 - [ ] React Native Keychain para armazenar JWT
 - [ ] React Native Vector Icons
 - [ ] React Hook Form + Zod para validação de forms
+- [ ] **Notifee** (`@notifee/react-native`) para alarmes locais e canais de notificação
+- [ ] **React Native Track Player** (`react-native-track-player`) para o modo soninho (player com foreground service)
+- [ ] **Document Picker** (`react-native-document-picker`) para escolha de música do device no alarme
+- [ ] **FastImage** (`@d11/react-native-fast-image`) para cache do avatar DiceBear
 
 #### B3. Auth UI
 - [ ] Telas: Splash, Login, Register, Esqueci minha senha (placeholder)
@@ -134,6 +152,7 @@ A ordem é estritamente bottom-up: dado → camada de serviço → controller �
 - [ ] Hooks: `useLogin`, `useRegister`, `useMe`
 
 #### B4. Onboarding pós-login
+- [ ] Tela "Escolher avatar" (grid com 8 estilos DiceBear + botão "Embaralhar" que regenera a seed)
 - [ ] Tela "Convidar parceiro(a)" (mostra código de 6 dígitos copiável + share sheet)
 - [ ] Tela "Cadastrar bebê" (form com data picker)
 - [ ] Roteamento condicional: sem bebê → onboarding; com bebê → dashboard
@@ -153,22 +172,43 @@ A ordem é estritamente bottom-up: dado → camada de serviço → controller �
 - [ ] Form de criar/editar consulta
 - [ ] Detalhe da consulta
 
-#### B8. Telas de remédios
+#### B8. Telas de remédios + alarme eficaz
 - [ ] Lista de remédios ativos
-- [ ] Form de criar/editar com horários
-- [ ] Vista "Doses de hoje" com check-mark
+- [ ] Form de criar/editar com horários e toggle "Tocar alarme" (ON por padrão)
+- [ ] Vista "Doses de hoje" com check-mark e snooze
+- [ ] Integração com `notifee`: ao salvar, registra alarmes locais (canal `alarm`, IMPORTANCE_HIGH, full-screen intent)
+- [ ] Solicita `SCHEDULE_EXACT_ALARM` permission ao ativar primeira dose com alarme
+- [ ] Re-agendamento de alarmes no boot do device (`BOOT_COMPLETED` via notifee)
 
-#### B9. Configurações
-- [ ] Perfil do usuário
+#### B9. Telas de despertador da mamada
+- [ ] Lista de despertadores temáticos (mamada, troca, soneca, custom)
+- [ ] Form de criar/editar com horários, dias da semana e seleção de som
+- [ ] **Seleção de som**: pacote interno (8 sons) + DocumentPicker pra escolher MP3 do device
+- [ ] Reutiliza o componente de scheduling do B8
+
+#### B10. Modo Soninho (ruído branco)
+- [ ] Tela dedicada com grid de 8 sons (branco, marrom, chuva, ventilador, batimento, útero, mar, carro)
+- [ ] Player com play/pause/volume
+- [ ] Timer: 15min / 30min / 1h / sem parar
+- [ ] Fade out nos últimos 30s
+- [ ] Toca com tela apagada (foreground service do `react-native-track-player`)
+- [ ] Não atrapalha outros áudios (configurar audio focus para "duck")
+- [ ] Assets de áudio em `apps/mobile/android/app/src/main/res/raw/` (formato OGG, ~2-3MB cada)
+- [ ] Arquivo `apps/mobile/assets/audio/CREDITS.md` documentando fonte e licença de cada som
+
+#### B11. Configurações
+- [ ] Perfil do usuário (nome + editor de avatar DiceBear)
+- [ ] Sons padrão do despertador (escolha entre pacote interno)
 - [ ] Gerenciar casal (ver parceiro, sair do casal)
+- [ ] Permissões (atalho para ajustes do sistema — alarme exato, notificações, otimização de bateria)
 - [ ] Logout
 - [ ] Sobre / versão / política de privacidade (link)
 
-#### B10. Push notifications
+#### B12. Push notifications (FCM)
 - [ ] Integração `@react-native-firebase/app` + `@react-native-firebase/messaging`
 - [ ] Permissão de notificação no primeiro launch
 - [ ] Envio do FCM token para a API
-- [ ] Handler de notificação foreground/background/quit
+- [ ] Handler de notificação foreground/background/quit (usa para lembretes de consulta e mensagens do casal, NÃO para alarme de remédio)
 
 ### Fase C — Infraestrutura de produção
 
@@ -234,12 +274,32 @@ Trabalhando ~2h/dia em dias úteis + 4h/dia em fins de semana, contexto realista
 
 | Bloco | Estimativa |
 |---|---|
-| Fase A (back: A1 a A9) | **3 a 4 semanas** |
-| Fase B (mobile: B1 a B10) | **4 a 6 semanas** (pode rodar parcial em paralelo com A) |
+| Fase A (back: A1 a A11) | **4 a 5 semanas** (+1 semana por alarmes + avatares) |
+| Fase B (mobile: B1 a B12) | **5 a 7 semanas** (+1-2 semanas por notifee/track-player/ruído branco) |
 | Fase C (infra produção) | **2 a 3 dias** concentrados |
 | Fase D (Play Store: setup + testing tracks) | **2 a 3 semanas** corridas (Google demora pra revisar) |
 
-**Total realista até V1 na Play Store: 8 a 12 semanas.** Pode ir mais rápido se tiver pico de tempo livre.
+**Total realista até V1 na Play Store: 10 a 14 semanas.** Pode ir mais rápido se tiver pico de tempo livre.
+
+## 3.1 Permissões Android críticas
+
+Estas permissões precisam ser declaradas no `AndroidManifest.xml` e **justificadas** no formulário de Data Safety da Play Store. Categoria do app **"Saúde e fitness"** facilita a aprovação:
+
+| Permissão | Por que | Risco de rejeição |
+|---|---|---|
+| `POST_NOTIFICATIONS` (Android 13+) | Push e alarmes | Baixo |
+| `SCHEDULE_EXACT_ALARM` (Android 12+) | Despertador no horário exato | Baixo (justificativa: lembrete de medicação infantil) |
+| `USE_FULL_SCREEN_INTENT` (Android 14+) | Alarme abre por cima da lockscreen | **Médio** — Google exige declaração; uso justificado para "alarme tipo despertador" |
+| `FOREGROUND_SERVICE_MEDIA_PLAYBACK` | Modo soninho com tela apagada | Baixo |
+| `READ_MEDIA_AUDIO` (Android 13+) | DocumentPicker para escolher música do device | Baixo |
+| `RECEIVE_BOOT_COMPLETED` | Reagendar alarmes após o usuário reiniciar o celular | Baixo |
+| `WAKE_LOCK` | Manter CPU acordada na hora do alarme | Baixo |
+| `INTERNET` | Óbvio | N/A |
+
+**Plano de mitigação:**
+- Cada permissão é solicitada **just-in-time**, não tudo no primeiro launch. Ex: `SCHEDULE_EXACT_ALARM` só é pedida ao ativar o primeiro alarme; `READ_MEDIA_AUDIO` só ao clicar em "Escolher música do device".
+- Tela "Permissões e privacidade" nas Configurações explica cada uma em linguagem clara.
+- Política de privacidade documenta tudo.
 
 ---
 
@@ -259,6 +319,10 @@ Trabalhando ~2h/dia em dias úteis + 4h/dia em fins de semana, contexto realista
 | **Crash reporting** | **Sentry** free tier (5k errors/mês) | Firebase Crashlytics |
 | **Lib de date picker no mobile** | `@react-native-community/datetimepicker` | `react-native-date-picker` |
 | **Lib de forms no mobile** | **React Hook Form + Zod** | Formik + Yup |
+| **Lib de alarmes/notificações** | **Notifee** (canais, full-screen intent, scheduling local) | `@react-native-firebase/messaging` puro (não suficiente para alarme) |
+| **Player do ruído branco** | **`react-native-track-player`** (foreground service grátis, controle de lockscreen) | `react-native-sound` (mais simples, sem foreground service) |
+| **Cache de avatar DiceBear** | **`@d11/react-native-fast-image`** (fork mantido) | `Image` nativo (cache funciona mas com menos controle) |
+| **Estilos default do DiceBear** | `adventurer`, `lorelei`, `micah`, `personas`, `notionists`, `avataaars`, `bottts`, `croodles` | Outros estilos podem ser adicionados depois |
 | **Tema visual** | Cor primária **#5B8DEF** (azul bebê), secundária **#FFB0C2** (rosa suave) — neutras de gênero | Definir junto com a esposa |
 
 ---
@@ -272,6 +336,12 @@ Trabalhando ~2h/dia em dias úteis + 4h/dia em fins de semana, contexto realista
 | FCM precisar de SHA-1 do keystore | Gerar keystore de release no início, registrar SHA-1 no Firebase |
 | LGPD: dados do bebê são sensíveis | V1 não coleta diagnóstico nem foto — só nome, sexo, data nasc, peso/altura. Documentar bem na política |
 | Esposa não usar o app | Validar UX com ela em protótipos antes de partir pro código |
+| Alarme não disparar em devices Xiaomi/Huawei/Oppo | Schedule local com notifee + alerta na primeira execução pedindo pra desabilitar "otimização de bateria" pro app |
+| `USE_FULL_SCREEN_INTENT` ser negado pela Play Store | Categoria "saúde", justificativa clara no Data Safety, alternativa de fallback: notificação sem full-screen (degrada UX mas não trava o app) |
+| Sons de ruído branco com direitos autorais | Usar exclusivamente fontes CC0/CC-BY (freesound.org, Pixabay) e documentar em `assets/audio/CREDITS.md` |
+| APK ficar grande (limit Play Store 150MB) | Sons em OGG comprimido (~2-3MB cada × 8 = ~20MB); APK total estimado ~50MB ainda confortável |
+| Bateria do device com alarmes ativos | Notifee tem footprint pequeno; alarmes só "acordam" no horário, não ficam em loop |
+| DiceBear API ficar fora do ar | Cache local (FastImage) já mostra avatar conhecido; só impede gerar novos. Sem dependência crítica |
 
 ---
 
