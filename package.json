@@ -1,0 +1,22 @@
+{
+  "name": "bebecare",
+  "version": "0.0.1",
+  "description": "Monorepo do BebeCare — app de saúde para bebês",
+  "private": true,
+  "author": "Mguib",
+  "license": "UNLICENSED",
+  "scripts": {
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f postgres",
+    "db:reset": "docker compose down -v && docker compose up -d",
+    "api:install": "cd apps/api && npm install",
+    "api:dev": "cd apps/api && npm run start:dev",
+    "api:lint": "cd apps/api && npm run lint",
+    "api:test": "cd apps/api && npm run test",
+    "mobile:install": "cd apps/mobile && npm install",
+    "mobile:start": "cd apps/mobile && npm start",
+    "mobile:android": "cd apps/mobile && npm run android",
+    "mobile:ios": "cd apps/mobile && npm run ios"
+  }
+}

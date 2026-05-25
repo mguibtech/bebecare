@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussão geral
+    url: https://github.com/mguibtech/bebecare/discussions
+    about: Ideias, dúvidas e conversas que não são bug nem feature específica.

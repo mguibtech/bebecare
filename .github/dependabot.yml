@@ -1,0 +1,67 @@
+version: 2
+
+# Atualizações semanais de dependências.
+# Como o monorepo não usa workspaces, cada app é configurado separadamente.
+
+updates:
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: America/Manaus
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'ci'
+      include: scope
+
+  # API (NestJS)
+  - package-ecosystem: npm
+    directory: /apps/api
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: America/Manaus
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(api)'
+      include: scope
+    groups:
+      nestjs:
+        patterns:
+          - '@nestjs/*'
+      typeorm:
+        patterns:
+          - 'typeorm'
+          - 'pg'
+          - '@nestjs/typeorm'
+      testing:
+        patterns:
+          - 'jest'
+          - 'ts-jest'
+          - '@types/jest'
+          - 'supertest'
+          - '@types/supertest'
+
+  # Mobile (React Native CLI) — habilitar depois que o init for feito
+  - package-ecosystem: npm
+    directory: /apps/mobile
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: America/Manaus
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(mobile)'
+      include: scope
+    # Ignora majors de React Native: bumps de major exigem upgrade manual
+    # (https://react-native-community.github.io/upgrade-helper/)
+    ignore:
+      - dependency-name: 'react-native'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-major']

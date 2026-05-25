@@ -1,0 +1,50 @@
+name: bebecare
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bebecare-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bebecare}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bebecare_dev_pwd}
+      POSTGRES_DB: ${POSTGRES_DB:-bebecare}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bebecare} -d ${POSTGRES_DB:-bebecare}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bebecare-net
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: bebecare-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@bebecare.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bebecare-net
+
+volumes:
+  postgres-data:
+    driver: local
+  pgadmin-data:
+    driver: local
+
+networks:
+  bebecare-net:
+    driver: bridge

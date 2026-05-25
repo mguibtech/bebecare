@@ -1,0 +1,25 @@
+import 'reflect-metadata';
+import { config as loadEnv } from 'dotenv';
+import { DataSource } from 'typeorm';
+
+// Carrega variáveis do .env quando rodando via CLI (npm run migration:*)
+loadEnv();
+
+// DataSource standalone usado pelo CLI do TypeORM para rodar migrations.
+// O AppModule usa a factory em src/config/database.config.ts; mantemos os dois
+// alinhados manualmente para evitar acoplar o CLI ao container do Nest.
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.POSTGRES_HOST ?? 'localhost',
+  port: Number(process.env.POSTGRES_PORT ?? 5432),
+  username: process.env.POSTGRES_USER ?? 'bebecare',
+  password: process.env.POSTGRES_PASSWORD ?? 'bebecare_dev_pwd',
+  database: process.env.POSTGRES_DB ?? 'bebecare',
+  // Globs para encontrar entidades e migrations a partir deste arquivo
+  entities: [__dirname + '/../**/*.entity.{ts,js}'],
+  migrations: [__dirname + '/migrations/*.{ts,js}'],
+  synchronize: false,
+  logging: process.env.NODE_ENV !== 'production',
+});
+
+export default AppDataSource;

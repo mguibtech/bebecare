@@ -1,0 +1,87 @@
+name: API CI
+
+# Roda em pushes para main e em qualquer PR que toque apps/api
+# ou na própria configuração do workflow.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/api/**'
+      - '.github/workflows/api-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/api/**'
+      - '.github/workflows/api-ci.yml'
+
+# Cancela jobs antigos do mesmo branch para economizar minutos.
+concurrency:
+  group: api-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test:
+    name: Lint + Tests (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22']
+
+    # Postgres como service container — disponível em localhost:5432
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: bebecare
+          POSTGRES_PASSWORD: bebecare_ci_pwd
+          POSTGRES_DB: bebecare_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U bebecare -d bebecare_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    defaults:
+      run:
+        working-directory: apps/api
+
+    env:
+      NODE_ENV: test
+      API_PORT: 3000
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: bebecare
+      POSTGRES_PASSWORD: bebecare_ci_pwd
+      POSTGRES_DB: bebecare_test
+      JWT_SECRET: ci_jwt_secret_not_for_production
+      JWT_EXPIRES_IN: 1h
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: apps/api/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (type check)
+        run: npm run build
+
+      - name: Unit tests
+        run: npm test -- --ci --reporters=default
+
+      - name: E2E tests
+        run: npm run test:e2e -- --ci --reporters=default

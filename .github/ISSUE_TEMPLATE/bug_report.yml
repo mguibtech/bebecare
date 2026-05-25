@@ -1,0 +1,75 @@
+name: 🐛 Bug report
+description: Relate um comportamento inesperado no BebeCare
+title: '[bug]: '
+labels: ['type:bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por relatar! Quanto mais detalhes, mais rápido conseguimos resolver. 🍼
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área afetada
+      options:
+        - API (NestJS)
+        - Mobile (React Native)
+        - Infra (Docker / banco)
+        - Documentação
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: O que aconteceu?
+      description: Descreva o bug com clareza.
+      placeholder: Ao clicar em "salvar perfil do bebê", a tela trava...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+      description: Liste os passos exatos.
+      placeholder: |
+        1. Abrir o app
+        2. Ir em "Perfil"
+        3. Preencher e clicar em Salvar
+        4. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+      placeholder: A tela deveria fechar e mostrar mensagem de sucesso.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Versão / commit
+      description: Versão do app ou hash do commit em que o bug ocorre.
+      placeholder: v0.1.0 ou abc1234
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Ambiente
+      placeholder: |
+        - SO: Windows 11 / Android 14 / iOS 18
+        - Node: 20.x
+        - Dispositivo: Pixel 7 (emulador) / Galaxy S22 (real)
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stack trace
+      description: Se houver logs relevantes da API ou do Metro, cole aqui.
+      render: shell

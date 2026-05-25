@@ -1,0 +1,46 @@
+# Garante line endings consistentes entre Windows/macOS/Linux.
+# Sem isso, contribuir do Windows depois pode gerar diffs gigantes só de CRLF/LF.
+
+* text=auto eol=lf
+
+# Arquivos texto explícitos
+*.ts        text eol=lf
+*.tsx       text eol=lf
+*.js        text eol=lf
+*.jsx       text eol=lf
+*.json      text eol=lf
+*.md        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.html      text eol=lf
+*.css       text eol=lf
+*.scss      text eol=lf
+*.sh        text eol=lf
+
+# Scripts Windows mantêm CRLF
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+*.ps1       text eol=crlf
+
+# Binários — não tocar
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.webp      binary
+*.ico       binary
+*.pdf       binary
+*.ttf       binary
+*.otf       binary
+*.woff      binary
+*.woff2     binary
+*.zip       binary
+*.tar.gz    binary
+*.jar       binary
+*.apk       binary
+*.aab       binary
+*.keystore  binary
+
+# Lockfiles — linguistically irrelevantes pro GitHub stats
+package-lock.json linguist-generated=true
+yarn.lock         linguist-generated=true

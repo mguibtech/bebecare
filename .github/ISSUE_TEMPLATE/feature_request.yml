@@ -1,0 +1,64 @@
+name: 💡 Feature request
+description: Sugira uma nova funcionalidade ou melhoria
+title: '[feat]: '
+labels: ['type:feature']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Compartilhe a ideia! Quanto mais clara a motivação, melhor priorizamos. 🍼
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área da feature
+      options:
+        - API (NestJS)
+        - Mobile (React Native)
+        - Infra / DevOps
+        - Documentação
+        - Outro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Fase do roadmap (se já souber)
+      options:
+        - Fase 1 — Setup & Auth
+        - Fase 2 — Vacinas & consultas
+        - Fase 3 — Remédios & receitas
+        - Fase 4 — Compras compartilhadas
+        - Fase 5 — Diário & polish
+        - Backlog / fora de fase
+    validations:
+      required: false
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Qual problema essa feature resolve?
+      placeholder: Como pai, eu quero... porque...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta de solução
+      description: Como você imagina que deveria funcionar?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      description: Outras formas de resolver o mesmo problema.
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Contexto adicional
+      description: Links, screenshots, referências de outros apps.

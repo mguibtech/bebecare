@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# Env files
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Coverage
+coverage/
+*.lcov
+
+# Docker volumes
+postgres-data/
+pgadmin-data/
+
+# Specifically inside apps/mobile (após init do RN CLI, os .gitignore próprios vão lidar com o resto)
+apps/mobile/android/app/build/
+apps/mobile/ios/build/
+apps/mobile/ios/Pods/
+
+# Firebase service account keys (NUNCA commitar)
+**/google-services.json
+**/GoogleService-Info.plist
+**/firebase-adminsdk-*.json
