@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -54,6 +56,7 @@ export class MedDoseLogsController {
 
   // ----- POST /babies/:babyId/doses/:id/take -----
   @Post(':id/take')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Marca a dose como tomada' })
   @ApiResponse({ status: 200, type: DoseLogResponseDto })
   async take(
@@ -67,6 +70,7 @@ export class MedDoseLogsController {
 
   // ----- POST /babies/:babyId/doses/:id/skip -----
   @Post(':id/skip')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Marca a dose como pulada (com motivo opcional)' })
   @ApiResponse({ status: 200, type: DoseLogResponseDto })
   async skip(
@@ -81,6 +85,7 @@ export class MedDoseLogsController {
 
   // ----- POST /babies/:babyId/doses/:id/reset (engano) -----
   @Post(':id/reset')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Volta a dose para PENDING (correção de engano)' })
   @ApiResponse({ status: 200, type: DoseLogResponseDto })
   async reset(

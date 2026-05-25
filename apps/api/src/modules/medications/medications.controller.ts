@@ -55,7 +55,10 @@ export class MedicationsController {
     @Body() dto: CreateMedicationDto,
   ): Promise<MedicationResponseDto> {
     const med = await this.medications.create(babyId, user.familyId, dto);
-    return this.toResponse({ ...med, schedules: [] } as Medication);
+    // Garante array de schedules vazio (recém-criado, nenhum horário ainda)
+    // sem fazer spread que perderia os métodos da classe (assignUuid).
+    if (!med.schedules) med.schedules = [];
+    return this.toResponse(med);
   }
 
   @Get(':id')

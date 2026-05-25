@@ -84,6 +84,7 @@ export class AppointmentsController {
   }
 
   @Post(':id/complete')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Marca como realizada e salva observações pós-consulta' })
   @ApiResponse({ status: 200, type: AppointmentResponseDto })
   async complete(
@@ -97,6 +98,7 @@ export class AppointmentsController {
   }
 
   @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Cancela com motivo opcional' })
   @ApiResponse({ status: 200, type: AppointmentResponseDto })
   async cancel(

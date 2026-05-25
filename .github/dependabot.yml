@@ -54,6 +54,13 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: '@nestjs/*'
         update-types: ['version-update:semver-major']
+      # uuid é usado em BaseEntity (v7) — toda PK depende. Major exige migração de teste.
+      - dependency-name: 'uuid'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'bcryptjs'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'passport-jwt'
+        update-types: ['version-update:semver-major']
 
   # Mobile (React Native CLI) — habilitar depois que o init for feito
   - package-ecosystem: npm

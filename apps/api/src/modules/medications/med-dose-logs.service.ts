@@ -88,8 +88,10 @@ export class MedDoseLogsService {
     log.takenAt = new Date();
     log.skipReason = null;
     log.loggedByUserId = userId;
+    await this.doseLogs.save(log);
 
-    return this.doseLogs.save(log);
+    // Recarrega para popular o loggedByUser atualizado (save não traz relations).
+    return this.findOne(logId, babyId, familyId);
   }
 
   // ----- Marcar como PULADA -----
@@ -111,8 +113,9 @@ export class MedDoseLogsService {
     log.takenAt = null;
     log.skipReason = dto.reason?.trim() || null;
     log.loggedByUserId = userId;
+    await this.doseLogs.save(log);
 
-    return this.doseLogs.save(log);
+    return this.findOne(logId, babyId, familyId);
   }
 
   // ----- Reverter para PENDING (engano) -----
@@ -127,7 +130,9 @@ export class MedDoseLogsService {
     log.takenAt = null;
     log.skipReason = null;
     log.loggedByUserId = userId;
-    return this.doseLogs.save(log);
+    await this.doseLogs.save(log);
+
+    return this.findOne(logId, babyId, familyId);
   }
 
   // -------------------------------------------------------------------
