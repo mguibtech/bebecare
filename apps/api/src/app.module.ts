@@ -14,9 +14,11 @@ import { RefreshTokensModule } from './modules/refresh-tokens/refresh-tokens.mod
 import { VaccinesModule } from './modules/vaccines/vaccines.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { MedicationsModule } from './modules/medications/medications.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 // Módulo raiz da aplicação. A partir daqui, cada feature do BebeCare
-// (auth, users, couples, babies, vaccines, etc.) entra como um módulo importado.
+// (auth, users, families, babies, vaccines, appointments, medications,
+// notifications, etc.) entra como um módulo importado.
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,8 +32,9 @@ import { MedicationsModule } from './modules/medications/medications.module';
       useFactory: typeOrmConfig,
     }),
 
-    // Habilita @Cron / @Interval / @Timeout em providers (usado pelo
-    // FamilyInvitesCleanupJob que expira convites pendentes vencidos).
+    // Habilita @Cron / @Interval / @Timeout em providers
+    // (usado pelos jobs de expiração de convites, marcação de consultas
+    // perdidas, criação diária de doses, lembretes de push, etc.).
     ScheduleModule.forRoot(),
 
     RefreshTokensModule,
@@ -42,6 +45,7 @@ import { MedicationsModule } from './modules/medications/medications.module';
     VaccinesModule,
     AppointmentsModule,
     MedicationsModule,
+    NotificationsModule,
     HealthModule,
   ],
   providers: [

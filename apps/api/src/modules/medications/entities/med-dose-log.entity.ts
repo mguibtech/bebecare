@@ -33,7 +33,6 @@ export class MedDoseLog extends BaseEntity {
   @JoinColumn({ name: 'schedule_id' })
   schedule!: MedSchedule;
 
-  // Desnormalizado para queries rápidas ("doses de hoje da família")
   @Column({ name: 'baby_id', type: 'uuid' })
   babyId!: string;
 
@@ -48,7 +47,6 @@ export class MedDoseLog extends BaseEntity {
   @JoinColumn({ name: 'family_id' })
   family!: Family;
 
-  // Momento em que a dose deveria ser tomada (date + time do schedule)
   @Column({ name: 'scheduled_for', type: 'timestamptz' })
   scheduledFor!: Date;
 
@@ -61,11 +59,15 @@ export class MedDoseLog extends BaseEntity {
   @Column({ name: 'skip_reason', type: 'varchar', length: 200, nullable: true })
   skipReason: string | null = null;
 
-  // Quem marcou (auditoria — útil em família compartilhada pra evitar dose dupla)
   @Column({ name: 'logged_by_user_id', type: 'uuid', nullable: true })
   loggedByUserId: string | null = null;
 
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'logged_by_user_id' })
   loggedByUser: User | null = null;
+
+  // Setado pelo MedDoseAlarmsJob (A8) quando o push do alarme é enviado.
+  // Só rodamos para doses com schedule.useAlarm=true. Idempotente.
+  @Column({ name: 'notified_at', type: 'timestamptz', nullable: true })
+  notifiedAt: Date | null = null;
 }
