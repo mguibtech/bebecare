@@ -1,18 +1,21 @@
 name: API CI
 
-# Roda em pushes para main e em qualquer PR que toque apps/api
-# ou na própria configuração do workflow.
+# Roda em pushes para main e em qualquer PR que toque apps/api,
+# o próprio workflow, ou o dependabot.yml (necessário pq os checks são
+# required no ruleset — sem trigger, PR fica travado esperando status).
 on:
   push:
     branches: [main]
     paths:
       - 'apps/api/**'
       - '.github/workflows/api-ci.yml'
+      - '.github/dependabot.yml'
   pull_request:
     branches: [main]
     paths:
       - 'apps/api/**'
       - '.github/workflows/api-ci.yml'
+      - '.github/dependabot.yml'
 
 # Cancela jobs antigos do mesmo branch para economizar minutos.
 concurrency:
