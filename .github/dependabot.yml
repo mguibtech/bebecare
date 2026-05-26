@@ -61,6 +61,9 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'passport-jwt'
         update-types: ['version-update:semver-major']
+      # TypeScript 6.0 quebrou o build (PR #11). Bump manual lendo release notes.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
   # Mobile (React Native CLI) — habilitar depois que o init for feito
   - package-ecosystem: npm
