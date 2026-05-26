@@ -1,87 +1,97 @@
-# BebeCare — Mobile (React Native CLI)
+This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-App mobile do BebeCare. **React Native CLI bare** (não Expo), TypeScript, React Navigation, React Query, Zustand, React Native Paper.
+# Getting Started
 
-> ⚠️ Esta pasta começa vazia de propósito. O `init` do React Native CLI gera projetos nativos Android (Gradle) e iOS (Xcode) que **precisam ser criados no seu ambiente real** (Windows com Android Studio configurado). Rodar o init em outro ambiente quebra caminhos e SDK paths.
+> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
-## Pré-requisitos (Windows)
+## Step 1: Start Metro
 
-Siga o passo a passo oficial: https://reactnative.dev/docs/set-up-your-environment?os=windows
+First, you will need to run **Metro**, the JavaScript build tool for React Native.
 
-Resumo dos pré-requisitos:
+To start the Metro dev server, run the following command from the root of your React Native project:
 
-- **Node.js 20 LTS** ou superior
-- **JDK 17** (recomendo Temurin via `winget install EclipseAdoptium.Temurin.17.JDK`)
-- **Android Studio** com:
-  - Android SDK Platform 35 (ou a mais recente)
-  - Android SDK Build-Tools 35
-  - Android SDK Platform-Tools
-  - Android Emulator + uma AVD (ex: Pixel 7 / API 35)
-- Variáveis de ambiente:
-  - `ANDROID_HOME` apontando para `%LOCALAPPDATA%\Android\Sdk`
-  - `JAVA_HOME` apontando para a JDK 17
-  - Adicionar `%ANDROID_HOME%\platform-tools` ao `PATH`
-
-Confira com:
-
-```powershell
-node -v          # >= 20
-java -version    # 17.x
-adb --version
-```
-
-## Inicializar o projeto (uma vez só)
-
-Dentro de `apps/mobile/` (**esta pasta**, abra um PowerShell aqui):
-
-```powershell
-npx @react-native-community/cli@latest init BebeCareMobile --version latest --skip-install
-```
-
-Isso vai criar uma subpasta `BebeCareMobile/`. **Mova o conteúdo dela para cá** (a pasta `apps/mobile/`) para que esta pasta seja a raiz do projeto RN. No PowerShell:
-
-```powershell
-# Mover conteúdo de BebeCareMobile/ para o diretório atual
-Get-ChildItem -Path .\BebeCareMobile -Force | Move-Item -Destination .
-Remove-Item .\BebeCareMobile
-```
-
-Depois:
-
-```powershell
-npm install
-```
-
-> Alternativa: rode o init com `--directory .` se seu CLI suportar — mas geralmente exige pasta vazia.
-
-## Rodar
-
-Em um terminal:
-
-```powershell
+```sh
+# Using npm
 npm start
+
+# OR using Yarn
+yarn start
 ```
 
-Em outro terminal (com o emulador Android aberto):
+## Step 2: Build and run your app
 
-```powershell
+With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+
+### Android
+
+```sh
+# Using npm
 npm run android
+
+# OR using Yarn
+yarn android
 ```
 
-## Próximos passos (Fase 1)
+### iOS
 
-Quando o projeto base estiver rodando ("Welcome to React Native"), abra um PR/commit chamado **"chore(mobile): init RN CLI bare"** e me avise — vou instalar e configurar:
+For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
 
-- React Navigation (native stack)
-- React Query (TanStack Query)
-- Zustand
-- React Native Paper + tema do BebeCare
-- Axios configurado para falar com `http://10.0.2.2:3000/api` (emulador Android ⇄ host)
-- React Native Keychain (para guardar o JWT)
-- ESLint + Prettier alinhados com a API
+The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
 
-## Convenções
+```sh
+bundle install
+```
 
-- TypeScript em tudo
-- Nomes em inglês, comentários em português
-- Hooks de React Query gerados junto com cada endpoint da API
+Then, and every time you update your native dependencies, run:
+
+```sh
+bundle exec pod install
+```
+
+For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+
+```sh
+# Using npm
+npm run ios
+
+# OR using Yarn
+yarn ios
+```
+
+If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+
+This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+
+## Step 3: Modify your app
+
+Now that you have successfully run the app, let's make changes!
+
+Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+
+When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+
+- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
+- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+
+## Congratulations! :tada:
+
+You've successfully run and modified your React Native App. :partying_face:
+
+### Now what?
+
+- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
+- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+
+# Troubleshooting
+
+If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+
+# Learn More
+
+To learn more about React Native, take a look at the following resources:
+
+- [React Native Website](https://reactnative.dev) - learn more about React Native.
+- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
+- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
+- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
+- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
