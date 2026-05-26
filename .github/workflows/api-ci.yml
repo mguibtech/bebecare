@@ -83,5 +83,10 @@ jobs:
       - name: Unit tests
         run: npm test -- --ci --reporters=default
 
+      # Aplica todas as migrations + seed do PNI no Postgres do service container
+      # antes dos testes e2e. Sem isso os specs quebram com "relation users does not exist".
+      - name: Run migrations
+        run: npm run migration:run
+
       - name: E2E tests
         run: npm run test:e2e -- --ci --reporters=default
