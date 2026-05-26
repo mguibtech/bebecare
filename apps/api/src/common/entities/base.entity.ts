@@ -1,9 +1,4 @@
-import {
-  BeforeInsert,
-  CreateDateColumn,
-  PrimaryColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { BeforeInsert, CreateDateColumn, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { generateUuidV7 } from '../utils/uuid.util';
 
 // Entidade base para tudo que tem ID UUID v7 + timestamps de auditoria.

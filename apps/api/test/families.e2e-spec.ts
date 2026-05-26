@@ -19,7 +19,7 @@ describe('Families flow (e2e)', () => {
   let mguibToken: string;
   let partnerToken: string;
   let inviteCode: string;
-  let inviteId: string;
+  let _inviteId: string;
   let mguibFamilyId: string;
 
   beforeAll(async () => {
@@ -44,12 +44,18 @@ describe('Families flow (e2e)', () => {
     if (app) {
       const ds = app.get(DataSource);
       // Limpa em ordem para respeitar FKs (refresh_tokens -> users -> families)
-      await ds.query(`DELETE FROM refresh_tokens WHERE user_id IN (SELECT id FROM users WHERE email IN ($1, $2))`, [mguibEmail, partnerEmail]);
-      await ds.query(`DELETE FROM family_invites WHERE created_by_user_id IN (SELECT id FROM users WHERE email IN ($1, $2))`, [mguibEmail, partnerEmail]);
-      const familyIds = await ds.query(
-        `SELECT family_id FROM users WHERE email IN ($1, $2)`,
+      await ds.query(
+        `DELETE FROM refresh_tokens WHERE user_id IN (SELECT id FROM users WHERE email IN ($1, $2))`,
         [mguibEmail, partnerEmail],
       );
+      await ds.query(
+        `DELETE FROM family_invites WHERE created_by_user_id IN (SELECT id FROM users WHERE email IN ($1, $2))`,
+        [mguibEmail, partnerEmail],
+      );
+      const familyIds = await ds.query(`SELECT family_id FROM users WHERE email IN ($1, $2)`, [
+        mguibEmail,
+        partnerEmail,
+      ]);
       await ds.query(`DELETE FROM users WHERE email IN ($1, $2)`, [mguibEmail, partnerEmail]);
       if (familyIds.length > 0) {
         const ids = familyIds.map((r: any) => r.family_id);
@@ -103,7 +109,7 @@ describe('Families flow (e2e)', () => {
     expect(new Date(res.body.expiresAt).getTime()).toBeGreaterThan(Date.now());
 
     inviteCode = res.body.code;
-    inviteId = res.body.id;
+    _inviteId = res.body.id;
   });
 
   it('Convite aparece em GET /families/me/invites', async () => {

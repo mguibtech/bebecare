@@ -9,12 +9,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { maskToDayNames } from '../../common/utils/days-of-week.util';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
@@ -39,12 +34,7 @@ export class MedSchedulesController {
     @Param('medicationId', ParseUUIDPipe) medicationId: string,
     @Body() dto: CreateMedScheduleDto,
   ): Promise<MedScheduleResponseDto> {
-    const schedule = await this.schedules.create(
-      medicationId,
-      babyId,
-      user.familyId,
-      dto,
-    );
+    const schedule = await this.schedules.create(medicationId, babyId, user.familyId, dto);
     return this.toResponse(schedule);
   }
 
@@ -58,13 +48,7 @@ export class MedSchedulesController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateMedScheduleDto,
   ): Promise<MedScheduleResponseDto> {
-    const schedule = await this.schedules.update(
-      id,
-      medicationId,
-      babyId,
-      user.familyId,
-      dto,
-    );
+    const schedule = await this.schedules.update(id, medicationId, babyId, user.familyId, dto);
     return this.toResponse(schedule);
   }
 

@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AvatarStyle } from '../../common/enums/avatar-style.enum';
@@ -12,9 +8,7 @@ import { UpdateBabyDto } from './dto/update-baby.dto';
 
 @Injectable()
 export class BabiesService {
-  constructor(
-    @InjectRepository(Baby) private readonly babies: Repository<Baby>,
-  ) {}
+  constructor(@InjectRepository(Baby) private readonly babies: Repository<Baby>) {}
 
   // Cria um bebê para a família do user autenticado.
   // Default da avatar_seed: nome do bebê em lowercase com hífens.
@@ -28,8 +22,7 @@ export class BabiesService {
       birthDate: dto.birthDate,
       birthWeightGrams: dto.birthWeightGrams ?? null,
       // numeric do Postgres vem como string — fazemos o cast aqui pra consistência
-      birthHeightCm:
-        dto.birthHeightCm !== undefined ? dto.birthHeightCm.toFixed(2) : null,
+      birthHeightCm: dto.birthHeightCm !== undefined ? dto.birthHeightCm.toFixed(2) : null,
       bloodType: dto.bloodType ?? null,
       allergies: dto.allergies?.trim() || null,
       eyeColor: dto.eyeColor?.trim() || null,

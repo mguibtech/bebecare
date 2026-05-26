@@ -26,11 +26,7 @@ export class AppointmentsService {
   // ------------------------------------------------------------------
   // CREATE
   // ------------------------------------------------------------------
-  async create(
-    babyId: string,
-    familyId: string,
-    dto: CreateAppointmentDto,
-  ): Promise<Appointment> {
+  async create(babyId: string, familyId: string, dto: CreateAppointmentDto): Promise<Appointment> {
     await this.assertBabyInFamily(babyId, familyId);
 
     const scheduled = new Date(dto.scheduledAt);
@@ -146,9 +142,7 @@ export class AppointmentsService {
     const appt = await this.findOne(id, babyId, familyId);
 
     if (appt.status === AppointmentStatus.CANCELED) {
-      throw new BadRequestException(
-        'Consulta foi cancelada. Reabra editando ou crie uma nova.',
-      );
+      throw new BadRequestException('Consulta foi cancelada. Reabra editando ou crie uma nova.');
     }
 
     appt.status = AppointmentStatus.COMPLETED;
@@ -170,9 +164,7 @@ export class AppointmentsService {
     const appt = await this.findOne(id, babyId, familyId);
 
     if (appt.status === AppointmentStatus.COMPLETED) {
-      throw new BadRequestException(
-        'Consulta já realizada. Pra esconder, exclua (DELETE).',
-      );
+      throw new BadRequestException('Consulta já realizada. Pra esconder, exclua (DELETE).');
     }
 
     appt.status = AppointmentStatus.CANCELED;

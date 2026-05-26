@@ -1,19 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Patch,
-  Put,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Put } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserPublicDto } from '../auth/dto/auth-response.dto';
 import { RefreshTokenService } from '../refresh-tokens/refresh-tokens.service';
@@ -35,7 +21,7 @@ export class UsersController {
   @Get('me')
   @ApiOperation({ summary: 'Perfil do usuário autenticado (sem família/parceiros)' })
   @ApiResponse({ status: 200, type: UserPublicDto })
-  async me(@CurrentUser() user: User): Promise<UserPublicDto> {
+  me(@CurrentUser() user: User): UserPublicDto {
     return this.toPublic(user);
   }
 
@@ -43,10 +29,7 @@ export class UsersController {
   @Patch('me')
   @ApiOperation({ summary: 'Edita nome e/ou avatar do usuário' })
   @ApiResponse({ status: 200, type: UserPublicDto })
-  async updateMe(
-    @CurrentUser() user: User,
-    @Body() dto: UpdateUserDto,
-  ): Promise<UserPublicDto> {
+  async updateMe(@CurrentUser() user: User, @Body() dto: UpdateUserDto): Promise<UserPublicDto> {
     const updated = await this.users.updateProfile(user.id, dto);
     return this.toPublic(updated);
   }
@@ -57,10 +40,7 @@ export class UsersController {
   @ApiOperation({
     summary: 'Registra o token FCM do device atual (null remove o registro)',
   })
-  async updateFcmToken(
-    @CurrentUser() user: User,
-    @Body() dto: UpdateFcmTokenDto,
-  ): Promise<void> {
+  async updateFcmToken(@CurrentUser() user: User, @Body() dto: UpdateFcmTokenDto): Promise<void> {
     await this.users.updateFcmToken(user.id, dto.fcmToken);
   }
 

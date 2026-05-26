@@ -1,10 +1,5 @@
 import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { BabyVaccineScheduleDto } from './dto/baby-vaccine-schedule.dto';
@@ -30,8 +25,7 @@ export class VaccinesController {
   // ----- GET /babies/:babyId/vaccine-schedule -----
   @Get('babies/:babyId/vaccine-schedule')
   @ApiOperation({
-    summary:
-      'Schedule de vacinas do bebê com status calculado (applied/overdue/due/upcoming)',
+    summary: 'Schedule de vacinas do bebê com status calculado (applied/overdue/due/upcoming)',
   })
   @ApiResponse({ status: 200, type: BabyVaccineScheduleDto })
   async getSchedule(

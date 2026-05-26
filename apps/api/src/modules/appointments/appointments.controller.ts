@@ -11,12 +11,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { AppointmentsService } from './appointments.service';
@@ -84,6 +79,7 @@ export class AppointmentsController {
   }
 
   @Post(':id/complete')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Marca como realizada e salva observações pós-consulta' })
   @ApiResponse({ status: 200, type: AppointmentResponseDto })
   async complete(
@@ -97,6 +93,7 @@ export class AppointmentsController {
   }
 
   @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Cancela com motivo opcional' })
   @ApiResponse({ status: 200, type: AppointmentResponseDto })
   async cancel(

@@ -63,24 +63,15 @@ describe('Auth flow (e2e)', () => {
   });
 
   it('POST /api/auth/register rejeita email duplicado com 409', async () => {
-    await request(http)
-      .post('/api/auth/register')
-      .send({ email, name, password })
-      .expect(409);
+    await request(http).post('/api/auth/register').send({ email, name, password }).expect(409);
   });
 
   it('POST /api/auth/login com senha errada retorna 401', async () => {
-    await request(http)
-      .post('/api/auth/login')
-      .send({ email, password: 'errada' })
-      .expect(401);
+    await request(http).post('/api/auth/login').send({ email, password: 'errada' }).expect(401);
   });
 
   it('POST /api/auth/login com credenciais corretas retorna tokens', async () => {
-    const res = await request(http)
-      .post('/api/auth/login')
-      .send({ email, password })
-      .expect(200);
+    const res = await request(http).post('/api/auth/login').send({ email, password }).expect(200);
 
     expect(res.body.accessToken).toBeDefined();
     expect(res.body.refreshToken).toBeDefined();
@@ -120,35 +111,23 @@ describe('Auth flow (e2e)', () => {
   });
 
   it('Reuso de refresh já rotacionado retorna 401 (detecção de comprometimento)', async () => {
-    const first = await request(http)
-      .post('/api/auth/refresh')
-      .send({ refreshToken })
-      .expect(200);
+    const first = await request(http).post('/api/auth/refresh').send({ refreshToken }).expect(200);
 
     const consumed = refreshToken;
     refreshToken = first.body.refreshToken;
     accessToken = first.body.accessToken;
 
     // Agora usa o `consumed` (já revogado) — deve dar 401
-    await request(http)
-      .post('/api/auth/refresh')
-      .send({ refreshToken: consumed })
-      .expect(401);
+    await request(http).post('/api/auth/refresh').send({ refreshToken: consumed }).expect(401);
 
     // E como detectamos comprometimento, todos os refresh do user foram revogados —
     // o `refreshToken` atual também deveria ter sido revogado em cadeia.
-    await request(http)
-      .post('/api/auth/refresh')
-      .send({ refreshToken })
-      .expect(401);
+    await request(http).post('/api/auth/refresh').send({ refreshToken }).expect(401);
   });
 
   it('Após logout-all, é preciso fazer login de novo', async () => {
     // login fresco
-    const fresh = await request(http)
-      .post('/api/auth/login')
-      .send({ email, password })
-      .expect(200);
+    const fresh = await request(http).post('/api/auth/login').send({ email, password }).expect(200);
 
     const tk = fresh.body.accessToken;
     const rt = fresh.body.refreshToken;
@@ -160,9 +139,6 @@ describe('Auth flow (e2e)', () => {
       .expect(204);
 
     // refresh atual já está revogado
-    await request(http)
-      .post('/api/auth/refresh')
-      .send({ refreshToken: rt })
-      .expect(401);
+    await request(http).post('/api/auth/refresh').send({ refreshToken: rt }).expect(401);
   });
 });

@@ -1,9 +1,5 @@
 import { randomBytes, createHash } from 'crypto';
-import {
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -55,10 +51,13 @@ export class RefreshTokenService {
     const value = parseInt(match[1], 10);
     const unit = (match[2] ?? 's').toLowerCase();
     const seconds =
-      unit === 'd' ? value * 86400 :
-      unit === 'h' ? value * 3600 :
-      unit === 'm' ? value * 60 :
-      value;
+      unit === 'd'
+        ? value * 86400
+        : unit === 'h'
+          ? value * 3600
+          : unit === 'm'
+            ? value * 60
+            : value;
 
     return new Date(Date.now() + seconds * 1000);
   }
@@ -133,10 +132,7 @@ export class RefreshTokenService {
   // Revoga um único refresh (usado em /auth/logout).
   async revoke(plainToken: string): Promise<void> {
     const tokenHash = this.hashToken(plainToken);
-    await this.tokens.update(
-      { tokenHash, revokedAt: undefined },
-      { revokedAt: new Date() },
-    );
+    await this.tokens.update({ tokenHash, revokedAt: undefined }, { revokedAt: new Date() });
   }
 
   // Revoga todos os refresh ativos de um user (logout de todos os devices ou

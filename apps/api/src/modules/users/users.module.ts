@@ -12,10 +12,7 @@ import { UsersService } from './users.service';
 // transação. O RefreshTokensModule vem como dependência só pra o controller
 // poder revogar sessões ao excluir conta.
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Family, Baby]),
-    RefreshTokensModule,
-  ],
+  imports: [TypeOrmModule.forFeature([User, Family, Baby]), RefreshTokensModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [TypeOrmModule, UsersService],
