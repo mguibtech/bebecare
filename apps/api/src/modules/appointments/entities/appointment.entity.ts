@@ -18,7 +18,6 @@ export class Appointment extends SoftDeletableEntity {
   @JoinColumn({ name: 'baby_id' })
   baby!: Baby;
 
-  // Desnormalizado para queries cross-baby da família
   @Column({ name: 'family_id', type: 'uuid' })
   familyId!: string;
 
@@ -32,8 +31,6 @@ export class Appointment extends SoftDeletableEntity {
   @Column({ name: 'doctor_name', type: 'varchar', length: 120, nullable: true })
   doctorName: string | null = null;
 
-  // String livre (não enum) — pais usam termos variados (cardiopediatra,
-  // pediatra do desenvolvimento, etc.). UI pode oferecer autocomplete depois.
   @Column({ type: 'varchar', length: 80, nullable: true })
   specialty: string | null = null;
 
@@ -46,33 +43,28 @@ export class Appointment extends SoftDeletableEntity {
   @Column({ type: 'text', nullable: true })
   notes: string | null = null;
 
-  @Column({
-    type: 'enum',
-    enum: AppointmentStatus,
-    default: AppointmentStatus.SCHEDULED,
-  })
+  @Column({ type: 'enum', enum: AppointmentStatus, default: AppointmentStatus.SCHEDULED })
   status: AppointmentStatus = AppointmentStatus.SCHEDULED;
 
-  // -------- Lembrete --------
   @Column({ name: 'reminder_enabled', type: 'boolean', default: true })
   reminderEnabled!: boolean;
 
-  // Quantos minutos antes do scheduledAt disparar push.
-  // Default 1440 (24h). Mobile pode oferecer: 30m / 1h / 3h / 1d / 1sem.
   @Column({ name: 'reminder_minutes_before', type: 'int', default: 1440 })
   reminderMinutesBefore!: number;
 
-  // -------- Pós-consulta --------
   @Column({ name: 'completed_at', type: 'timestamptz', nullable: true })
   completedAt: Date | null = null;
 
   @Column({ name: 'completed_notes', type: 'text', nullable: true })
   completedNotes: string | null = null;
 
-  // -------- Cancelamento --------
   @Column({ name: 'canceled_at', type: 'timestamptz', nullable: true })
   canceledAt: Date | null = null;
 
   @Column({ name: 'cancel_reason', type: 'varchar', length: 200, nullable: true })
   cancelReason: string | null = null;
+
+  // Setado pelo AppointmentsReminderJob (A8). Idempotência do cron de push.
+  @Column({ name: 'notified_at', type: 'timestamptz', nullable: true })
+  notifiedAt: Date | null = null;
 }
