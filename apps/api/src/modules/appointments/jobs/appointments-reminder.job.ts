@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AppointmentStatus } from '../../../common/enums/appointment-status.enum';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { Appointment } from '../entities/appointment.entity';
