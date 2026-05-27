@@ -1,215 +1,185 @@
 /**
- * Home real do app autenticado.
+ * Tab "Início" — dashboard centrado no bebê selecionado.
  *
- * Mostra o usuario logado (via useMe) e a familia com os outros membros.
- * Por enquanto eh placeholder do dashboard — sera substituida ou expandida
- * nas proximas Ms (M3 adiciona seletor de bebe, M4 vacinas, etc).
+ * Sections:
+ *  1. Saudação do user (compacta)
+ *  2. Card do bebê selecionado (ou empty state se 0 bebês)
+ *  3. Placeholder de "Próximas atividades" (preenchido conforme M4-M6 chegam:
+ *     vacinas atrasadas, próximas consultas, doses do dia)
  *
- * O botao "Sair" usa useLogout que:
- *  - tenta revogar refresh token no backend (best-effort)
- *  - limpa Keychain + auth.store
- *  - limpa cache do React Query
- *  - RootNavigator troca pra AuthStack ao ver status='unauthenticated'.
+ * Settings (tema/modo), família e Sair MIGRARAM pra tab "Mais".
+ * Sheet de seleção de bebê abre ao tocar no card do bebê.
  */
 
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import { Avatar, Button, Card, Text, useTheme } from 'react-native-paper';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import {
+  ActivityIndicator,
+  Button,
+  Card,
+  Text,
+  useTheme,
+} from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 import { useMe } from '@/features/auth/hooks/useMe';
-import { useLogout } from '@/features/auth/hooks/useLogout';
-import { PalettePicker } from '@/features/settings/components/PalettePicker';
-import { ModePicker } from '@/features/settings/components/ModePicker';
 import type { AppTheme } from '@/app/theme';
+import type { MainTabScreenProps } from '@/app/navigation/types';
+
+import { BabyAvatar } from '../components/BabyAvatar';
+import { BabySelectorSheet } from '../components/BabySelectorSheet';
+import { useBabies } from '../hooks/useBabies';
+import { useBabySelectorStore } from '../store/baby-selector.store';
+import type { Baby } from '../types';
+
+/** Idade em formato curto pro card. */
+function ageShort(b: Baby): string {
+  if (b.ageMonths === 0) {
+    return `${b.ageDays} dia${b.ageDays !== 1 ? 's' : ''}`;
+  }
+  return `${b.ageMonths} ${b.ageMonths === 1 ? 'mes' : 'meses'}`;
+}
 
 export function HomeScreen() {
+  const navigation = useNavigation<MainTabScreenProps<'Home'>['navigation']>();
   const me = useMe();
-  const logout = useLogout();
+  const babies = useBabies();
   const theme = useTheme<AppTheme>();
+  const selectedBabyId = useBabySelectorStore((s) => s.selectedBabyId);
+
+  const [sheetOpen, setSheetOpen] = useState(false);
+
   const containerStyle = { backgroundColor: theme.colors.background };
 
-  if (me.isPending) {
+  if (me.isPending || babies.isPending) {
     return (
-      <View style={[styles.container, styles.center, containerStyle]}>
+      <SafeAreaView edges={['top']} style={[styles.center, containerStyle]}>
         <ActivityIndicator size="large" />
-      </View>
+      </SafeAreaView>
     );
   }
 
-  if (me.isError || !me.data) {
-    // 401 ja foi tratado pelo interceptor (signOut → AuthStack).
-    // Outros erros: mostra mensagem e botao "Sair" pra recuperar.
-    return (
-      <View style={[styles.container, styles.center, containerStyle]}>
-        <Text variant="bodyLarge" style={styles.errorTitle}>
-          Nao foi possivel carregar seu perfil
-        </Text>
-        <Text variant="bodyMedium" style={styles.errorBody}>
-          {me.error?.message ?? 'Erro desconhecido'}
-        </Text>
-        <Button
-          mode="outlined"
-          onPress={() => me.refetch()}
-          style={styles.actionButton}
-        >
-          Tentar de novo
-        </Button>
-        <Button
-          mode="text"
-          onPress={() => logout.mutate()}
-          loading={logout.isPending}
-          style={styles.actionButton}
-        >
-          Sair
-        </Button>
-      </View>
-    );
-  }
-
-  const { user, family } = me.data;
-  const avatarUrl = `https://api.dicebear.com/9.x/${user.avatarStyle}/png?seed=${encodeURIComponent(user.avatarSeed)}`;
+  const userName = me.data?.user.name ?? 'voce';
+  const selectedBaby =
+    babies.data?.find((b) => b.id === selectedBabyId) ?? null;
+  const hasBabies = babies.data && babies.data.length > 0;
 
   return (
-    <View style={[styles.container, containerStyle]}>
-      <View style={styles.header}>
-        <Avatar.Image
-          size={72}
-          source={{ uri: avatarUrl }}
-          testID="me-avatar"
-        />
-        <View style={styles.headerText}>
-          <Text variant="titleLarge" style={styles.name}>
-            Ola, {user.name}!
-          </Text>
-          <Text variant="bodyMedium" style={styles.email}>
-            {user.email}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.paletteRow}>
-        <Text variant="labelMedium" style={styles.paletteLabel}>
-          Tema
-        </Text>
-        <PalettePicker compact />
-      </View>
-
-      <View style={styles.paletteRow}>
-        <Text variant="labelMedium" style={styles.paletteLabel}>
-          Modo
-        </Text>
-        <ModePicker />
-      </View>
-
-      <Card style={styles.card} mode="outlined">
-        <Card.Title
-          title={family.name ?? 'Minha familia'}
-          subtitle={`${family.members.length + 1} membro${family.members.length + 1 > 1 ? 's' : ''}`}
-        />
-        <Card.Content>
-          {family.members.length === 0 ? (
-            <Text variant="bodyMedium" style={styles.muted}>
-              Voce ainda nao convidou ninguem. Em breve da pra compartilhar com
-              parceiro(a) ou outros responsaveis.
-            </Text>
-          ) : (
-            family.members.map((m) => (
-              <View key={m.id} style={styles.memberRow}>
-                <Avatar.Image
-                  size={32}
-                  source={{
-                    uri: `https://api.dicebear.com/9.x/${m.avatarStyle}/png?seed=${encodeURIComponent(m.avatarSeed)}`,
-                  }}
-                />
-                <Text variant="bodyMedium" style={styles.memberName}>
-                  {m.name}
-                </Text>
-              </View>
-            ))
-          )}
-        </Card.Content>
-      </Card>
-
-      <Text variant="bodySmall" style={styles.placeholder}>
-        Em breve: bebe, vacinas, consultas, remedios.
+    <SafeAreaView edges={['top']} style={[styles.safe, containerStyle]}>
+      <ScrollView contentContainerStyle={styles.scroll}>
+      {/* SAUDACAO */}
+      <Text variant="titleMedium" style={styles.greeting}>
+        Oi, {userName.split(' ')[0]}!
+      </Text>
+      <Text variant="bodySmall" style={styles.muted}>
+        {hasBabies
+          ? 'Aqui esta o resumo do dia.'
+          : 'Vamos comecar cadastrando seu bebe.'}
       </Text>
 
-      <Button
-        mode="outlined"
-        onPress={() => logout.mutate()}
-        loading={logout.isPending}
-        style={styles.signOut}
-      >
-        Sair
-      </Button>
-    </View>
+      {/* BEBE SELECIONADO ou EMPTY STATE */}
+      {hasBabies && selectedBaby ? (
+        <Pressable onPress={() => setSheetOpen(true)}>
+          <Card style={styles.babyCard} mode="elevated">
+            <Card.Title
+              title={selectedBaby.name}
+              subtitle={ageShort(selectedBaby)}
+              // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
+              left={() => <BabyAvatar size={48} baby={selectedBaby} />}
+              // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
+              right={(props) => (
+                <Text {...props} variant="bodySmall" style={styles.tapHint}>
+                  trocar  ›
+                </Text>
+              )}
+            />
+          </Card>
+        </Pressable>
+      ) : (
+        <Card style={styles.babyCard} mode="outlined">
+          <Card.Content style={styles.emptyContent}>
+            <Text variant="titleMedium" style={styles.emptyTitle}>
+              Cadastre seu bebe
+            </Text>
+            <Text variant="bodyMedium" style={styles.emptyBody}>
+              Vacinas, consultas, marcos e mais — tudo num lugar so.
+            </Text>
+            <Button
+              mode="contained"
+              icon="plus"
+              onPress={() => navigation.navigate('BabyForm', undefined)}
+              style={styles.emptyButton}
+            >
+              Cadastrar bebe
+            </Button>
+          </Card.Content>
+        </Card>
+      )}
+
+      {/* PLACEHOLDER: proximas atividades — M4+ preenche */}
+      {hasBabies && (
+        <Card style={styles.placeholderCard} mode="outlined">
+          <Card.Title title="Proximas atividades" />
+          <Card.Content>
+            <Text variant="bodyMedium" style={styles.muted}>
+              Em breve: vacinas atrasadas, consultas marcadas, doses do dia.
+            </Text>
+          </Card.Content>
+        </Card>
+      )}
+
+      </ScrollView>
+
+      {/* SHEET de selecao de bebe */}
+      <BabySelectorSheet
+        visible={sheetOpen}
+        onDismiss={() => setSheetOpen(false)}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
+  safe: { flex: 1 },
+  scroll: { padding: 16, paddingBottom: 48 },
   center: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  paletteRow: {
-    marginBottom: 16,
-  },
-  paletteLabel: {
-    opacity: 0.7,
-    marginBottom: 8,
-  },
-  headerText: {
-    marginLeft: 16,
-    flex: 1,
-  },
-  name: {
+  greeting: {
     fontWeight: '700',
-  },
-  email: {
-    opacity: 0.7,
-  },
-  card: {
-    marginBottom: 16,
+    marginBottom: 4,
   },
   muted: {
     opacity: 0.7,
   },
-  memberRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
-  memberName: {
-    marginLeft: 12,
-  },
-  placeholder: {
-    textAlign: 'center',
-    opacity: 0.5,
-    marginVertical: 24,
-  },
-  signOut: {
-    marginTop: 'auto',
-  },
-  errorTitle: {
-    fontWeight: '600',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  errorBody: {
-    opacity: 0.7,
-    textAlign: 'center',
+  babyCard: {
+    marginTop: 16,
     marginBottom: 16,
   },
-  actionButton: {
+  tapHint: {
+    opacity: 0.5,
+    marginRight: 12,
+  },
+  emptyContent: {
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  emptyTitle: {
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  emptyBody: {
+    opacity: 0.7,
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  emptyButton: {
     marginTop: 8,
-    minWidth: 200,
+  },
+  placeholderCard: {
+    marginTop: 8,
   },
 });

@@ -7,6 +7,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 
 import { useAppTheme } from '@/app/theme/useAppTheme';
 import { useThemeStore } from '@/app/theme/store';
+import { useBabySelectorStore } from '@/features/babies/store/baby-selector.store';
 
 import { queryClient } from './queryClient';
 
@@ -25,12 +26,14 @@ import { queryClient } from './queryClient';
 export function AppProviders({ children }: PropsWithChildren) {
   const theme = useAppTheme();
   const hydrateTheme = useThemeStore((s) => s.hydrate);
+  const hydrateBabySelector = useBabySelectorStore((s) => s.hydrate);
 
-  // Hidrata a preferencia de paleta do MMKV no boot (sincrono, rapido).
-  // Roda 1x — paleta inicial vem do default ate este efeito disparar.
+  // Hidrata stores persistidos no MMKV no boot (sincrono, rapido).
+  // Roda 1x — estados iniciais vem dos defaults ate estes efeitos dispararem.
   useEffect(() => {
     hydrateTheme();
-  }, [hydrateTheme]);
+    hydrateBabySelector();
+  }, [hydrateTheme, hydrateBabySelector]);
 
   return (
     <GestureHandlerRootView style={styles.root}>
