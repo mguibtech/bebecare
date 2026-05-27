@@ -11,7 +11,7 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       },
     ],
-    // IMPORTANTE: reanimated/plugin DEVE ser o ultimo da lista
-    'react-native-reanimated/plugin',
+    // IMPORTANTE: worklets/plugin DEVE ser o ultimo da lista
+    'react-native-worklets/plugin',
   ],
 };

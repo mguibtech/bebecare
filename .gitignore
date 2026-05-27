@@ -45,3 +45,6 @@ apps/mobile/ios/Pods/
 **/google-services.json
 **/GoogleService-Info.plist
 **/firebase-adminsdk-*.json
+
+# Agentes locais / scratchpads
+.claude/

@@ -1,14 +1,30 @@
 /**
  * Design tokens do BebeCare.
- * Paleta inspirada em tons suaves de bebe (rosa/azul/lavanda) com
- * fundo claro e contraste WCAG AA.
+ *
+ * Suporta 2 paletas (rosa, azul) e 2 modos (light, dark) = 4 temas.
+ * A paleta e' escolhida pelo usuario; o modo segue o sistema operacional
+ * (useColorScheme do RN).
+ *
+ * Diretrizes:
+ * - Manter contraste WCAG AA mesmo em dark.
+ * - "secondary" (cor solida) de cada paleta usa a paleta OPOSTA (rosa↔azul)
+ *   para uso pontual em accents (FAB, Chip secundario, etc.) — evita tela
+ *   monocromatica sem confundir a paleta escolhida.
+ * - "secondaryContainer" (usado pelo SegmentedButtons selecionado, BadgeMD3,
+ *   Chip background) eh variacao da PROPRIA paleta — quando o usuario escolhe
+ *   "Rosa", o botao selecionado fica rosa (coerente). NAO eh a paleta oposta.
+ * - spacing/radii sao iguais nos 4 temas — sao tokens de layout, nao de cor.
  */
 
-export const colors = {
-  primary: '#5B9BD5', // azul bebe
+// ============================================================
+// PALETAS
+// ============================================================
+
+const azulLight = {
+  primary: '#5B9BD5', // azul bebe (atual)
   primaryContainer: '#DBE9F8',
-  secondary: '#F4A6B8', // rosa suave
-  secondaryContainer: '#FCE4EA',
+  secondary: '#F4A6B8', // rosa solido — accent pontual
+  secondaryContainer: '#C7DCF2', // azul mais saturado pra seleao/badge
   tertiary: '#B8A4D9', // lavanda
   background: '#FAFAFC',
   surface: '#FFFFFF',
@@ -18,10 +34,94 @@ export const colors = {
   warning: '#ED6C02',
   onPrimary: '#FFFFFF',
   onSecondary: '#3A1620',
+  onSecondaryContainer: '#0F2543', // azul muito escuro pra texto sobre selecao
   onBackground: '#1A1A1F',
   onSurface: '#1A1A1F',
   outline: '#C7C7CC',
 } as const;
+
+const azulDark = {
+  primary: '#8FBFE8',
+  primaryContainer: '#1F3A57',
+  secondary: '#F8C0CB',
+  secondaryContainer: '#2B4A6E', // azul escuro pra selecao em dark
+  tertiary: '#CFBDE6',
+  background: '#0F1620',
+  surface: '#1A2233',
+  surfaceVariant: '#222D40',
+  error: '#EF5350',
+  success: '#66BB6A',
+  warning: '#FFA726',
+  onPrimary: '#0A1A2A',
+  onSecondary: '#2A0E15',
+  onSecondaryContainer: '#D6E4F2', // azul muito claro pra texto sobre selecao
+  onBackground: '#E6EAF2',
+  onSurface: '#E6EAF2',
+  outline: '#4A5568',
+} as const;
+
+const rosaLight = {
+  primary: '#E5577E', // rosa coral vibrante
+  primaryContainer: '#FFE0E8',
+  secondary: '#7FB8E5', // azul solido — accent pontual
+  secondaryContainer: '#FBC4D2', // rosa mais saturado pra selecao
+  tertiary: '#B8A4D9',
+  background: '#FFF8FA',
+  surface: '#FFFFFF',
+  surfaceVariant: '#F8EEF1',
+  error: '#D32F2F',
+  success: '#2E7D32',
+  warning: '#ED6C02',
+  onPrimary: '#FFFFFF',
+  onSecondary: '#0F1F33',
+  onSecondaryContainer: '#5C1F32', // rosa muito escuro pra texto sobre selecao
+  onBackground: '#1F1518',
+  onSurface: '#1F1518',
+  outline: '#D6BFC8',
+} as const;
+
+const rosaDark = {
+  primary: '#FF95B0',
+  primaryContainer: '#622237',
+  secondary: '#A8D0F0',
+  secondaryContainer: '#7A2F44', // rosa escuro pra selecao em dark
+  tertiary: '#CFBDE6',
+  background: '#1F1518',
+  surface: '#2A1D20',
+  surfaceVariant: '#3A282C',
+  error: '#EF5350',
+  success: '#66BB6A',
+  warning: '#FFA726',
+  onPrimary: '#3A0F1D',
+  onSecondary: '#0A1A2A',
+  onSecondaryContainer: '#FCE6EE', // rosa muito claro pra texto sobre selecao
+  onBackground: '#F5E8ED',
+  onSurface: '#F5E8ED',
+  outline: '#6E4A55',
+} as const;
+
+// ============================================================
+// MAPA DE PALETAS — usado pelo theme builder
+// ============================================================
+
+export const palettes = {
+  azul: { light: azulLight, dark: azulDark },
+  rosa: { light: rosaLight, dark: rosaDark },
+} as const;
+
+export type PaletteName = keyof typeof palettes; // 'azul' | 'rosa'
+export type ThemeMode = 'light' | 'dark';
+
+/**
+ * Cores de uma combinacao paleta+modo. Mesmo shape em todas.
+ * Valores sao widened pra string porque cada paleta tem seus hex literais
+ * (com `as const`) e o tipo precisa aceitar qualquer paleta.
+ */
+export type ThemeColors = { readonly [K in keyof typeof azulLight]: string };
+
+// ============================================================
+// LAYOUT TOKENS (iguais nos 4 temas)
+// ============================================================
 
 export const spacing = {
   xs: 4,
@@ -39,5 +139,14 @@ export const radii = {
   full: 9999,
 } as const;
 
-export type Colors = typeof colors;
 export type Spacing = typeof spacing;
+export type Radii = typeof radii;
+
+// ============================================================
+// LABELS DE UI (para chips de troca, settings, etc.)
+// ============================================================
+
+export const PALETTE_LABELS: Record<PaletteName, string> = {
+  azul: 'Azul',
+  rosa: 'Rosa',
+};

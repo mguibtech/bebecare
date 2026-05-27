@@ -13,18 +13,23 @@
  */
 
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import { Avatar, Button, Card, Text } from 'react-native-paper';
+import { Avatar, Button, Card, Text, useTheme } from 'react-native-paper';
 
 import { useMe } from '@/features/auth/hooks/useMe';
 import { useLogout } from '@/features/auth/hooks/useLogout';
+import { PalettePicker } from '@/features/settings/components/PalettePicker';
+import { ModePicker } from '@/features/settings/components/ModePicker';
+import type { AppTheme } from '@/app/theme';
 
 export function HomeScreen() {
   const me = useMe();
   const logout = useLogout();
+  const theme = useTheme<AppTheme>();
+  const containerStyle = { backgroundColor: theme.colors.background };
 
   if (me.isPending) {
     return (
-      <View style={[styles.container, styles.center]}>
+      <View style={[styles.container, styles.center, containerStyle]}>
         <ActivityIndicator size="large" />
       </View>
     );
@@ -34,7 +39,7 @@ export function HomeScreen() {
     // 401 ja foi tratado pelo interceptor (signOut → AuthStack).
     // Outros erros: mostra mensagem e botao "Sair" pra recuperar.
     return (
-      <View style={[styles.container, styles.center]}>
+      <View style={[styles.container, styles.center, containerStyle]}>
         <Text variant="bodyLarge" style={styles.errorTitle}>
           Nao foi possivel carregar seu perfil
         </Text>
@@ -64,7 +69,7 @@ export function HomeScreen() {
   const avatarUrl = `https://api.dicebear.com/9.x/${user.avatarStyle}/png?seed=${encodeURIComponent(user.avatarSeed)}`;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <View style={styles.header}>
         <Avatar.Image
           size={72}
@@ -79,6 +84,20 @@ export function HomeScreen() {
             {user.email}
           </Text>
         </View>
+      </View>
+
+      <View style={styles.paletteRow}>
+        <Text variant="labelMedium" style={styles.paletteLabel}>
+          Tema
+        </Text>
+        <PalettePicker compact />
+      </View>
+
+      <View style={styles.paletteRow}>
+        <Text variant="labelMedium" style={styles.paletteLabel}>
+          Modo
+        </Text>
+        <ModePicker />
       </View>
 
       <Card style={styles.card} mode="outlined">
@@ -138,7 +157,14 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
+  },
+  paletteRow: {
+    marginBottom: 16,
+  },
+  paletteLabel: {
+    opacity: 0.7,
+    marginBottom: 8,
   },
   headerText: {
     marginLeft: 16,
