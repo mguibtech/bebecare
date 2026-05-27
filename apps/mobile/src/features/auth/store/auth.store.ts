@@ -19,6 +19,11 @@ type AuthState = {
   hydrate: () => Promise<void>;
   signIn: (tokens: AuthTokens) => Promise<void>;
   signOut: () => Promise<void>;
+  /**
+   * Atualiza tokens sem mudar status. Usado pelo interceptor de refresh
+   * (axios → /auth/refresh) que troca o par sem deslogar o usuario.
+   */
+  setTokens: (tokens: AuthTokens) => Promise<void>;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -54,6 +59,18 @@ export const useAuthStore = create<AuthState>((set) => ({
       status: 'unauthenticated',
       accessToken: null,
       refreshToken: null,
+    });
+  },
+
+  async setTokens(tokens) {
+    await secureStorage.saveTokens(tokens);
+    // Cuidado: NAO setar status='authenticated' aqui se vier de boot/refresh,
+    // mas como esta acao soh eh chamada pos-refresh (jah estava authenticated),
+    // garantir o status defensivamente.
+    set({
+      status: 'authenticated',
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     });
   },
 }));
