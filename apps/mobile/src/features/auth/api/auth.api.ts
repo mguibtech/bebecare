@@ -1,0 +1,60 @@
+/**
+ * Camada HTTP do dominio auth.
+ *
+ * Convencao:
+ * - Funcoes finas: 1 chamada axios, retorno tipado, sem regra de negocio.
+ * - Erros sao normalizados como ApiError pelo interceptor do apiClient.
+ * - NAO fazem signIn/signOut — quem decide o que fazer com a resposta sao
+ *   os hooks (useLogin, useRegister) e o RootNavigator.
+ */
+
+import { apiClient } from '@/shared/api/client';
+import type {
+  AuthResponse,
+  LoginBody,
+  MeResponse,
+  RefreshBody,
+  RegisterBody,
+} from '../types';
+
+export const authApi = {
+  /** POST /auth/register — cria conta. Se inviteCode, entra na familia existente. */
+  async register(body: RegisterBody): Promise<AuthResponse> {
+    const { data } = await apiClient.post<AuthResponse>('/auth/register', body);
+    return data;
+  },
+
+  /** POST /auth/login — autentica e devolve par de tokens. */
+  async login(body: LoginBody): Promise<AuthResponse> {
+    const { data } = await apiClient.post<AuthResponse>('/auth/login', body);
+    return data;
+  },
+
+  /**
+   * POST /auth/refresh — troca refreshToken por par novo (refresh com rotacao).
+   * Importante: o backend invalida o refreshToken antigo, sempre usar o novo.
+   *
+   * NAO usar diretamente em components — o interceptor do apiClient cuida do
+   * fluxo. Exposto aqui pra possiveis usos manuais (ex.: ao boot, se desejar).
+   */
+  async refresh(body: RefreshBody): Promise<AuthResponse> {
+    const { data } = await apiClient.post<AuthResponse>('/auth/refresh', body);
+    return data;
+  },
+
+  /** POST /auth/logout — revoga o refresh token atual (logout deste device). */
+  async logout(body: RefreshBody): Promise<void> {
+    await apiClient.post('/auth/logout', body);
+  },
+
+  /** POST /auth/logout-all — revoga todos os refresh tokens do usuario. */
+  async logoutAll(): Promise<void> {
+    await apiClient.post('/auth/logout-all');
+  },
+
+  /** GET /auth/me — perfil + familia do usuario logado. */
+  async me(): Promise<MeResponse> {
+    const { data } = await apiClient.get<MeResponse>('/auth/me');
+    return data;
+  },
+};

@@ -1,13 +1,15 @@
 /**
- * @format
+ * Smoke test: garante que o app renderiza sem crash.
+ * Substituido por testes de feature conforme novas telas chegam.
  */
 
-import React from 'react';
-import ReactTestRenderer from 'react-test-renderer';
+import { render } from '@testing-library/react-native';
+
 import App from '../App';
 
-test('renders correctly', async () => {
-  await ReactTestRenderer.act(() => {
-    ReactTestRenderer.create(<App />);
+describe('App', () => {
+  it('renderiza sem crash', () => {
+    const { toJSON } = render(<App />);
+    expect(toJSON()).toBeTruthy();
   });
 });
