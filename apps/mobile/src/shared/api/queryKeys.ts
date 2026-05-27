@@ -20,6 +20,11 @@ export const qk = {
   },
   babies: {
     all: ['babies'] as const,
-    detail: (id: string) => ['babies', id] as const,
+    list: () => ['babies', 'list'] as const,
+    detail: (id: string) => ['babies', 'detail', id] as const,
+  },
+  family: {
+    all: ['family'] as const,
+    me: () => ['family', 'me'] as const,
   },
 } as const;

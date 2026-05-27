@@ -48,3 +48,6 @@ apps/mobile/ios/Pods/
 
 # Agentes locais / scratchpads
 .claude/
+
+# Agentes locais / scratchpads
+.claude/
