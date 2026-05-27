@@ -1,14 +1,11 @@
 /**
- * Tela de login real.
+ * Tela de cadastro.
  *
- * Usa react-hook-form + zod (loginSchema) → useLogin (mutation).
- * Em sucesso, signIn salva tokens no Keychain e o RootNavigator
- * troca pra AppStack sozinho (reativo ao status do auth.store).
+ * Aceita inviteCode opcional — se informado, o backend insere o usuario
+ * na familia existente em vez de criar uma nova familia solo.
  *
- * Erros do backend chegam como ApiError pelo interceptor; exibimos a
- * `message` no banner topo (Snackbar do Paper). A maioria dos 401 aqui
- * significa "credenciais ruins" — o interceptor NAO dispara refresh em
- * /auth/login (AUTH_BYPASS_PATHS).
+ * Em sucesso, useRegister.onSuccess salva tokens e o RootNavigator
+ * troca pra AppStack sozinho.
  */
 
 import { useState } from 'react';
@@ -21,35 +18,41 @@ import { FormTextInput, SubmitButton } from '@/shared/components';
 import { ApiError } from '@/shared/api/types';
 import type { AuthScreenProps } from '@/app/navigation/types';
 
-import { useLogin } from '../hooks/useLogin';
+import { useRegister } from '../hooks/useRegister';
 import {
-  loginSchema,
-  type LoginFormValues,
+  registerSchema,
+  type RegisterFormValues,
 } from '../schemas/auth.schema';
 
-export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
+export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
 
-  const { control, handleSubmit, formState } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const { control, handleSubmit, formState } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
     mode: 'onBlur',
-    defaultValues: { email: '', password: '' },
+    defaultValues: { email: '', name: '', password: '', inviteCode: '' },
   });
 
-  const login = useLogin();
+  const register = useRegister();
 
   const onSubmit = handleSubmit(async (values) => {
     setErrorBanner(null);
     try {
-      await login.mutateAsync(values);
-      // Sucesso: nao precisa navegar — RootNavigator troca pra AppStack
-      // assim que o status do auth.store vira 'authenticated'.
+      await register.mutateAsync({
+        email: values.email,
+        name: values.name,
+        password: values.password,
+        // inviteCode jah vem como undefined se vazio (transform no schema).
+        inviteCode: values.inviteCode,
+      });
     } catch (err) {
       const message =
         err instanceof ApiError
-          ? err.status === 401
-            ? 'Email ou senha invalidos'
-            : err.message
+          ? err.status === 409
+            ? 'Esse email ja esta cadastrado'
+            : err.status === 400 && /convite/i.test(err.message)
+              ? 'Codigo de convite invalido ou expirado'
+              : err.message
           : 'Erro inesperado. Tente novamente.';
       setErrorBanner(message);
     }
@@ -62,12 +65,20 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
         keyboardShouldPersistTaps="handled"
       >
         <Text variant="headlineMedium" style={styles.title}>
-          BebeCare
+          Criar conta
         </Text>
         <Text variant="bodyMedium" style={styles.subtitle}>
-          Entre para acompanhar o seu bebe
+          Sua familia em um so lugar
         </Text>
 
+        <FormTextInput
+          control={control}
+          name="name"
+          label="Seu nome"
+          autoCapitalize="words"
+          autoComplete="name"
+          textContentType="name"
+        />
         <FormTextInput
           control={control}
           name="email"
@@ -80,31 +91,39 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
         <FormTextInput
           control={control}
           name="password"
-          label="Senha"
+          label="Senha (minimo 8 caracteres)"
           secureTextEntry
           autoCapitalize="none"
-          autoComplete="password"
-          textContentType="password"
+          autoComplete="password-new"
+          textContentType="newPassword"
+        />
+        <FormTextInput
+          control={control}
+          name="inviteCode"
+          label="Codigo de convite (opcional)"
+          keyboardType="number-pad"
+          maxLength={6}
+          autoCapitalize="none"
         />
 
         <SubmitButton
           onPress={onSubmit}
-          loading={login.isPending}
+          loading={register.isPending}
           disabled={!formState.isValid && formState.isSubmitted}
         >
-          {login.isPending ? 'Entrando...' : 'Entrar'}
+          {register.isPending ? 'Criando conta...' : 'Criar conta'}
         </SubmitButton>
 
         <View style={styles.footer}>
           <Text variant="bodyMedium" style={styles.footerText}>
-            Ainda nao tem conta?{' '}
+            Ja tem conta?{' '}
           </Text>
           <Text
             variant="bodyMedium"
             style={styles.link}
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => navigation.navigate('Login')}
           >
-            Cadastre-se
+            Entrar
           </Text>
         </View>
       </ScrollView>
