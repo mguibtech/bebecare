@@ -13,13 +13,14 @@
 
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Snackbar, Text } from 'react-native-paper';
+import { Snackbar, Text, useTheme } from 'react-native-paper';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { FormTextInput, SubmitButton } from '@/shared/components';
+import { FormInput, FormPassword, SubmitButton } from '@/shared/components';
 import { ApiError } from '@/shared/api/types';
 import type { AuthScreenProps } from '@/app/navigation/types';
+import type { AppTheme } from '@/app/theme';
 
 import { useLogin } from '../hooks/useLogin';
 import {
@@ -29,6 +30,7 @@ import {
 
 export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
+  const theme = useTheme<AppTheme>();
 
   const { control, handleSubmit, formState } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -56,7 +58,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
   });
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -68,7 +70,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
           Entre para acompanhar o seu bebe
         </Text>
 
-        <FormTextInput
+        <FormInput
           control={control}
           name="email"
           label="Email"
@@ -77,14 +79,10 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
           autoComplete="email"
           textContentType="emailAddress"
         />
-        <FormTextInput
+        <FormPassword
           control={control}
           name="password"
           label="Senha"
-          secureTextEntry
-          autoCapitalize="none"
-          autoComplete="password"
-          textContentType="password"
         />
 
         <SubmitButton

@@ -10,13 +10,14 @@
 
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Snackbar, Text } from 'react-native-paper';
+import { Snackbar, Text, useTheme } from 'react-native-paper';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { FormTextInput, SubmitButton } from '@/shared/components';
+import { FormInput, FormPassword, SubmitButton } from '@/shared/components';
 import { ApiError } from '@/shared/api/types';
 import type { AuthScreenProps } from '@/app/navigation/types';
+import type { AppTheme } from '@/app/theme';
 
 import { useRegister } from '../hooks/useRegister';
 import {
@@ -26,6 +27,7 @@ import {
 
 export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
+  const theme = useTheme<AppTheme>();
 
   const { control, handleSubmit, formState } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -59,7 +61,7 @@ export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
   });
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
@@ -71,7 +73,7 @@ export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
           Sua familia em um so lugar
         </Text>
 
-        <FormTextInput
+        <FormInput
           control={control}
           name="name"
           label="Seu nome"
@@ -79,7 +81,7 @@ export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
           autoComplete="name"
           textContentType="name"
         />
-        <FormTextInput
+        <FormInput
           control={control}
           name="email"
           label="Email"
@@ -88,16 +90,13 @@ export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
           autoComplete="email"
           textContentType="emailAddress"
         />
-        <FormTextInput
+        <FormPassword
           control={control}
           name="password"
           label="Senha (minimo 8 caracteres)"
-          secureTextEntry
-          autoCapitalize="none"
-          autoComplete="password-new"
-          textContentType="newPassword"
+          isNew
         />
-        <FormTextInput
+        <FormInput
           control={control}
           name="inviteCode"
           label="Codigo de convite (opcional)"

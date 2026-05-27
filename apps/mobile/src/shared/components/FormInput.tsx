@@ -1,19 +1,24 @@
 /**
- * Wrapper sobre Paper TextInput integrado ao react-hook-form via Controller.
+ * FormInput — Paper TextInput integrado a react-hook-form via Controller,
+ * pronto pra validacao zod (mensagens em PT-BR vem do schema).
  *
- * Por que existe:
- * - Centraliza a integracao react-hook-form ↔ Paper (control, errors, ref).
- * - Garante visual consistente (HelperText abaixo, error visible quando dirty).
- * - Evita repetir 15 linhas de boilerplate em cada form.
+ * Recursos:
+ * - Erro do field eh exibido em HelperText abaixo do input.
+ * - Suporta todas as props do TextInput do Paper exceto value/onChange/onBlur/error,
+ *   que sao gerenciados pelo Controller.
+ * - `hideHelperWhenValid`: esconde a HelperText quando nao tem erro,
+ *   compactando o layout. Util em forms densos.
  *
  * Uso:
- *   <FormTextInput
+ *   <FormInput
  *     control={control}
  *     name="email"
  *     label="Email"
  *     keyboardType="email-address"
  *     autoCapitalize="none"
  *   />
+ *
+ * Para campos de senha, prefira FormPassword (mesmo contrato + toggle olho).
  */
 
 import { StyleSheet, View } from 'react-native';
@@ -25,21 +30,21 @@ import {
   type FieldValues,
 } from 'react-hook-form';
 
-type FormTextInputProps<TForm extends FieldValues> = {
+export type FormInputProps<TForm extends FieldValues> = {
   control: Control<TForm>;
   name: FieldPath<TForm>;
   label: string;
-  /** Forca esconder a HelperText mesmo sem erro (deixa o layout compacto). */
+  /** Esconde a HelperText quando nao ha erro (layout mais denso). */
   hideHelperWhenValid?: boolean;
 } & Omit<TextInputProps, 'value' | 'onChangeText' | 'onBlur' | 'error'>;
 
-export function FormTextInput<TForm extends FieldValues>({
+export function FormInput<TForm extends FieldValues>({
   control,
   name,
   label,
   hideHelperWhenValid,
   ...rest
-}: FormTextInputProps<TForm>) {
+}: FormInputProps<TForm>) {
   return (
     <Controller
       control={control}
