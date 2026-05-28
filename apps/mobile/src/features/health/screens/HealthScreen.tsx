@@ -1,121 +1,136 @@
 /**
- * Tab Saúde — placeholder enquanto M5 (consultas) e M6 (medicamentos) não chegam.
+ * Tab Saúde — agrega Consultas (M5) e Remédios (M6).
  *
- * Empty state com voz de marca: explica o que vai chegar em vez de ser
- * um "em breve" frio. Quando M5 mergear, essa tela vira um sub-Stack ou
- * Material Top Tabs com Consultas + Remédios.
+ * Sub-tabs via SegmentedButtons no topo. Quando M6 entrar, "Remédios"
+ * vira tela real; por enquanto fica placeholder convidativo.
  */
 
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Card, Text, useTheme } from 'react-native-paper';
+import { Card, SegmentedButtons, Text, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { MutedText } from '@/shared/components';
+import { AppointmentsListScreen } from '@/features/appointments/screens/AppointmentsListScreen';
 import type { AppTheme } from '@/app/theme';
+
+type HealthTab = 'appointments' | 'medications';
+
+function MedicationsPlaceholder() {
+  const theme = useTheme<AppTheme>();
+  return (
+    <View
+      style={[
+        styles.placeholderRoot,
+        { backgroundColor: theme.colors.background },
+      ]}
+    >
+      <MaterialCommunityIcons
+        name="pill"
+        size={64}
+        color={theme.colors.primary}
+      />
+      <Text variant="headlineSmall" style={styles.placeholderTitle}>
+        Remédios em breve
+      </Text>
+      <MutedText variant="bodyMedium" style={styles.placeholderBody}>
+        Cadastre medicamentos com horários e receba alarmes para cada dose.
+      </MutedText>
+      <Card mode="outlined" style={styles.previewCard}>
+        <Card.Content style={styles.previewContent}>
+          <MaterialCommunityIcons
+            name="alarm"
+            size={24}
+            color={theme.colors.primary}
+          />
+          <View style={styles.previewText}>
+            <Text variant="titleSmall" style={styles.previewTitle}>
+              Alarmes confiáveis
+            </Text>
+            <MutedText variant="bodySmall">
+              Notificação local + som — não depende de internet.
+            </MutedText>
+          </View>
+        </Card.Content>
+      </Card>
+    </View>
+  );
+}
 
 export function HealthScreen() {
   const theme = useTheme<AppTheme>();
+  const [tab, setTab] = useState<HealthTab>('appointments');
 
   return (
     <SafeAreaView
       edges={['top']}
       style={[styles.root, { backgroundColor: theme.colors.background }]}
     >
-      <View style={styles.header}>
-        <MaterialCommunityIcons
-          name="heart-pulse"
-          size={64}
-          color={theme.colors.primary}
+      <View style={styles.tabsRow}>
+        <SegmentedButtons
+          value={tab}
+          onValueChange={(v) => setTab(v as HealthTab)}
+          buttons={[
+            {
+              value: 'appointments',
+              label: 'Consultas',
+              icon: 'stethoscope',
+            },
+            {
+              value: 'medications',
+              label: 'Remédios',
+              icon: 'pill',
+            },
+          ]}
         />
-        <Text variant="headlineSmall" style={styles.title}>
-          Saúde do bebê
-        </Text>
-        <Text
-          variant="bodyMedium"
-          style={[styles.subtitle, { color: theme.app.text.muted }]}
-        >
-          Em breve, tudo num lugar só.
-        </Text>
       </View>
 
-      {/* Preview do que vai chegar */}
-      <Card
-        mode="outlined"
-        style={styles.previewCard}
-      >
-        <Card.Content style={styles.previewContent}>
-          <MaterialCommunityIcons
-            name="stethoscope"
-            size={32}
-            color={theme.colors.primary}
-          />
-          <View style={styles.previewText}>
-            <Text variant="titleMedium" style={styles.previewTitle}>
-              Consultas pediátricas
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{ color: theme.app.text.muted }}
-            >
-              Agende, receba lembretes, anote o que o pediatra disse.
-            </Text>
-          </View>
-        </Card.Content>
-      </Card>
-
-      <Card mode="outlined" style={styles.previewCard}>
-        <Card.Content style={styles.previewContent}>
-          <MaterialCommunityIcons
-            name="pill"
-            size={32}
-            color={theme.colors.primary}
-          />
-          <View style={styles.previewText}>
-            <Text variant="titleMedium" style={styles.previewTitle}>
-              Medicamentos
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{ color: theme.app.text.muted }}
-            >
-              Cadastre remédios com horários, receba alarmes para cada dose.
-            </Text>
-          </View>
-        </Card.Content>
-      </Card>
+      <View style={styles.content}>
+        {tab === 'appointments' ? (
+          <AppointmentsListScreen />
+        ) : (
+          <MedicationsPlaceholder />
+        )}
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
+  root: { flex: 1 },
+  tabsRow: {
+    padding: 16,
+    paddingBottom: 4,
+  },
+  content: { flex: 1 },
+  placeholderRoot: {
     flex: 1,
-    padding: 24,
-  },
-  header: {
     alignItems: 'center',
-    marginBottom: 32,
-    marginTop: 16,
+    padding: 32,
   },
-  title: {
+  placeholderTitle: {
     fontWeight: '700',
-    marginTop: 12,
+    marginTop: 16,
+    textAlign: 'center',
   },
-  subtitle: {
-    marginTop: 4,
+  placeholderBody: {
+    marginTop: 8,
+    textAlign: 'center',
+    marginBottom: 24,
   },
   previewCard: {
-    marginBottom: 12,
+    width: '100%',
+    marginTop: 16,
   },
   previewContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
-    paddingVertical: 12,
+    gap: 12,
+    paddingVertical: 8,
   },
   previewText: {
     flex: 1,
-    gap: 2,
   },
   previewTitle: {
     fontWeight: '600',

@@ -37,4 +37,12 @@ export const qk = {
     records: (babyId: string) =>
       ['vaccines', 'records', babyId] as const,
   },
+  appointments: {
+    all: ['appointments'] as const,
+    /** Lista filtrada por scope (upcoming/past/all). */
+    list: (babyId: string, scope?: string) =>
+      ['appointments', 'list', babyId, scope ?? 'all'] as const,
+    detail: (babyId: string, id: string) =>
+      ['appointments', 'detail', babyId, id] as const,
+  },
 } as const;
