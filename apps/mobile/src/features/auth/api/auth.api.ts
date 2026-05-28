@@ -57,4 +57,17 @@ export const authApi = {
     const { data } = await apiClient.get<MeResponse>('/auth/me');
     return data;
   },
+
+  /**
+   * DELETE /users/me — exclui a propria conta (soft-delete, LGPD).
+   *
+   * Se o user for o unico da familia, backend faz cascade: family e bebes
+   * tambem viram soft-delete. Recuperavel em ate 30 dias antes do purge.
+   *
+   * Apos sucesso, mobile DEVE limpar Keychain + cache (signOut) e voltar pro
+   * Login — qualquer request subsequente vai dar 401.
+   */
+  async deleteAccount(): Promise<void> {
+    await apiClient.delete('/users/me');
+  },
 };

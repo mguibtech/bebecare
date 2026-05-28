@@ -19,7 +19,11 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type AuthStackParamList = {
   Login: undefined;
-  Register: undefined;
+  /**
+   * Register aceita inviteCode via deep link (bebecare://invite/:code).
+   * Sem param = cadastro normal (cria familia solo).
+   */
+  Register: { inviteCode?: string } | undefined;
 };
 
 /** Tabs principais quando o usuario esta autenticado. */
@@ -40,6 +44,8 @@ export type AppStackParamList = {
   BabyForm: { babyId?: string } | undefined;
   /** Detalhe/visualizacao de um bebe especifico. */
   BabyDetail: { babyId: string };
+  /** Tela de familia (membros + convites + sair). */
+  Family: undefined;
   // Sera expandido com VaccineDetail, AppointmentForm, etc.
 };
 

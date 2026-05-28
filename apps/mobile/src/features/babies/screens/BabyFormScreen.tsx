@@ -252,18 +252,24 @@ export function BabyFormScreen({
         <Text variant="titleSmall" style={styles.sectionTitle}>
           Medidas ao nascer (opcional)
         </Text>
+        <Text variant="bodySmall" style={styles.sectionHint}>
+          Dados da maternidade ou do cartao de vacinacao. Pode deixar em
+          branco se nao souber ou se preferir adicionar depois.
+        </Text>
 
         <FormInput
           control={control}
           name="birthWeightGrams"
-          label="Peso (em gramas)"
+          label="Peso ao nascer (em gramas)"
+          placeholder="ex: 3450"
           keyboardType="numeric"
         />
 
         <FormInput
           control={control}
           name="birthHeightCm"
-          label="Altura (em cm)"
+          label="Altura ao nascer (em cm)"
+          placeholder="ex: 49"
           keyboardType="numeric"
         />
 
@@ -378,9 +384,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginTop: 16,
-    marginBottom: 8,
+    marginBottom: 4,
     fontWeight: '700',
     opacity: 0.8,
+  },
+  sectionHint: {
+    opacity: 0.6,
+    marginBottom: 12,
   },
   deleteButton: {
     marginTop: 24,
