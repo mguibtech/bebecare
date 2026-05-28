@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BabyFormScreen } from '@/features/babies/screens/BabyFormScreen';
 import { BabyDetailScreen } from '@/features/babies/screens/BabyDetailScreen';
 import { FamilyScreen } from '@/features/family/screens/FamilyScreen';
+import { VaccineDetailScreen } from '@/features/vaccines/screens/VaccineDetailScreen';
 
 import { MainTabs } from './MainTabs';
 import type { AppStackParamList } from './types';
@@ -38,6 +39,11 @@ export function AppNavigator() {
         name="Family"
         component={FamilyScreen}
         options={{ title: 'Familia' }}
+      />
+      <Stack.Screen
+        name="VaccineDetail"
+        component={VaccineDetailScreen}
+        options={{ title: 'Vacina' }}
       />
     </Stack.Navigator>
   );

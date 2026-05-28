@@ -1,19 +1,21 @@
 /**
  * Campo de data integrado a react-hook-form via Controller.
  *
- * Visual: Paper TextInput readonly que abre o @react-native-community/datetimepicker
- * nativo ao tocar. Valor armazenado no form como string YYYY-MM-DD (formato
- * que o backend espera em DTOs).
+ * Estrategia de abrir o picker:
+ *  - Android: API imperativa `DateTimePickerAndroid.open()` — abre o picker
+ *    nativo direto, fora da arvore de render. Funciona dentro de Modal/Portal
+ *    do Paper (onde o componente declarativo se perde).
+ *  - iOS: picker componente inline (display='spinner') — UX padrao do iOS.
  *
- * Por que TextInput readonly em vez do picker inline: o picker nativo eh modal
- * em ambas plataformas, e mostrar inline gastaria muito espaco vertical em
- * forms com varios campos.
+ * Valor armazenado no form como YYYY-MM-DD (formato que o backend espera).
+ * Visual: Paper TextInput readonly com icone de calendario clicavel.
  */
 
 import { useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { HelperText, TextInput } from 'react-native-paper';
 import DateTimePicker, {
+  DateTimePickerAndroid,
   type DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import {
@@ -69,7 +71,8 @@ export function DateField<TForm extends FieldValues>({
   maximumDate = new Date(),
   placeholder = 'DD/MM/AAAA',
 }: DateFieldProps<TForm>) {
-  const [pickerOpen, setPickerOpen] = useState(false);
+  // Estado do picker SOH usado em iOS (Android usa API imperativa).
+  const [pickerOpenIOS, setPickerOpenIOS] = useState(false);
 
   return (
     <Controller
@@ -84,21 +87,40 @@ export function DateField<TForm extends FieldValues>({
           event: DateTimePickerEvent,
           selectedDate: Date | undefined,
         ) => {
-          // Android: picker fecha sozinho, evento type 'set' ou 'dismissed'.
           // iOS: picker fica aberto, fechamos manualmente.
-          if (Platform.OS === 'android') {
-            setPickerOpen(false);
+          // Android: API imperativa ja fecha sozinho; este callback recebe
+          // type 'set' (user confirmou) ou 'dismissed' (user cancelou).
+          if (Platform.OS === 'ios') {
+            // iOS spinner nao fecha automatico — fechamos so se nao for change continuo
+            // (deixa o user rolar a roda sem fechar a cada tick).
           }
           if (event.type === 'set' && selectedDate) {
             onChange(toYmd(selectedDate));
           }
         };
 
+        /**
+         * Abrir picker. Android = imperativo (funciona em Modal).
+         * iOS = setState que renderiza o componente inline.
+         */
+        const openPicker = () => {
+          if (Platform.OS === 'android') {
+            DateTimePickerAndroid.open({
+              value: currentDate,
+              mode: 'date',
+              onChange: handleChange,
+              maximumDate,
+              minimumDate,
+            });
+          } else {
+            setPickerOpenIOS(true);
+          }
+        };
+
         return (
           <View style={styles.wrapper}>
-            <Pressable onPress={() => setPickerOpen(true)}>
-              {/* pointerEvents=none no input pra Pressable receber o tap */}
-              <View pointerEvents="none">
+            <Pressable onPress={openPicker} style={styles.pressable}>
+              <View pointerEvents="box-only">
                 <TextInput
                   mode="outlined"
                   label={label}
@@ -115,14 +137,20 @@ export function DateField<TForm extends FieldValues>({
               {fieldState.error?.message ?? ' '}
             </HelperText>
 
-            {pickerOpen && (
+            {/* iOS: picker inline. Android nao renderiza nada — usa API imperativa. */}
+            {Platform.OS === 'ios' && pickerOpenIOS && (
               <DateTimePicker
                 value={currentDate}
                 mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                display="spinner"
                 maximumDate={maximumDate}
                 minimumDate={minimumDate}
-                onChange={handleChange}
+                onChange={(event, selectedDate) => {
+                  handleChange(event, selectedDate);
+                  if (event.type === 'set' || event.type === 'dismissed') {
+                    setPickerOpenIOS(false);
+                  }
+                }}
               />
             )}
           </View>
@@ -135,5 +163,8 @@ export function DateField<TForm extends FieldValues>({
 const styles = StyleSheet.create({
   wrapper: {
     marginBottom: 4,
+  },
+  pressable: {
+    // Sem flex/padding aqui — o TextInput dimensiona o tamanho.
   },
 });

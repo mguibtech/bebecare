@@ -46,7 +46,9 @@ export type AppStackParamList = {
   BabyDetail: { babyId: string };
   /** Tela de familia (membros + convites + sair). */
   Family: undefined;
-  // Sera expandido com VaccineDetail, AppointmentForm, etc.
+  /** Detalhe de uma vacina especifica do bebe (info + historico). */
+  VaccineDetail: { babyId: string; vaccineId: string };
+  // Sera expandido com AppointmentForm, MedicationForm, etc.
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =
