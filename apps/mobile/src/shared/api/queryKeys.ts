@@ -27,4 +27,14 @@ export const qk = {
     all: ['family'] as const,
     me: () => ['family', 'me'] as const,
   },
+  vaccines: {
+    all: ['vaccines'] as const,
+    catalog: () => ['vaccines', 'catalog'] as const,
+    /** Schedule de um bebe especifico (com status calculado). */
+    schedule: (babyId: string) =>
+      ['vaccines', 'schedule', babyId] as const,
+    /** Historico de records de um bebe. */
+    records: (babyId: string) =>
+      ['vaccines', 'records', babyId] as const,
+  },
 } as const;
