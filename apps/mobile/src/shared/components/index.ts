@@ -8,3 +8,5 @@ export { SubmitButton } from './SubmitButton';
 
 export { DateField } from './DateField';
 export type { DateFieldProps } from './DateField';
+
+export { MutedText } from './MutedText';

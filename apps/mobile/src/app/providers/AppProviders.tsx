@@ -8,6 +8,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useAppTheme } from '@/app/theme/useAppTheme';
 import { useThemeStore } from '@/app/theme/store';
 import { useBabySelectorStore } from '@/features/babies/store/baby-selector.store';
+import { SnackbarHost } from '@/shared/feedback';
 
 import { queryClient } from './queryClient';
 
@@ -39,7 +40,11 @@ export function AppProviders({ children }: PropsWithChildren) {
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
-          <PaperProvider theme={theme}>{children}</PaperProvider>
+          <PaperProvider theme={theme}>
+            {children}
+            {/* SnackbarHost dentro do Paper porque usa Portal (precisa de PaperProvider acima) */}
+            <SnackbarHost />
+          </PaperProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

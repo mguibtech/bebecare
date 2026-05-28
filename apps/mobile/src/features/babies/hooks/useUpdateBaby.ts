@@ -9,6 +9,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
+import { snackbar } from '@/shared/feedback';
 
 import { babiesApi } from '../api/babies.api';
 import type { Baby, UpdateBabyBody } from '../types';
@@ -26,6 +27,7 @@ export function useUpdateBaby() {
     onSuccess: (baby) => {
       queryClient.setQueryData(qk.babies.detail(baby.id), baby);
       queryClient.invalidateQueries({ queryKey: qk.babies.list() });
+      snackbar.showSuccess('Alterações salvas');
     },
   });
 }
