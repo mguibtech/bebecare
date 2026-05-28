@@ -61,15 +61,27 @@ export function VaccinesScreen() {
       <SafeAreaView edges={['top']} style={[styles.center, containerStyle]}>
         <MaterialCommunityIcons
           name="baby-face-outline"
-          size={64}
+          size={80}
           color={theme.colors.primary}
         />
-        <Text variant="titleMedium" style={styles.emptyTitle}>
-          Cadastre um bebê primeiro
+        <Text variant="headlineSmall" style={styles.emptyTitle}>
+          Hora de começar!
         </Text>
-        <Text variant="bodyMedium" style={styles.emptyBody}>
-          As vacinas dependem da idade do bebê. Cadastre na tab Início.
+        <Text
+          variant="bodyMedium"
+          style={[styles.emptyBody, { color: theme.app.text.muted }]}
+        >
+          O calendário de vacinas é personalizado pela idade do seu bebê.{'\n'}
+          Cadastre o primeiro bebê pra ver o PNI completo aqui.
         </Text>
+        <Button
+          mode="contained"
+          icon="plus"
+          onPress={() => navigation.navigate('BabyForm', undefined)}
+          style={styles.emptyCta}
+        >
+          Cadastrar bebê
+        </Button>
       </SafeAreaView>
     );
   }
@@ -79,16 +91,28 @@ export function VaccinesScreen() {
     return (
       <SafeAreaView edges={['top']} style={[styles.center, containerStyle]}>
         <MaterialCommunityIcons
-          name="needle"
-          size={64}
+          name="account-question-outline"
+          size={80}
           color={theme.colors.primary}
         />
-        <Text variant="titleMedium" style={styles.emptyTitle}>
-          Selecione um bebê
+        <Text variant="headlineSmall" style={styles.emptyTitle}>
+          Qual bebê?
         </Text>
-        <Text variant="bodyMedium" style={styles.emptyBody}>
-          Volte na tab Início e toque no card do bebê pra trocar.
+        <Text
+          variant="bodyMedium"
+          style={[styles.emptyBody, { color: theme.app.text.muted }]}
+        >
+          Você tem mais de um bebê na família. Volte pra Início e escolha
+          quem você quer ver as vacinas.
         </Text>
+        <Button
+          mode="outlined"
+          icon="arrow-left"
+          onPress={() => navigation.navigate('Home')}
+          style={styles.emptyCta}
+        >
+          Ir pra Início
+        </Button>
       </SafeAreaView>
     );
   }
@@ -261,8 +285,12 @@ const styles = StyleSheet.create({
   },
   emptyBody: {
     marginTop: 8,
-    opacity: 0.7,
     textAlign: 'center',
+    lineHeight: 22,
+  },
+  emptyCta: {
+    marginTop: 24,
+    minWidth: 200,
   },
   errorBody: {
     opacity: 0.7,

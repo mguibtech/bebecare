@@ -8,6 +8,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
+import { snackbar } from '@/shared/feedback';
 
 import { babiesApi } from '../api/babies.api';
 import { useBabySelectorStore } from '../store/baby-selector.store';
@@ -26,6 +27,7 @@ export function useCreateBaby() {
       queryClient.invalidateQueries({ queryKey: qk.babies.list() });
       // Auto-seleciona o novo bebe.
       setSelected(baby.id);
+      snackbar.showSuccess(`${baby.name} foi cadastrado!`);
     },
   });
 }

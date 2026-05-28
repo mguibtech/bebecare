@@ -8,6 +8,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
+import { snackbar } from '@/shared/feedback';
 
 import { familyApi } from '../api/family.api';
 import type { FamilyDetails, UpdateFamilyBody } from '../types';
@@ -22,6 +23,7 @@ export function useUpdateFamily() {
       // O /auth/me tambem traz a familia abreviada (FamilySummary),
       // entao invalidamos pra ele atualizar tambem.
       queryClient.invalidateQueries({ queryKey: qk.auth.me() });
+      snackbar.showSuccess('Família atualizada');
     },
   });
 }
