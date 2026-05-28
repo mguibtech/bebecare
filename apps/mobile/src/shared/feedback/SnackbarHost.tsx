@@ -36,11 +36,16 @@ export function SnackbarHost() {
       ? '#FFFFFF'
       : undefined;
 
+  // Quando tem `action`, duracao maior (6s) pra dar tempo do usuario ler
+  // a label do botao e decidir se quer interagir. Sem action, 3.5s eh
+  // suficiente pra mensagem de confirmacao simples.
+  const duration = action ? 6000 : 3500;
+
   return (
     <Snackbar
       visible={visible}
       onDismiss={hide}
-      duration={3500}
+      duration={duration}
       style={[
         styles.snackbar,
         backgroundColor ? { backgroundColor } : null,
