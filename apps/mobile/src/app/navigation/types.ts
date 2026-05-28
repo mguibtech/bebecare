@@ -48,7 +48,11 @@ export type AppStackParamList = {
   Family: undefined;
   /** Detalhe de uma vacina especifica do bebe (info + historico). */
   VaccineDetail: { babyId: string; vaccineId: string };
-  // Sera expandido com AppointmentForm, MedicationForm, etc.
+  /** Form de consulta — cria (sem appointmentId) ou edita (com appointmentId). */
+  AppointmentForm: { babyId: string; appointmentId?: string };
+  /** Detalhe de consulta — info + acoes (Completar/Cancelar/Apagar). */
+  AppointmentDetail: { babyId: string; appointmentId: string };
+  // Sera expandido com MedicationForm, etc.
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =

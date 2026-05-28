@@ -4,6 +4,8 @@ import { BabyFormScreen } from '@/features/babies/screens/BabyFormScreen';
 import { BabyDetailScreen } from '@/features/babies/screens/BabyDetailScreen';
 import { FamilyScreen } from '@/features/family/screens/FamilyScreen';
 import { VaccineDetailScreen } from '@/features/vaccines/screens/VaccineDetailScreen';
+import { AppointmentFormScreen } from '@/features/appointments/screens/AppointmentFormScreen';
+import { AppointmentDetailScreen } from '@/features/appointments/screens/AppointmentDetailScreen';
 
 import { MainTabs } from './MainTabs';
 import type { AppStackParamList } from './types';
@@ -44,6 +46,16 @@ export function AppNavigator() {
         name="VaccineDetail"
         component={VaccineDetailScreen}
         options={{ title: 'Vacina' }}
+      />
+      <Stack.Screen
+        name="AppointmentForm"
+        component={AppointmentFormScreen}
+        // title definido dentro da tela (create vs edit)
+      />
+      <Stack.Screen
+        name="AppointmentDetail"
+        component={AppointmentDetailScreen}
+        options={{ title: 'Consulta' }}
       />
     </Stack.Navigator>
   );
