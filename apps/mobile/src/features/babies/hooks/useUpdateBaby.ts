@@ -4,30 +4,56 @@
  * onSuccess atualiza ambos caches: detalhe (setQueryData) e lista
  * (invalidate, mais conservador — o backend pode mudar ageMonths/ageDays
  * recalculados, melhor pegar fresh).
+ *
+ * Se o sex foi alterado e a paleta atual nao bate com a sugerida pra esse
+ * sex, oferece troca via snackbar com acao (mesma logica do useCreateBaby).
+ * Opt-in respeitoso: nao troca sozinho, soh oferece.
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import { useThemeStore } from '@/app/theme/store';
+import { PALETTE_LABELS, type PaletteName } from '@/app/theme/tokens';
 
 import { babiesApi } from '../api/babies.api';
-import type { Baby, UpdateBabyBody } from '../types';
+import { Sex, type Baby, type UpdateBabyBody } from '../types';
 
 type UpdateBabyArgs = {
   id: string;
   body: UpdateBabyBody;
 };
 
+/** Paleta convencional pra cada sexo (mesma logica do useCreateBaby). */
+function suggestedPaletteFor(sex: Sex): PaletteName {
+  return sex === Sex.FEMALE ? 'rosa' : 'azul';
+}
+
 export function useUpdateBaby() {
   const queryClient = useQueryClient();
 
   return useMutation<Baby, Error, UpdateBabyArgs>({
     mutationFn: ({ id, body }) => babiesApi.update(id, body),
-    onSuccess: (baby) => {
+    onSuccess: (baby, { body }) => {
       queryClient.setQueryData(qk.babies.detail(baby.id), baby);
       queryClient.invalidateQueries({ queryKey: qk.babies.list() });
-      snackbar.showSuccess('Alterações salvas');
+
+      // Se sex foi alterado e a paleta nao bate, sugere troca.
+      const sexChanged = body.sex !== undefined;
+      const currentPalette = useThemeStore.getState().palette;
+      const suggested = suggestedPaletteFor(baby.sex);
+
+      if (sexChanged && currentPalette !== suggested) {
+        snackbar.showSuccess('Alterações salvas', {
+          label: `Trocar pra ${PALETTE_LABELS[suggested]}`,
+          onPress: () => {
+            useThemeStore.getState().setPalette(suggested);
+          },
+        });
+      } else {
+        snackbar.showSuccess('Alterações salvas');
+      }
     },
   });
 }
