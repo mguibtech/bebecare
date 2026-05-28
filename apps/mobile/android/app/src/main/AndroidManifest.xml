@@ -22,6 +22,19 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+        <!--
+          Deep link: bebecare://...
+          Usado por links de convite de familia: bebecare://invite/ABC123
+          Quando o user toca o link, Android abre o app na MainActivity, que
+          encaminha o intent pro React Navigation linking config (ver
+          src/app/navigation/RootNavigator.tsx).
+        -->
+        <intent-filter android:autoVerify="false">
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="bebecare" />
+        </intent-filter>
       </activity>
     </application>
 </manifest>

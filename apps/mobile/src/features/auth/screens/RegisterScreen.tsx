@@ -25,14 +25,22 @@ import {
   type RegisterFormValues,
 } from '../schemas/auth.schema';
 
-export function RegisterScreen({ navigation }: AuthScreenProps<'Register'>) {
+export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'>) {
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const theme = useTheme<AppTheme>();
+
+  // Vem de deep link `bebecare://invite/:code` → pre-preenche o campo.
+  const incomingInviteCode = route.params?.inviteCode ?? '';
 
   const { control, handleSubmit, formState } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     mode: 'onBlur',
-    defaultValues: { email: '', name: '', password: '', inviteCode: '' },
+    defaultValues: {
+      email: '',
+      name: '',
+      password: '',
+      inviteCode: incomingInviteCode,
+    },
   });
 
   const register = useRegister();
