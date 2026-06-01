@@ -6,6 +6,8 @@ import { FamilyScreen } from '@/features/family/screens/FamilyScreen';
 import { VaccineDetailScreen } from '@/features/vaccines/screens/VaccineDetailScreen';
 import { AppointmentFormScreen } from '@/features/appointments/screens/AppointmentFormScreen';
 import { AppointmentDetailScreen } from '@/features/appointments/screens/AppointmentDetailScreen';
+import { MedicationFormScreen } from '@/features/medications/screens/MedicationFormScreen';
+import { MedicationDetailScreen } from '@/features/medications/screens/MedicationDetailScreen';
 
 import { MainTabs } from './MainTabs';
 import type { AppStackParamList } from './types';
@@ -56,6 +58,16 @@ export function AppNavigator() {
         name="AppointmentDetail"
         component={AppointmentDetailScreen}
         options={{ title: 'Consulta' }}
+      />
+      <Stack.Screen
+        name="MedicationForm"
+        component={MedicationFormScreen}
+        // title dentro da tela (create vs edit)
+      />
+      <Stack.Screen
+        name="MedicationDetail"
+        component={MedicationDetailScreen}
+        options={{ title: 'Remédio' }}
       />
     </Stack.Navigator>
   );

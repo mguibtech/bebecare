@@ -7,56 +7,14 @@
 
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Card, SegmentedButtons, Text, useTheme } from 'react-native-paper';
+import { SegmentedButtons, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { MutedText } from '@/shared/components';
 import { AppointmentsListScreen } from '@/features/appointments/screens/AppointmentsListScreen';
+import { MedicationsListScreen } from '@/features/medications/screens/MedicationsListScreen';
 import type { AppTheme } from '@/app/theme';
 
 type HealthTab = 'appointments' | 'medications';
-
-function MedicationsPlaceholder() {
-  const theme = useTheme<AppTheme>();
-  return (
-    <View
-      style={[
-        styles.placeholderRoot,
-        { backgroundColor: theme.colors.background },
-      ]}
-    >
-      <MaterialCommunityIcons
-        name="pill"
-        size={64}
-        color={theme.colors.primary}
-      />
-      <Text variant="headlineSmall" style={styles.placeholderTitle}>
-        Remédios em breve
-      </Text>
-      <MutedText variant="bodyMedium" style={styles.placeholderBody}>
-        Cadastre medicamentos com horários e receba alarmes para cada dose.
-      </MutedText>
-      <Card mode="outlined" style={styles.previewCard}>
-        <Card.Content style={styles.previewContent}>
-          <MaterialCommunityIcons
-            name="alarm"
-            size={24}
-            color={theme.colors.primary}
-          />
-          <View style={styles.previewText}>
-            <Text variant="titleSmall" style={styles.previewTitle}>
-              Alarmes confiáveis
-            </Text>
-            <MutedText variant="bodySmall">
-              Notificação local + som — não depende de internet.
-            </MutedText>
-          </View>
-        </Card.Content>
-      </Card>
-    </View>
-  );
-}
 
 export function HealthScreen() {
   const theme = useTheme<AppTheme>();
@@ -90,7 +48,7 @@ export function HealthScreen() {
         {tab === 'appointments' ? (
           <AppointmentsListScreen />
         ) : (
-          <MedicationsPlaceholder />
+          <MedicationsListScreen />
         )}
       </View>
     </SafeAreaView>
@@ -104,35 +62,4 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   content: { flex: 1 },
-  placeholderRoot: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 32,
-  },
-  placeholderTitle: {
-    fontWeight: '700',
-    marginTop: 16,
-    textAlign: 'center',
-  },
-  placeholderBody: {
-    marginTop: 8,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  previewCard: {
-    width: '100%',
-    marginTop: 16,
-  },
-  previewContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 8,
-  },
-  previewText: {
-    flex: 1,
-  },
-  previewTitle: {
-    fontWeight: '600',
-  },
 });

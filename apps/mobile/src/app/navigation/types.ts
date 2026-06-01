@@ -52,7 +52,10 @@ export type AppStackParamList = {
   AppointmentForm: { babyId: string; appointmentId?: string };
   /** Detalhe de consulta — info + acoes (Completar/Cancelar/Apagar). */
   AppointmentDetail: { babyId: string; appointmentId: string };
-  // Sera expandido com MedicationForm, etc.
+  /** Form de medicamento — cria (sem medicationId) ou edita (com medicationId). */
+  MedicationForm: { babyId: string; medicationId?: string };
+  /** Detalhe de medicamento — info + schedules + apagar. */
+  MedicationDetail: { babyId: string; medicationId: string };
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =
