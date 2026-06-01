@@ -11,7 +11,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
  *   RootNavigator (decide auth/app status)
  *     ├─ AuthStack       (Login, Register)              quando deslogado
  *     └─ AppStack        (MainTabs, BabyForm, BabyDetail) quando logado
- *           └─ MainTabs   (Home, Vaccines, Health, More)
+ *           └─ MainTabs   (Home, Today, Vaccines, Health, More)
  *
  * BabyForm e BabyDetail vivem no AppStack (sobre as tabs) pra abrir como
  * push full-screen sem o footer de tabs atrapalhar.
@@ -29,6 +29,7 @@ export type AuthStackParamList = {
 /** Tabs principais quando o usuario esta autenticado. */
 export type MainTabsParamList = {
   Home: undefined;
+  Today: undefined;
   Vaccines: undefined;
   Health: undefined;
   More: undefined;

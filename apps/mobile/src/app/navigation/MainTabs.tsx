@@ -1,7 +1,8 @@
 /**
- * Bottom Tabs principais (4): Início, Vacinas, Saúde, Mais.
+ * Bottom Tabs principais (5): Início, Hoje, Vacinas, Saúde, Mais.
  *
  * - Início: dashboard centrado no bebê (HomeScreen)
+ * - Hoje: doses do dia do bebê selecionado (M6)
  * - Vacinas: calendário PNI (M4)
  * - Saúde: consultas + medicamentos (M5/M6)
  * - Mais: família, configurações, diário, receitas, sair
@@ -16,6 +17,7 @@ import { useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { HomeScreen } from '@/features/babies/screens/HomeScreen';
+import { TodayDosesScreen } from '@/features/medications/screens/TodayDosesScreen';
 import { VaccinesScreen } from '@/features/vaccines/screens/VaccinesScreen';
 import { HealthScreen } from '@/features/health/screens/HealthScreen';
 import { MoreScreen } from '@/features/settings/screens/MoreScreen';
@@ -30,6 +32,9 @@ type IconProps = { color: string; size: number };
 // Componentes nomeados pra evitar warning `react/no-unstable-nested-components`.
 function HomeIcon({ color, size }: IconProps) {
   return <MaterialCommunityIcons name="home-variant" color={color} size={size} />;
+}
+function TodayIcon({ color, size }: IconProps) {
+  return <MaterialCommunityIcons name="calendar-check" color={color} size={size} />;
 }
 function VaccinesIcon({ color, size }: IconProps) {
   return <MaterialCommunityIcons name="needle" color={color} size={size} />;
@@ -67,6 +72,15 @@ export function MainTabs() {
           title: 'Início',
           tabBarLabel: 'Início',
           tabBarIcon: HomeIcon,
+        }}
+      />
+      <Tab.Screen
+        name="Today"
+        component={TodayDosesScreen}
+        options={{
+          title: 'Hoje',
+          tabBarLabel: 'Hoje',
+          tabBarIcon: TodayIcon,
         }}
       />
       <Tab.Screen
