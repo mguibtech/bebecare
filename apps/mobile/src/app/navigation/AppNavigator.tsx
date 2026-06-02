@@ -6,6 +6,12 @@ import { FamilyScreen } from '@/features/family/screens/FamilyScreen';
 import { VaccineDetailScreen } from '@/features/vaccines/screens/VaccineDetailScreen';
 import { AppointmentFormScreen } from '@/features/appointments/screens/AppointmentFormScreen';
 import { AppointmentDetailScreen } from '@/features/appointments/screens/AppointmentDetailScreen';
+import { MedicationFormScreen } from '@/features/medications/screens/MedicationFormScreen';
+import { MedicationDetailScreen } from '@/features/medications/screens/MedicationDetailScreen';
+import {
+  NotificationPermissionGate,
+  useFcmTokenSync,
+} from '@/features/notifications';
 
 import { MainTabs } from './MainTabs';
 import type { AppStackParamList } from './types';
@@ -20,8 +26,12 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
  * Stack interno dentro da tab correspondente (ex.: VaccinesStack).
  */
 export function AppNavigator() {
+  // Push: registra/sincroniza o token FCM enquanto logado (no-op sem Firebase).
+  useFcmTokenSync();
+
   return (
-    <Stack.Navigator>
+    <>
+      <Stack.Navigator>
       <Stack.Screen
         name="MainTabs"
         component={MainTabs}
@@ -57,6 +67,19 @@ export function AppNavigator() {
         component={AppointmentDetailScreen}
         options={{ title: 'Consulta' }}
       />
-    </Stack.Navigator>
+      <Stack.Screen
+        name="MedicationForm"
+        component={MedicationFormScreen}
+        // title dentro da tela (create vs edit)
+      />
+      <Stack.Screen
+        name="MedicationDetail"
+        component={MedicationDetailScreen}
+        options={{ title: 'Remédio' }}
+      />
+      </Stack.Navigator>
+      {/* Pre-prompt de permissao de push (1x no primeiro acesso logado). */}
+      <NotificationPermissionGate />
+    </>
   );
 }

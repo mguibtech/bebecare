@@ -118,3 +118,13 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+// --- Firebase (M6/6A) ---
+// Aplica o plugin do google-services SOMENTE se o google-services.json existir.
+// Sem isso, o plugin aborta o build com erro. Como o arquivo e gitignored e so
+// chega quando o dev configura o projeto no Firebase console, a aplicacao
+// condicional mantem o app compilavel/testavel ate la (push fica inativo, o
+// resto do app funciona normal).
+if (file("google-services.json").exists()) {
+    apply plugin: "com.google.gms.google-services"
+}

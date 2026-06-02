@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Push (FCM): obrigatoria pra exibir notificacoes no Android 13+ (API 33).
+         Em versoes anteriores e concedida automaticamente. O app pede em runtime
+         via messaging().requestPermission() (ver features/notifications/setup.ts). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
       android:name=".MainApplication"

@@ -8,13 +8,25 @@ Documento vivo: atualizar conforme cada M fechar.
 
 ---
 
-## Estado atual (2026-05-26)
+## Estado atual (2026-06-01)
 
 | Marco | Status | Branch | PR |
 |-------|--------|--------|----|
-| **M0** — RN CLI bare + Welcome rodando | Done | `feat/mobile-init` → main | #15 (em review, aguardando CI) |
-| **M1** — Estrutura `src/` + deps + providers | Done | `feat/mobile-m1-setup` → main | #16 (abrir após #15 mergear) |
-| **M2** — Auth real | Próximo | `feat/mobile-m2-auth` (a criar) | — |
+| **M0** — RN CLI bare + Welcome rodando | Done | `feat/mobile-init` | #15 |
+| **M1** — Estrutura `src/` + deps + providers | Done | `feat/mobile-m1-setup` | #16 |
+| **M2** — Auth real | Done | `feat/mobile-m2-auth` | #18 |
+| **M3** — Família + Bebê | Done | `feat/mobile-m3-baby`, `…-m3-family` | #19, #20 |
+| **M4** — Vacinas (PNI) | Done | `feat/mobile-m4-vaccines` | #21 |
+| **M5** — Consultas | Done | `feat/mobile-m5-appointments` | #25 |
+| **M6** — Medicamentos + Push FCM | **Em andamento** | `feat/mobile-m6-medications` | — |
+| **M7–M10** | Pendente | — | — |
+
+> **M6 em detalhe:** 6A (setup Firebase/FCM + push), 6B (Medicamentos CRUD) e
+> 6C (tela "Hoje" / doses do dia) commitados na branch. Falta **6D**
+> (deep links de notificação) pra fechar o milestone.
+>
+> Extras já mergeados fora da trilha M: design review (#22), polish sprint 1
+> (#23), sugestão de tema por sexo do bebê (#24).
 
 **Backend status:** 48 endpoints prontos em `apps/api/src/modules/`, cobrindo
 auth, users, families, babies, vaccines (catálogo PNI + records), appointments,
@@ -246,29 +258,38 @@ Esse M é o mais complexo do mobile.
 
 ### Trabalho
 
-**PR 6A — Setup Firebase / FCM**
-- [ ] `npm install @react-native-firebase/app @react-native-firebase/messaging`
-- [ ] Configurar `google-services.json` (Android) — adicionar ao `.gitignore` e
-      criar template `google-services.example.json`
+**PR 6A — Setup Firebase / FCM** ✅
+- [x] `npm install @react-native-firebase/app @react-native-firebase/messaging` (v24)
+- [x] Android wiring: plugin `google-services` **aplicado condicionalmente** (só
+      se `google-services.json` existir → build não quebra sem credenciais) +
+      `.gitignore` + template `google-services.example.json` + permissão
+      `POST_NOTIFICATIONS` no manifest. O `google-services.json` real é passo
+      manual do dev (console Firebase) — documentado no `apps/mobile/README.md`.
 - [ ] iOS: `GoogleService-Info.plist`, capability "Push Notifications" +
-      "Background Modes → Remote notifications"
-- [ ] `features/notifications/setup.ts` — initFCM, requestPermission, getToken,
-      registrar listener foreground/background
-- [ ] Hook `useFcmTokenSync()` — chama `PUT /users/me/fcm-token` ao logar
-- [ ] Tela de permissão amigável (Bottom Sheet Paper) no primeiro post-login
+      "Background Modes → Remote notifications" — **documentado** no README,
+      execução manual (precisa macOS/Xcode).
+- [x] `features/notifications/` — `setup.ts` (permissão, getToken, listeners
+      foreground/refresh, background handler), `lib/firebase.ts`
+      (`isFirebaseConfigured()` guarda tudo), `lib/syncToken.ts`,
+      `api/notifications.api.ts`
+- [x] Hook `useFcmTokenSync()` — registra token ao logar + onTokenRefresh +
+      foreground → Snackbar; remove token no logout (best-effort)
+- [x] `NotificationPermissionGate` — pre-prompt amigável (Paper Modal) 1x no
+      primeiro acesso logado, antes do prompt nativo do SO
 
-**PR 6B — Medicamentos CRUD**
-- [ ] `features/medications/api/`, `hooks/`, `schemas/`
-- [ ] MedicationsListScreen
-- [ ] MedicationFormScreen (com schedules como nested form — start_date,
-      end_date, frequency, doses_per_day, dose_amount, dose_unit, use_alarm)
-- [ ] MedicationDetailScreen com lista de schedules
+**PR 6B — Medicamentos CRUD** ✅
+- [x] `features/medications/api/`, `hooks/`, `schemas/`
+- [x] MedicationsListScreen
+- [x] MedicationFormScreen — dados básicos do remédio (schedules ficaram no
+      Detalhe via bottom sheet, não como nested form, pra manter o form simples)
+- [x] MedicationDetailScreen com lista de schedules + ScheduleEditorSheet
+      (adicionar/editar/remover horário) + zona perigosa
 
-**PR 6C — Doses do dia**
-- [ ] TodayDosesScreen ("Hoje") — lista cronológica de doses do dia
-- [ ] Ação: marcar tomada / pular (com motivo) / resetar
-- [ ] Indicador visual: pendente / tomada / pulada / atrasada
-- [ ] Tab dedicada na home pra "Hoje"
+**PR 6C — Doses do dia** ✅
+- [x] TodayDosesScreen ("Hoje") — lista cronológica de doses do dia
+- [x] Ação: marcar tomada / pular (com motivo via Dialog) / resetar
+- [x] Indicador visual: pendente / tomada / pulada / atrasada (DoseCard)
+- [x] Tab dedicada "Hoje" no MainTabs
 
 **PR 6D — Deep links de notificação**
 - [ ] Configurar `linking` no NavigationContainer com schemes:
@@ -461,25 +482,32 @@ no Play Console.
 
 ## Notas operacionais
 
-### Como retomar amanhã (M2)
+### Como retomar (M6 → 6D: deep links de notificação)
 ```bash
-# 1. PR #15 e #16 já mergeados no GitHub:
-git checkout main
-git pull origin main
+# Branch do M6 com 6A + 6B + 6C commitados:
+git checkout feat/mobile-m6-medications
 
-# 2. Criar branch do M2:
-git checkout -b feat/mobile-m2-auth
-
-# 3. Confirmar que o npm install funcionou e o app boota:
+# Validar o que já existe rodando contra o backend:
 cd apps/mobile
-npm install        # ainda nao foi rodado!
-# adicionar a linha apply from: fonts.gradle no android/app/build.gradle (vector-icons)
 npm start --reset-cache
-# em outro terminal:
+# em outro terminal (com docker-compose up na raiz):
 npm run android
-# clica em "Entrar (placeholder)" -> vai pra Home -> "Sair" -> volta pra Login
-# se isso funciona, M1 está ok, parte pra M2
+# fluxos a testar:
+#  - Saúde → Remédios → cadastrar remédio → adicionar horário,
+#    depois tab "Hoje" → marcar dose como tomada / pular / desfazer
+#  - Push (precisa google-services.json — ver README "Push / Firebase"):
+#    primeiro acesso logado mostra o pre-prompt de permissão; ao ativar,
+#    o token FCM é registrado em PUT /users/me/fcm-token.
+
+# 6D: configurar linking pra bebecare://dose/:id e bebecare://appointment/:id
+# + handler de notificação clicada → navega pra tela certa.
+# O backend já envia data: { type: 'dose'|'appointment', id, ... } no payload.
 ```
+
+> **Nota 6A:** o app compila/roda SEM Firebase (plugin google-services é
+> condicional ao arquivo de credenciais; código de push é no-op via
+> `isFirebaseConfigured()`). Pra ativar push de verdade, seguir a seção
+> "Push / Firebase (M6/6A)" no `apps/mobile/README.md`.
 
 ### Pendências legado
 - 3 mudanças Prettier em `apps/api/src/modules/medications/*` ainda no working

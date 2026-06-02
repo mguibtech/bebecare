@@ -62,6 +62,47 @@ If everything is set up correctly, you should see your new app running in the An
 
 This is one way to run your app — you can also build it directly from Android Studio or Xcode.
 
+## Push / Firebase (M6/6A)
+
+O app usa **Firebase Cloud Messaging (FCM)** para lembretes de dose de remédio e
+de consulta. As credenciais do Firebase **não são versionadas** (são
+gitignored) — cada dev precisa configurá-las localmente.
+
+> **O app compila e roda sem o Firebase.** O plugin `google-services` só é
+> aplicado quando o `google-services.json` existe (ver `android/app/build.gradle`),
+> e todo o código de push vira no-op via `isFirebaseConfigured()`. Você só
+> precisa dos passos abaixo quando for testar/usar push de verdade.
+
+### Android
+
+1. No [Firebase console](https://console.firebase.google.com), crie (ou abra) o
+   projeto **BebeCare**.
+2. **Add app → Android**, com o package name **exato**: `com.bebecare`.
+3. Baixe o `google-services.json` gerado.
+4. Coloque em `apps/mobile/android/app/google-services.json`.
+   (Veja `google-services.example.json` ao lado para o formato esperado.)
+5. Rebuilde: `npm run android`. Push fica ativo a partir daí.
+
+O emulador Android recebe push normalmente.
+
+### iOS (precisa de macOS + Xcode)
+
+1. No mesmo projeto Firebase, **Add app → iOS** com o bundle id do app.
+2. Baixe o `GoogleService-Info.plist` e coloque em `apps/mobile/ios/`
+   (também gitignored). Adicione-o ao target no Xcode.
+3. Em **Signing & Capabilities**, habilite **Push Notifications** e
+   **Background Modes → Remote notifications**.
+4. `cd ios && bundle exec pod install`.
+5. Push em iOS só funciona em **device físico** (ou simulador no macOS 13+
+   recente); não funciona em simulador antigo.
+
+### Backend
+
+O backend (`apps/api`) envia push via Firebase Admin SDK e espera 3 variáveis no
+`.env`: `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
+(geradas a partir de uma service account do mesmo projeto Firebase). Sem elas, o
+backend usa um sender "stub" (não envia de verdade).
+
 ## Step 3: Modify your app
 
 Now that you have successfully run the app, let's make changes!

@@ -45,4 +45,17 @@ export const qk = {
     detail: (babyId: string, id: string) =>
       ['appointments', 'detail', babyId, id] as const,
   },
+  medications: {
+    all: ['medications'] as const,
+    list: (babyId: string) =>
+      ['medications', 'list', babyId] as const,
+    detail: (babyId: string, id: string) =>
+      ['medications', 'detail', babyId, id] as const,
+  },
+  doseLogs: {
+    all: ['doseLogs'] as const,
+    list: (babyId: string, scope?: string) =>
+      ['doseLogs', 'list', babyId, scope ?? 'all'] as const,
+    today: (babyId: string) => ['doseLogs', 'today', babyId] as const,
+  },
 } as const;

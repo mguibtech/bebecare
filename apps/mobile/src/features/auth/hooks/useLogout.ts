@@ -13,6 +13,9 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { notificationsApi } from '@/features/notifications/api/notifications.api';
+import { isFirebaseConfigured } from '@/features/notifications/lib/firebase';
+
 import { authApi } from '../api/auth.api';
 import { useAuthStore } from '../store/auth.store';
 
@@ -21,6 +24,17 @@ export function useLogout() {
 
   return useMutation<void, Error, void>({
     mutationFn: async () => {
+      // Remove o token FCM deste device do usuario atual (best-effort, ainda
+      // autenticado). Sem isso, o backend continuaria empurrando push deste
+      // usuario pro device depois do logout. Roda antes de revogar a sessao.
+      if (isFirebaseConfigured()) {
+        try {
+          await notificationsApi.putFcmToken(null);
+        } catch {
+          // best-effort: ignora erro de rede.
+        }
+      }
+
       const refreshToken = useAuthStore.getState().refreshToken;
       if (refreshToken) {
         try {
