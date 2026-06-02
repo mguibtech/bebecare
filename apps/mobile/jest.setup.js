@@ -53,5 +53,31 @@ jest.mock('react-native-keychain', () => {
   };
 });
 
+// Firebase: modulos nativos (RNFBAppModule) nao existem em Node.
+// getApps() => [] simula "Firebase nao configurado" (sem google-services.json),
+// que e o estado em que todo o codigo de push deve ser no-op. Testes que
+// precisem do caminho "configurado" sobrescrevem getApps com jest.spyOn.
+jest.mock('@react-native-firebase/app', () => ({
+  getApp: jest.fn(),
+  getApps: jest.fn(() => []),
+}));
+
+jest.mock('@react-native-firebase/messaging', () => ({
+  AuthorizationStatus: {
+    NOT_DETERMINED: -1,
+    DENIED: 0,
+    AUTHORIZED: 1,
+    PROVISIONAL: 2,
+    EPHEMERAL: 3,
+  },
+  getMessaging: jest.fn(() => ({})),
+  getToken: jest.fn(async () => 'mock-fcm-token'),
+  hasPermission: jest.fn(async () => -1),
+  requestPermission: jest.fn(async () => 1),
+  onMessage: jest.fn(() => jest.fn()),
+  onTokenRefresh: jest.fn(() => jest.fn()),
+  setBackgroundMessageHandler: jest.fn(),
+}));
+
 // Gesture handler ja vem com jestSetup mas precisa ser carregado
 require('react-native-gesture-handler/jestSetup');

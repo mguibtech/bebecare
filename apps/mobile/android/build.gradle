@@ -15,6 +15,11 @@ buildscript {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        // Plugin do Firebase (processa o google-services.json). O classpath fica
+        // sempre disponivel; a APLICACAO do plugin (em app/build.gradle) e
+        // condicional a existencia do arquivo de credenciais — assim o build nao
+        // quebra enquanto o Firebase ainda nao foi configurado (ver M6/6A).
+        classpath("com.google.gms:google-services:4.4.2")
     }
 }
 

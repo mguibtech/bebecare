@@ -66,6 +66,12 @@ yarn-error.log
 # testing
 /coverage
 
+# Firebase (M6/6A) — credenciais do projeto, NUNCA commitar.
+# Cada dev baixa do Firebase console e coloca localmente. Ver
+# google-services.example.json e a secao "Setup Firebase" no README.
+android/app/google-services.json
+ios/GoogleService-Info.plist
+
 # Yarn
 .yarn/*
 !.yarn/patches
