@@ -1,11 +1,11 @@
 /**
  * Camada HTTP dos dose logs (doses esperadas + atualizacoes de status).
  *
- *   GET   /babies/:babyId/dose-logs           filtra por status/from/to
- *   GET   /babies/:babyId/dose-logs/today     atalho doses do dia
- *   POST  /babies/:babyId/dose-logs/:id/take  marca como tomada (sem body)
- *   POST  /babies/:babyId/dose-logs/:id/skip  pula com motivo opcional
- *   POST  /babies/:babyId/dose-logs/:id/reset volta pra PENDING
+ *   GET   /babies/:babyId/doses           filtra por status/from/to
+ *   GET   /babies/:babyId/doses/today     atalho doses do dia
+ *   POST  /babies/:babyId/doses/:id/take  marca como tomada (sem body)
+ *   POST  /babies/:babyId/doses/:id/skip  pula com motivo opcional
+ *   POST  /babies/:babyId/doses/:id/reset volta pra PENDING
  *
  * Dose logs sao criados pelo cron do backend baseado nos schedules ativos.
  * Mobile NAO cria diretamente.
@@ -30,21 +30,21 @@ function toQuery(filter?: DoseLogFilter): string {
 }
 
 export const doseLogsApi = {
-  /** GET /babies/:babyId/dose-logs com filtros. */
+  /** GET /babies/:babyId/doses com filtros. */
   async list(
     babyId: string,
     filter?: DoseLogFilter,
   ): Promise<MedDoseLog[]> {
     const { data } = await apiClient.get<MedDoseLog[]>(
-      `/babies/${babyId}/dose-logs${toQuery(filter)}`,
+      `/babies/${babyId}/doses${toQuery(filter)}`,
     );
     return data;
   },
 
-  /** GET /babies/:babyId/dose-logs/today — doses do dia. */
+  /** GET /babies/:babyId/doses/today — doses do dia. */
   async listToday(babyId: string): Promise<MedDoseLog[]> {
     const { data } = await apiClient.get<MedDoseLog[]>(
-      `/babies/${babyId}/dose-logs/today`,
+      `/babies/${babyId}/doses/today`,
     );
     return data;
   },
@@ -52,7 +52,7 @@ export const doseLogsApi = {
   /** POST .../:id/take — marca dose como tomada. */
   async take(babyId: string, id: string): Promise<MedDoseLog> {
     const { data } = await apiClient.post<MedDoseLog>(
-      `/babies/${babyId}/dose-logs/${id}/take`,
+      `/babies/${babyId}/doses/${id}/take`,
     );
     return data;
   },
@@ -64,7 +64,7 @@ export const doseLogsApi = {
     body: SkipDoseBody,
   ): Promise<MedDoseLog> {
     const { data } = await apiClient.post<MedDoseLog>(
-      `/babies/${babyId}/dose-logs/${id}/skip`,
+      `/babies/${babyId}/doses/${id}/skip`,
       body,
     );
     return data;
@@ -73,7 +73,7 @@ export const doseLogsApi = {
   /** POST .../:id/reset — volta pra PENDING. */
   async reset(babyId: string, id: string): Promise<MedDoseLog> {
     const { data } = await apiClient.post<MedDoseLog>(
-      `/babies/${babyId}/dose-logs/${id}/reset`,
+      `/babies/${babyId}/doses/${id}/reset`,
     );
     return data;
   },
