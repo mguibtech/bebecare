@@ -58,4 +58,10 @@ export const qk = {
       ['doseLogs', 'list', babyId, scope ?? 'all'] as const,
     today: (babyId: string) => ['doseLogs', 'today', babyId] as const,
   },
+  /** Despertadores pessoais (M7) — por usuario, nao por bebe. */
+  alarms: {
+    all: ['alarms'] as const,
+    list: () => ['alarms', 'list'] as const,
+    detail: (id: string) => ['alarms', 'detail', id] as const,
+  },
 } as const;

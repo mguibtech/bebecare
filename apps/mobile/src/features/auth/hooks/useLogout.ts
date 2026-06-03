@@ -14,6 +14,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { cancelAllMedicationAlarms } from '@/features/medications/alarms';
+import { cancelAllAlarms } from '@/features/alarms/notifee';
 import { notificationsApi } from '@/features/notifications/api/notifications.api';
 import { isFirebaseConfigured } from '@/features/notifications/lib/firebase';
 
@@ -46,10 +47,10 @@ export function useLogout() {
       }
     },
     onSettled: async () => {
-      // Cancela os alarmes locais de remedio da conta que esta saindo — senao
-      // continuariam tocando no device depois do logout. Best-effort.
+      // Cancela os alarmes locais (remedio + despertadores) da conta que esta
+      // saindo — senao continuariam tocando no device depois do logout.
       try {
-        await cancelAllMedicationAlarms();
+        await Promise.all([cancelAllMedicationAlarms(), cancelAllAlarms()]);
       } catch {
         // notifee indisponivel: ignora.
       }

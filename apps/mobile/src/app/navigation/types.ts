@@ -57,6 +57,10 @@ export type AppStackParamList = {
   MedicationForm: { babyId: string; medicationId?: string };
   /** Detalhe de medicamento — info + schedules + apagar. */
   MedicationDetail: { babyId: string; medicationId: string };
+  /** Lista de despertadores pessoais (M7). */
+  Alarms: undefined;
+  /** Form de despertador — cria (sem alarmId) ou edita (com alarmId). */
+  AlarmForm: { alarmId?: string } | undefined;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =

@@ -2,6 +2,10 @@
 #
 .DS_Store
 
+# Este projeto usa npm (package-lock.json). Bloqueia yarn.lock pra nao
+# coexistirem dois lockfiles (confunde CI/ferramentas).
+yarn.lock
+
 # Xcode
 #
 build/
