@@ -17,6 +17,9 @@ export class AlarmResponseDto {
   @ApiProperty({ example: 127 })
   daysOfWeekMask!: number;
 
+  @ApiProperty({ nullable: true, example: 3, description: 'A cada N horas; null = horário único' })
+  intervalHours!: number | null;
+
   @ApiProperty({ enum: AlarmCategory })
   category!: AlarmCategory;
 

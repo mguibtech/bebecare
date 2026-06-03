@@ -45,15 +45,44 @@ async function ensureChannelOnce(): Promise<void> {
   channelEnsured = true;
 }
 
-function alarmNotificationId(alarmId: string, dayKey: string): string {
-  return `${ID_PREFIX}${alarmId}:${dayKey}`;
+function alarmNotificationId(
+  alarmId: string,
+  time: string,
+  dayKey: string,
+): string {
+  return `${ID_PREFIX}${alarmId}:${time}:${dayKey}`;
+}
+
+/**
+ * Horarios que um alarme dispara:
+ *  - modo unico: [time]
+ *  - modo intervalo (intervalHours = N): [time, time+N, time+2N, ...] cobrindo
+ *    24h a partir de `time`. Ex: 06:00 a cada 3h -> 06,09,12,15,18,21,00,03.
+ */
+function slotTimesFor(alarm: Alarm): string[] {
+  if (!alarm.intervalHours || alarm.intervalHours <= 0) return [alarm.time];
+
+  const { hour, minute } = parseHhMm(alarm.time);
+  const startMin = hour * 60 + minute;
+  const stepMin = alarm.intervalHours * 60;
+  const count = Math.floor((24 * 60) / stepMin);
+
+  const times: string[] = [];
+  for (let i = 0; i < count; i += 1) {
+    const m = (startMin + i * stepMin) % (24 * 60);
+    const hh = String(Math.floor(m / 60)).padStart(2, '0');
+    const mm = String(m % 60).padStart(2, '0');
+    times.push(`${hh}:${mm}`);
+  }
+  return times;
 }
 
 async function scheduleOne(
   alarm: Alarm,
+  time: string,
   dayKey: keyof typeof WEEKDAY_INDEX,
 ): Promise<void> {
-  const { hour, minute } = parseHhMm(alarm.time);
+  const { hour, minute } = parseHhMm(time);
   const timestamp = nextWeeklyOccurrenceMs(WEEKDAY_INDEX[dayKey], hour, minute);
 
   const trigger: TimestampTrigger = {
@@ -65,7 +94,7 @@ async function scheduleOne(
 
   await notifee.createTriggerNotification(
     {
-      id: alarmNotificationId(alarm.id, dayKey),
+      id: alarmNotificationId(alarm.id, time, dayKey),
       title: `${alarm.label} ⏰`,
       body: ALARM_CATEGORY_LABELS[alarm.category],
       android: {
@@ -99,12 +128,15 @@ export async function syncAlarms(alarms: Alarm[]): Promise<void> {
 
   for (const alarm of alarms) {
     if (!alarm.isActive) continue;
-    for (const day of daysFromMask(alarm.daysOfWeekMask)) {
-      try {
-        await scheduleOne(alarm, day);
-      } catch (err) {
-        if (__DEV__) {
-          console.warn('[feed-alarm] falha ao agendar', alarm.id, day, err);
+    const times = slotTimesFor(alarm);
+    for (const time of times) {
+      for (const day of daysFromMask(alarm.daysOfWeekMask)) {
+        try {
+          await scheduleOne(alarm, time, day);
+        } catch (err) {
+          if (__DEV__) {
+            console.warn('[feed-alarm] falha ao agendar', alarm.id, time, day, err);
+          }
         }
       }
     }

@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsEnum,
+  IsIn,
   IsInt,
   IsOptional,
   IsString,
@@ -42,6 +43,18 @@ export class CreateAlarmDto {
   @IsOptional()
   @IsEnum(AlarmCategory)
   category?: AlarmCategory;
+
+  @ApiPropertyOptional({
+    example: 3,
+    enum: [2, 3, 4, 6],
+    description:
+      'Modo intervalo: toca a cada N horas a partir de `time` (24h). ' +
+      'Omitir/null = horário único. Divisores de 24 pra cobertura uniforme.',
+  })
+  @IsOptional()
+  @IsInt()
+  @IsIn([2, 3, 4, 6])
+  intervalHours?: number;
 
   @ApiPropertyOptional({
     example: 'soft-chime',

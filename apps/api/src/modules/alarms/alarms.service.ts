@@ -23,6 +23,7 @@ export class AlarmsService {
       time: dto.time,
       daysOfWeekMask: dto.daysOfWeekMask,
       category: dto.category,
+      intervalHours: dto.intervalHours ?? null,
       soundKey: dto.soundKey?.trim() || null,
       isActive: dto.isActive ?? true,
     });
@@ -56,6 +57,9 @@ export class AlarmsService {
       alarm.daysOfWeekMask = dto.daysOfWeekMask;
     }
     if (dto.category !== undefined) alarm.category = dto.category;
+    if (dto.intervalHours !== undefined) {
+      alarm.intervalHours = dto.intervalHours ?? null;
+    }
     if (dto.soundKey !== undefined) alarm.soundKey = dto.soundKey?.trim() || null;
     if (dto.isActive !== undefined) alarm.isActive = dto.isActive;
 
