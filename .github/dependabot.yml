@@ -94,10 +94,25 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
-    # Ignora majors de React Native: bumps de major exigem upgrade manual
-    # (https://react-native-community.github.io/upgrade-helper/)
     ignore:
+      # React Native: major exige upgrade manual (upgrade-helper).
       - dependency-name: 'react-native'
         update-types: ['version-update:semver-major']
+      # react / react-test-renderer: a versao e DITADA pelo react-native — o
+      # renderer exige match EXATO. Qualquer bump (ate patch: 19.2.3 -> 19.2.7)
+      # quebra o build/testes. Sobem so junto com o RN. Ignora TODAS as updates.
       - dependency-name: 'react'
+      - dependency-name: 'react-test-renderer'
+      # jest: o @react-native/jest-preset (0.85) e feito pro jest 29; o major 30
+      # desencontra as internas do jest e quebra os testes. Upgrade manual junto
+      # com o suporte do preset RN.
+      - dependency-name: 'jest'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/jest'
+        update-types: ['version-update:semver-major']
+      # typescript 6.0 ja quebrou o build (mesmo motivo da secao da API).
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+      # eslint 9+ migra pra flat config — mudanca grande, upgrade manual.
+      - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
