@@ -148,6 +148,7 @@ export function RegisterVaccineSheet({
             control={control}
             name="appliedAt"
             label="Data da aplicação"
+            maximumDate={new Date()}
           />
 
           <FormInput
