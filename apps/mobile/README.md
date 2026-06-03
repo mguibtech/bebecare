@@ -103,6 +103,50 @@ O backend (`apps/api`) envia push via Firebase Admin SDK e espera 3 variáveis n
 (geradas a partir de uma service account do mesmo projeto Firebase). Sem elas, o
 backend usa um sender "stub" (não envia de verdade).
 
+## Alarmes locais de remédio (M6/B8 — notifee)
+
+O **diferencial do despertador**: além do push (que pode atrasar em devices com
+otimização de bateria agressiva), cada horário de remédio com **"Tocar alarme"**
+ligado agenda um **alarme local via [`@notifee/react-native`]** que toca no
+horário exato, por cima da lockscreen, mesmo com o app fechado.
+
+**Como funciona (código em [`src/features/medications/alarms/`]):**
+
+- Um trigger notification por `(schedule × dia-da-semana ativo)`, com repetição
+  **semanal**. O notifee persiste e re-registra os triggers após reboot
+  (permissão `RECEIVE_BOOT_COMPLETED` no manifest) — sem `BroadcastReceiver`
+  próprio.
+- `useMedicationAlarmSync()` (montado no `AppNavigator`) reconcilia os alarmes
+  do bebê selecionado sempre que a lista de remédios muda e no launch.
+  Idempotente: cancela os do bebê e reagenda.
+- Os ids são escopados por bebê (`med-alarm:<babyId>:<scheduleId>:<dia>`), então
+  famílias com 2+ bebês não sobrescrevem os alarmes umas das outras.
+- No logout, `cancelAllMedicationAlarms()` limpa os alarmes da conta que sai.
+
+**Permissão de alarme exato (Android 12+):** pedida *just-in-time* — quando há
+alarmes ativos mas a permissão está revogada, um snackbar oferece "Ativar" que
+abre a tela do sistema. Sem ela, o alarme cai pro agendamento inexato (atrasa,
+mas não quebra).
+
+> ⚠️ **`@notifee/react-native` é um módulo nativo.** Depois de instalar (já feito),
+> é obrigatório **rebuildar** o app — `npm run android` — para o JS enxergar o
+> módulo. Antes do rebuild, todo o código de alarme é no-op seguro (guard
+> try/catch), o app roda normal só sem agendar alarme.
+
+**Como verificar no device/emulador:**
+
+1. `npm run android` (rebuild com o módulo nativo).
+2. Cadastre um remédio com um horário **1–2 min no futuro**, com **"Tocar
+   alarme" ligado**.
+3. Conceda a permissão de "Alarmes e lembretes" se o snackbar pedir.
+4. Feche o app (não só minimize) e aguarde o horário — o alarme deve tocar em
+   tela cheia.
+5. Em devices Xiaomi/Huawei/Oppo, desabilite a otimização de bateria pro
+   BebeCare se o alarme não disparar (risco mapeado no roadmap).
+
+[`@notifee/react-native`]: https://notifee.app
+[`src/features/medications/alarms/`]: src/features/medications/alarms/
+
 ## Step 3: Modify your app
 
 Now that you have successfully run the app, let's make changes!

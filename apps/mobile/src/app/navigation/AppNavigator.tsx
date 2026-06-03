@@ -8,6 +8,7 @@ import { AppointmentFormScreen } from '@/features/appointments/screens/Appointme
 import { AppointmentDetailScreen } from '@/features/appointments/screens/AppointmentDetailScreen';
 import { MedicationFormScreen } from '@/features/medications/screens/MedicationFormScreen';
 import { MedicationDetailScreen } from '@/features/medications/screens/MedicationDetailScreen';
+import { useMedicationAlarmSync } from '@/features/medications/hooks';
 import {
   NotificationPermissionGate,
   useFcmTokenSync,
@@ -28,6 +29,10 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
 export function AppNavigator() {
   // Push: registra/sincroniza o token FCM enquanto logado (no-op sem Firebase).
   useFcmTokenSync();
+  // Alarmes locais: reagenda os despertadores de remedio sempre que a lista do
+  // bebe selecionado muda (e no launch). No-op se o notifee ainda nao estiver
+  // no build nativo.
+  useMedicationAlarmSync();
 
   return (
     <>
