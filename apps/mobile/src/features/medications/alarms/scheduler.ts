@@ -76,7 +76,10 @@ function nextOccurrenceMs(
 
 function doseSummary(med: Medication): string {
   const unit = DOSE_UNIT_LABELS[med.doseUnit] ?? '';
-  return `${med.name} — ${med.dose} ${unit}`.trim();
+  // med.dose vem como decimal string do backend ("20.000"). No pt-BR o ponto e
+  // separador de milhar, entao "20.000 ml" parece 20 mil — Number() normaliza
+  // pra "20" (mesmo padrao de MedicationCard/DoseCard/Detail).
+  return `${med.name} — ${Number(med.dose)} ${unit}`.trim();
 }
 
 /**
