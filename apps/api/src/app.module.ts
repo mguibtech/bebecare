@@ -14,6 +14,7 @@ import { RefreshTokensModule } from './modules/refresh-tokens/refresh-tokens.mod
 import { VaccinesModule } from './modules/vaccines/vaccines.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { MedicationsModule } from './modules/medications/medications.module';
+import { AlarmsModule } from './modules/alarms/alarms.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 
 // Módulo raiz da aplicação. A partir daqui, cada feature do BebeCare
@@ -45,6 +46,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     VaccinesModule,
     AppointmentsModule,
     MedicationsModule,
+    AlarmsModule,
     NotificationsModule,
     HealthModule,
   ],

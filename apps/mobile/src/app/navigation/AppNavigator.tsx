@@ -12,6 +12,12 @@ import {
   useAlarmDeepLink,
   useMedicationAlarmSync,
 } from '@/features/medications/hooks';
+import { AlarmsListScreen } from '@/features/alarms/screens/AlarmsListScreen';
+import { AlarmFormScreen } from '@/features/alarms/screens/AlarmFormScreen';
+import {
+  useAlarmSync,
+  useAlarmDeepLink as useFeedingAlarmDeepLink,
+} from '@/features/alarms/hooks';
 import {
   NotificationPermissionGate,
   useFcmTokenSync,
@@ -38,6 +44,9 @@ export function AppNavigator() {
   useMedicationAlarmSync();
   // Deep-link: toque no alarme abre a aba "Hoje" (em vez da home).
   useAlarmDeepLink();
+  // Despertadores (M7): reagenda os alarmes pessoais e roteia o toque deles.
+  useAlarmSync();
+  useFeedingAlarmDeepLink();
 
   return (
     <>
@@ -86,6 +95,16 @@ export function AppNavigator() {
         name="MedicationDetail"
         component={MedicationDetailScreen}
         options={{ title: 'Remédio' }}
+      />
+      <Stack.Screen
+        name="Alarms"
+        component={AlarmsListScreen}
+        options={{ title: 'Despertadores' }}
+      />
+      <Stack.Screen
+        name="AlarmForm"
+        component={AlarmFormScreen}
+        // title dentro da tela (create vs edit)
       />
       </Stack.Navigator>
       {/* Pre-prompt de permissao de push (1x no primeiro acesso logado). */}
