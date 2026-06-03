@@ -15,6 +15,8 @@ import {
 import { AlarmsListScreen } from '@/features/alarms/screens/AlarmsListScreen';
 import { AlarmFormScreen } from '@/features/alarms/screens/AlarmFormScreen';
 import { SleepScreen } from '@/features/sleep/screens/SleepScreen';
+import { EditProfileScreen } from '@/features/settings/screens/EditProfileScreen';
+import { PermissionsScreen } from '@/features/settings/screens/PermissionsScreen';
 import {
   useAlarmSync,
   useAlarmDeepLink as useFeedingAlarmDeepLink,
@@ -111,6 +113,16 @@ export function AppNavigator() {
         name="Sleep"
         component={SleepScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{ title: 'Editar perfil' }}
+      />
+      <Stack.Screen
+        name="Permissions"
+        component={PermissionsScreen}
+        options={{ title: 'Permissões' }}
       />
       </Stack.Navigator>
       {/* Pre-prompt de permissao de push (1x no primeiro acesso logado). */}

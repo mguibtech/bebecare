@@ -15,6 +15,8 @@ import type {
   MeResponse,
   RefreshBody,
   RegisterBody,
+  UpdateProfileBody,
+  UserPublic,
 } from '../types';
 
 export const authApi = {
@@ -55,6 +57,12 @@ export const authApi = {
   /** GET /auth/me — perfil + familia do usuario logado. */
   async me(): Promise<MeResponse> {
     const { data } = await apiClient.get<MeResponse>('/auth/me');
+    return data;
+  },
+
+  /** PATCH /users/me — edita nome e/ou avatar. Retorna o user atualizado. */
+  async updateProfile(body: UpdateProfileBody): Promise<UserPublic> {
+    const { data } = await apiClient.patch<UserPublic>('/users/me', body);
     return data;
   },
 
