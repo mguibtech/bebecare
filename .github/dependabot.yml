@@ -53,24 +53,12 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
-    # Bloqueia majors que costumam ter breaking changes pesadas.
-    # Atualizamos manualmente após ler release notes.
+    # Majors NUNCA via Dependabot (TypeScript 6 quebrou o build no PR #11;
+    # typeorm/uuid/bcryptjs/passport exigem teste de migração). Upgrade de major
+    # é manual e deliberado, lendo release notes. Só minor/patch (agrupados)
+    # chegam automaticamente.
     ignore:
-      - dependency-name: 'typeorm'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@nestjs/typeorm'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@nestjs/*'
-        update-types: ['version-update:semver-major']
-      # uuid é usado em BaseEntity (v7) — toda PK depende. Major exige migração de teste.
-      - dependency-name: 'uuid'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'bcryptjs'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'passport-jwt'
-        update-types: ['version-update:semver-major']
-      # TypeScript 6.0 quebrou o build (PR #11). Bump manual lendo release notes.
-      - dependency-name: 'typescript'
+      - dependency-name: '*'
         update-types: ['version-update:semver-major']
 
   # Mobile (React Native CLI) — habilitar depois que o init for feito
@@ -95,24 +83,13 @@ updates:
           - 'minor'
           - 'patch'
     ignore:
-      # React Native: major exige upgrade manual (upgrade-helper).
-      - dependency-name: 'react-native'
-        update-types: ['version-update:semver-major']
       # react / react-test-renderer: a versao e DITADA pelo react-native — o
       # renderer exige match EXATO. Qualquer bump (ate patch: 19.2.3 -> 19.2.7)
       # quebra o build/testes. Sobem so junto com o RN. Ignora TODAS as updates.
       - dependency-name: 'react'
       - dependency-name: 'react-test-renderer'
-      # jest: o @react-native/jest-preset (0.85) e feito pro jest 29; o major 30
-      # desencontra as internas do jest e quebra os testes. Upgrade manual junto
-      # com o suporte do preset RN.
-      - dependency-name: 'jest'
-        update-types: ['version-update:semver-major']
-      - dependency-name: '@types/jest'
-        update-types: ['version-update:semver-major']
-      # typescript 6.0 ja quebrou o build (mesmo motivo da secao da API).
-      - dependency-name: 'typescript'
-        update-types: ['version-update:semver-major']
-      # eslint 9+ migra pra flat config — mudanca grande, upgrade manual.
-      - dependency-name: 'eslint'
+      # Majors NUNCA via Dependabot: ja quebraram a main (jest 30, react 19.2.7);
+      # react-native exige upgrade-helper. Major e manual e deliberado (testado).
+      # So minor/patch (agrupados) chegam automaticamente.
+      - dependency-name: '*'
         update-types: ['version-update:semver-major']
