@@ -15,7 +15,7 @@
  */
 
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
   Avatar,
@@ -37,6 +37,7 @@ import { useDeleteAccount } from '@/features/auth/hooks/useDeleteAccount';
 import { ApiError } from '@/shared/api/types';
 import { PalettePicker } from '@/features/settings/components/PalettePicker';
 import { ModePicker } from '@/features/settings/components/ModePicker';
+import { APP_VERSION, PRIVACY_URL } from '@/features/settings/constants';
 import type { AppTheme } from '@/app/theme';
 import type { AppStackParamList } from '@/app/navigation/types';
 
@@ -94,8 +95,11 @@ export function MoreScreen() {
   return (
     <SafeAreaView edges={['top']} style={[styles.safe, containerStyle]}>
       <ScrollView contentContainerStyle={styles.scroll}>
-      {/* USUARIO */}
-      <View style={styles.userHeader}>
+      {/* USUARIO — toca pra editar perfil */}
+      <Pressable
+        style={styles.userHeader}
+        onPress={() => navigation.navigate('EditProfile')}
+      >
         <Avatar.Image size={64} source={{ uri: userAvatarUrl }} />
         <View style={styles.userText}>
           <Text variant="titleMedium" style={styles.userName}>
@@ -105,7 +109,10 @@ export function MoreScreen() {
             {user.email}
           </Text>
         </View>
-      </View>
+        <Text variant="bodySmall" style={styles.chevron}>
+          ›
+        </Text>
+      </Pressable>
 
       {/* FAMILIA — card botao que navega pra FamilyScreen */}
       <Pressable onPress={() => navigation.navigate('Family')}>
@@ -197,6 +204,30 @@ export function MoreScreen() {
         </Card.Content>
       </Card>
 
+      {/* PERMISSOES */}
+      <Pressable onPress={() => navigation.navigate('Permissions')}>
+        <Card style={styles.card} mode="outlined">
+          <Card.Title
+            title="Permissões"
+            subtitle="Alarme exato, notificações, bateria"
+            // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
+            left={() => (
+              <Avatar.Icon
+                size={40}
+                icon="shield-check-outline"
+                style={{ backgroundColor: theme.colors.primaryContainer }}
+              />
+            )}
+            // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
+            right={(props) => (
+              <Text {...props} variant="bodySmall" style={styles.chevron}>
+                ›
+              </Text>
+            )}
+          />
+        </Card>
+      </Pressable>
+
       <Text variant="bodySmall" style={styles.placeholder}>
         Em breve: diario, receitas medicas, lista de compras.
       </Text>
@@ -223,6 +254,22 @@ export function MoreScreen() {
           icon="trash-can-outline"
         >
           Excluir minha conta
+        </Button>
+      </View>
+
+      {/* SOBRE */}
+      <View style={styles.about}>
+        <Text variant="labelSmall" style={styles.muted}>
+          BebeCare v{APP_VERSION}
+        </Text>
+        <Button
+          mode="text"
+          compact
+          onPress={() => {
+            Linking.openURL(PRIVACY_URL);
+          }}
+        >
+          Política de privacidade
         </Button>
       </View>
       </ScrollView>
@@ -344,5 +391,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 12,
     textAlign: 'center',
+  },
+  about: {
+    marginTop: 24,
+    alignItems: 'center',
+    gap: 2,
   },
 });

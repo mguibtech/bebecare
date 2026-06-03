@@ -17,6 +17,7 @@ export {
   requestNotificationPermission,
   openExactAlarmSettings,
   openNotificationSettings,
+  openBatteryOptimizationSettings,
   openFullScreenIntentSettings,
   ensureAlarmPermissions,
   type AlarmPermissionStatus,

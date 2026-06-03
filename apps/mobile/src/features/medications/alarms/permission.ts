@@ -51,6 +51,19 @@ export async function openNotificationSettings(): Promise<void> {
   await notifee.openNotificationSettings();
 }
 
+/**
+ * Abre a tela de otimizacao de bateria do app. Em devices agressivos
+ * (Xiaomi/Huawei/Oppo) desabilitar a otimizacao e o que garante o alarme tocar.
+ */
+export async function openBatteryOptimizationSettings(): Promise<void> {
+  if (Platform.OS !== 'android') return;
+  try {
+    await notifee.openBatteryOptimizationSettings();
+  } catch {
+    // alguns devices nao expoem a tela: ignora.
+  }
+}
+
 // ============================================================
 // Alarme exato (SCHEDULE_EXACT_ALARM)
 // ============================================================

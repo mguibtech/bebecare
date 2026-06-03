@@ -79,6 +79,13 @@ export type RefreshBody = {
   refreshToken: string;
 };
 
+/** PATCH /users/me — edita nome e/ou avatar. Todos opcionais. */
+export type UpdateProfileBody = {
+  name?: string;
+  avatarStyle?: AvatarStyle;
+  avatarSeed?: string;
+};
+
 // ---------- Erros conhecidos da camada auth ----------
 
 /**
