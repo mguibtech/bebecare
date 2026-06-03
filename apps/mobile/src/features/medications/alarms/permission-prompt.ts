@@ -14,6 +14,7 @@
  */
 
 import { snackbar } from '@/shared/feedback';
+import { kv } from '@/shared/storage/mmkv';
 
 import {
   ensureAlarmPermissions,
@@ -23,8 +24,9 @@ import {
 } from './permission';
 
 // A dica de tela cheia nao da pra detectar (notifee nao expoe o estado), entao
-// mostramos no maximo uma vez por sessao pra nao virar nag.
-let fullScreenTipShown = false;
+// mostramos no maximo UMA vez na vida do app (persistido) pra nao incomodar quem
+// ja ativou — diferente das outras, que reaparecem enquanto a permissao faltar.
+const FULL_SCREEN_TIP_KEY = 'med-alarm.fullScreenTipShown';
 
 export async function promptAlarmPermissions(): Promise<void> {
   let status;
@@ -61,8 +63,8 @@ export async function promptAlarmPermissions(): Promise<void> {
     return;
   }
 
-  if (!fullScreenTipShown) {
-    fullScreenTipShown = true;
+  if (!kv.getBool(FULL_SCREEN_TIP_KEY)) {
+    kv.setBool(FULL_SCREEN_TIP_KEY, true);
     snackbar.show(
       'Dica: pra o alarme abrir em tela cheia na tela bloqueada, ative "tela cheia" nas configurações.',
       {
