@@ -27,6 +27,8 @@ export type DoseCardProps = {
   onTake: () => void;
   onSkip: () => void;
   onReset: () => void;
+  /** Soneca: re-lembra a dose em alguns minutos (alarme local). */
+  onSnooze?: () => void;
   onPress?: () => void;
 };
 
@@ -45,6 +47,7 @@ export function DoseCard({
   onTake,
   onSkip,
   onReset,
+  onSnooze,
   onPress,
 }: DoseCardProps) {
   const theme = useTheme<AppTheme>();
@@ -141,6 +144,16 @@ export function DoseCard({
               >
                 Pular
               </Button>
+              {onSnooze && (
+                <IconButton
+                  icon="alarm-snooze"
+                  size={20}
+                  accessibilityLabel="Soneca"
+                  onPress={onSnooze}
+                  disabled={busy}
+                  style={styles.snoozeBtn}
+                />
+              )}
             </View>
           )}
         </View>
@@ -196,5 +209,8 @@ const styles = StyleSheet.create({
   },
   takeBtn: {
     borderRadius: 20,
+  },
+  snoozeBtn: {
+    margin: 0,
   },
 });

@@ -30,12 +30,14 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { MutedText } from '@/shared/components';
+import { snackbar } from '@/shared/feedback';
 import { useBabies } from '@/features/babies/hooks/useBabies';
 import { useBabySelectorStore } from '@/features/babies/store/baby-selector.store';
 import type { AppTheme } from '@/app/theme';
 import type { MainTabScreenProps } from '@/app/navigation/types';
 
 import { DoseCard } from '../components/DoseCard';
+import { DEFAULT_SNOOZE_MINUTES, snoozeDose } from '../alarms';
 import { useTodayDoses } from '../hooks/useTodayDoses';
 import {
   useResetDose,
@@ -200,6 +202,18 @@ export function TodayDosesScreen() {
               onReset={() =>
                 resetMutation.mutate({ babyId: selectedBabyId, id: dose.id })
               }
+              onSnooze={() => {
+                snoozeDose(dose, DEFAULT_SNOOZE_MINUTES)
+                  .then(() =>
+                    snackbar.show(
+                      `Lembramos de novo em ${DEFAULT_SNOOZE_MINUTES} min`,
+                      { variant: 'info' },
+                    ),
+                  )
+                  .catch(() =>
+                    snackbar.showError('Não foi possível agendar a soneca'),
+                  );
+              }}
               onPress={() =>
                 navigation.navigate('MedicationDetail', {
                   babyId: selectedBabyId,

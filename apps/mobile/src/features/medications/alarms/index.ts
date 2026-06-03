@@ -24,3 +24,5 @@ export {
 export { promptAlarmPermissions } from './permission-prompt';
 export { ensureAlarmChannel } from './channel';
 export { registerAlarmBackgroundHandler } from './background';
+export { routeFromAlarmNotification } from './deepLink';
+export { snoozeDose, DEFAULT_SNOOZE_MINUTES } from './snooze';
