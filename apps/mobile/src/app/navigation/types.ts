@@ -61,6 +61,8 @@ export type AppStackParamList = {
   Alarms: undefined;
   /** Form de despertador — cria (sem alarmId) ou edita (com alarmId). */
   AlarmForm: { alarmId?: string } | undefined;
+  /** Modo Soninho — ruido branco (B10). */
+  Sleep: undefined;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =

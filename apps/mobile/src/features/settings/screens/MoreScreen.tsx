@@ -155,6 +155,30 @@ export function MoreScreen() {
         </Card>
       </Pressable>
 
+      {/* MODO SONINHO (B10) */}
+      <Pressable onPress={() => navigation.navigate('Sleep')}>
+        <Card style={styles.card} mode="outlined">
+          <Card.Title
+            title="Modo Soninho"
+            subtitle="Ruído branco pra ninar — toca com a tela apagada"
+            // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
+            left={() => (
+              <Avatar.Icon
+                size={40}
+                icon="weather-night"
+                style={{ backgroundColor: theme.colors.primaryContainer }}
+              />
+            )}
+            // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
+            right={(props) => (
+              <Text {...props} variant="bodySmall" style={styles.chevron}>
+                ›
+              </Text>
+            )}
+          />
+        </Card>
+      </Pressable>
+
       {/* APARENCIA */}
       <Card style={styles.card} mode="outlined">
         <Card.Title title="Aparencia" />

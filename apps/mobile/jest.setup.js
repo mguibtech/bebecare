@@ -88,5 +88,34 @@ jest.mock('@notifee/react-native', () =>
   require('@notifee/react-native/jest-mock'),
 );
 
+// react-native-track-player: usa NativeEventEmitter no import, que lanca em
+// Node (modulo nativo ausente). Mocka a API + os enums usados pelo Modo Soninho.
+jest.mock('react-native-track-player', () => ({
+  __esModule: true,
+  default: {
+    setupPlayer: jest.fn(async () => undefined),
+    updateOptions: jest.fn(async () => undefined),
+    setRepeatMode: jest.fn(async () => undefined),
+    reset: jest.fn(async () => undefined),
+    add: jest.fn(async () => undefined),
+    setVolume: jest.fn(async () => undefined),
+    play: jest.fn(async () => undefined),
+    pause: jest.fn(async () => undefined),
+    registerPlaybackService: jest.fn(),
+    addEventListener: jest.fn(),
+  },
+  Capability: { Play: 'play', Pause: 'pause', Stop: 'stop' },
+  RepeatMode: { Off: 0, Track: 1, Queue: 2 },
+  AppKilledPlaybackBehavior: {
+    ContinuePlayback: 'continue',
+    StopPlaybackAndRemoveNotification: 'stop',
+  },
+  Event: {
+    RemotePlay: 'remote-play',
+    RemotePause: 'remote-pause',
+    RemoteStop: 'remote-stop',
+  },
+}));
+
 // Gesture handler ja vem com jestSetup mas precisa ser carregado
 require('react-native-gesture-handler/jestSetup');

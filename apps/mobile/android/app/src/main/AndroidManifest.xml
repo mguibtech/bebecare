@@ -23,6 +23,12 @@
     <!-- Vibrar junto com o alarme. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- ===== Modo Soninho (ruido branco, react-native-track-player, B10) ===== -->
+    <!-- Tocar audio com a tela apagada via foreground service. O tipo
+         MEDIA_PLAYBACK (Android 14+, API 34) e obrigatorio declarar o uso. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
