@@ -45,6 +45,14 @@ updates:
           - '@types/jest'
           - 'supertest'
           - '@types/supertest'
+      # Catch-all: junta TODO o resto de minor/patch num PR só. Os grupos
+      # nomeados acima tem precedencia; majors continuam vindo separados
+      # (pra revisar 1 a 1).
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - 'minor'
+          - 'patch'
     # Bloqueia majors que costumam ter breaking changes pesadas.
     # Atualizamos manualmente após ler release notes.
     ignore:
@@ -77,6 +85,15 @@ updates:
     commit-message:
       prefix: 'chore(mobile)'
       include: scope
+    groups:
+      # Junta TODOS os bumps minor/patch do mobile num PR só — sem isso cada
+      # pacote vira um PR separado (era a causa do acumulo de PRs do Dependabot).
+      # Majors continuam vindo individualmente, pra testar com rebuild 1 a 1.
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - 'minor'
+          - 'patch'
     # Ignora majors de React Native: bumps de major exigem upgrade manual
     # (https://react-native-community.github.io/upgrade-helper/)
     ignore:
