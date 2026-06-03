@@ -31,7 +31,11 @@ export type DateFieldProps<TForm extends FieldValues> = {
   label: string;
   /** Limite inferior (default: sem limite). */
   minimumDate?: Date;
-  /** Limite superior (default: hoje — usado pra birthDate). */
+  /**
+   * Limite superior (default: sem limite). Telas que nao podem ter data futura
+   * (nascimento do bebe, data de aplicacao de vacina) passam `new Date()`
+   * explicitamente. Datas de tratamento (remedio) ficam sem limite.
+   */
   maximumDate?: Date;
   /** Placeholder quando vazio. */
   placeholder?: string;
@@ -68,7 +72,7 @@ export function DateField<TForm extends FieldValues>({
   name,
   label,
   minimumDate,
-  maximumDate = new Date(),
+  maximumDate,
   placeholder = 'DD/MM/AAAA',
 }: DateFieldProps<TForm>) {
   // Estado do picker SOH usado em iOS (Android usa API imperativa).

@@ -79,5 +79,14 @@ jest.mock('@react-native-firebase/messaging', () => ({
   setBackgroundMessageHandler: jest.fn(),
 }));
 
+// Notifee: o modulo nativo (NotifeeNativeModule) lanca no construtor quando nao
+// existe em Node. O mock oficial substitui a API por jest.fn() e re-exporta os
+// enums (AndroidImportance, TriggerType, EventType, etc.) que o codigo de alarme
+// usa. Sem isso, qualquer teste que carregue a arvore de navegacao quebra no
+// import de '@notifee/react-native' (via features/medications/alarms).
+jest.mock('@notifee/react-native', () =>
+  require('@notifee/react-native/jest-mock'),
+);
+
 // Gesture handler ja vem com jestSetup mas precisa ser carregado
 require('react-native-gesture-handler/jestSetup');

@@ -6,6 +6,23 @@
          via messaging().requestPermission() (ver features/notifications/setup.ts). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- ===== Alarmes locais de remedio (notifee, M6/B8) ===== -->
+    <!-- Despertar no horario EXATO da dose (Android 12+, API 31). USE_EXACT_ALARM
+         e auto-concedida e dispensa o prompt; SCHEDULE_EXACT_ALARM e o fallback
+         pedido em runtime via notifee.openAlarmPermissionSettings() em devices que
+         revogam a exata. Justificativa Play Store: lembrete de medicacao infantil. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!-- Alarme abre por cima da lockscreen como um despertador (Android 14+). -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- Reagendar os alarmes apos o usuario reiniciar o celular. O notifee
+         re-registra os triggers automaticamente no BOOT_COMPLETED. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Manter a CPU acordada no instante em que o alarme dispara. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Vibrar junto com o alarme. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"

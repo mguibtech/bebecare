@@ -13,6 +13,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { cancelAllMedicationAlarms } from '@/features/medications/alarms';
 import { notificationsApi } from '@/features/notifications/api/notifications.api';
 import { isFirebaseConfigured } from '@/features/notifications/lib/firebase';
 
@@ -45,6 +46,13 @@ export function useLogout() {
       }
     },
     onSettled: async () => {
+      // Cancela os alarmes locais de remedio da conta que esta saindo — senao
+      // continuariam tocando no device depois do logout. Best-effort.
+      try {
+        await cancelAllMedicationAlarms();
+      } catch {
+        // notifee indisponivel: ignora.
+      }
       // Sempre limpa local, mesmo se backend falhou.
       await useAuthStore.getState().signOut();
       queryClient.clear();

@@ -9,6 +9,7 @@ import {
   isFirebaseConfigured,
   registerBackgroundHandler,
 } from './src/features/notifications';
+import { registerAlarmBackgroundHandler } from './src/features/medications/alarms';
 
 // Reactotron — apenas em dev. Inicializa antes do App para que console.tron
 // esteja disponivel quando os primeiros efeitos rodarem.
@@ -22,5 +23,10 @@ if (__DEV__) {
 if (isFirebaseConfigured()) {
   registerBackgroundHandler();
 }
+
+// Alarmes locais (notifee) em background/quit: ponto de entrega dos eventos do
+// alarme de remedio. Independe do Firebase. No-op seguro se o modulo nativo do
+// notifee ainda nao estiver no build.
+registerAlarmBackgroundHandler();
 
 AppRegistry.registerComponent(appName, () => App);

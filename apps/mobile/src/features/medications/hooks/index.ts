@@ -12,6 +12,9 @@ export {
   useDeleteMedSchedule,
 } from './useMedScheduleMutations';
 
+// Alarmes locais (notifee)
+export { useMedicationAlarmSync } from './useMedicationAlarmSync';
+
 // Dose logs
 export { useTodayDoses } from './useTodayDoses';
 export { useDoseLogs, useDoseLogsByStatus } from './useDoseLogs';

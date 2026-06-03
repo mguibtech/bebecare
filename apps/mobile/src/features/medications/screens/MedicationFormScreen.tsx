@@ -199,18 +199,12 @@ export function MedicationFormScreen({
           Período
         </Text>
 
-        <DateField
-          control={control}
-          name="startDate"
-          label="Início"
-          maximumDate={undefined}
-        />
+        <DateField control={control} name="startDate" label="Início" />
 
         <DateField
           control={control}
           name="endDate"
           label="Fim (opcional — deixe em branco pra uso contínuo)"
-          maximumDate={undefined}
         />
 
         <View style={styles.switchRow}>

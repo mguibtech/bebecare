@@ -26,6 +26,7 @@ import type { AppTheme } from '@/app/theme';
 
 import { DaysOfWeekPicker } from './DaysOfWeekPicker';
 import { TimeField } from './TimeField';
+import { promptAlarmPermissions } from '../alarms';
 import {
   daysFromMask,
   maskFromDays,
@@ -92,6 +93,11 @@ export function ScheduleEditorSheet({
         useAlarm,
       });
       onDismiss();
+      // Just-in-time: so quando o usuario ativou o alarme local. Pede
+      // notificacao/exact-alarm e orienta tela cheia. Roda apos fechar o sheet.
+      if (useAlarm) {
+        promptAlarmPermissions();
+      }
     } catch (err) {
       setSnack(err instanceof Error ? err.message : 'Erro ao salvar');
     }

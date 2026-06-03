@@ -246,6 +246,7 @@ export function BabyFormScreen({
           control={control}
           name="birthDate"
           label="Data de nascimento"
+          maximumDate={new Date()}
         />
 
         {/* SECTION: Medidas ao nascer */}
