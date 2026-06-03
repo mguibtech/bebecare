@@ -14,6 +14,7 @@ import {
 } from '@/features/medications/hooks';
 import { AlarmsListScreen } from '@/features/alarms/screens/AlarmsListScreen';
 import { AlarmFormScreen } from '@/features/alarms/screens/AlarmFormScreen';
+import { SleepScreen } from '@/features/sleep/screens/SleepScreen';
 import {
   useAlarmSync,
   useAlarmDeepLink as useFeedingAlarmDeepLink,
@@ -105,6 +106,11 @@ export function AppNavigator() {
         name="AlarmForm"
         component={AlarmFormScreen}
         // title dentro da tela (create vs edit)
+      />
+      <Stack.Screen
+        name="Sleep"
+        component={SleepScreen}
+        options={{ headerShown: false }}
       />
       </Stack.Navigator>
       {/* Pre-prompt de permissao de push (1x no primeiro acesso logado). */}

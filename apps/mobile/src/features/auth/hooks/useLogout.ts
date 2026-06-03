@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { cancelAllMedicationAlarms } from '@/features/medications/alarms';
 import { cancelAllAlarms } from '@/features/alarms/notifee';
+import { stopPlayback } from '@/features/sleep/player';
 import { notificationsApi } from '@/features/notifications/api/notifications.api';
 import { isFirebaseConfigured } from '@/features/notifications/lib/firebase';
 
@@ -50,9 +51,13 @@ export function useLogout() {
       // Cancela os alarmes locais (remedio + despertadores) da conta que esta
       // saindo — senao continuariam tocando no device depois do logout.
       try {
-        await Promise.all([cancelAllMedicationAlarms(), cancelAllAlarms()]);
+        await Promise.all([
+          cancelAllMedicationAlarms(),
+          cancelAllAlarms(),
+          stopPlayback(),
+        ]);
       } catch {
-        // notifee indisponivel: ignora.
+        // notifee/track-player indisponivel: ignora.
       }
       // Sempre limpa local, mesmo se backend falhou.
       await useAuthStore.getState().signOut();

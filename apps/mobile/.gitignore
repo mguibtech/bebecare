@@ -6,6 +6,11 @@
 # coexistirem dois lockfiles (confunde CI/ferramentas).
 yarn.lock
 
+# Audios do Modo Soninho (B10): grandes e com licenca propria, nao versionados.
+# Cada dev adiciona localmente (ver assets/audio/CREDITS.md). A pasta fica via
+# .gitkeep.
+android/app/src/main/res/raw/*.ogg
+
 # Xcode
 #
 build/

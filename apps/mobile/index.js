@@ -10,6 +10,7 @@ import {
   registerBackgroundHandler,
 } from './src/features/notifications';
 import { registerAlarmBackgroundHandler } from './src/features/medications/alarms';
+import TrackPlayer from 'react-native-track-player';
 
 // Reactotron — apenas em dev. Inicializa antes do App para que console.tron
 // esteja disponivel quando os primeiros efeitos rodarem.
@@ -28,5 +29,13 @@ if (isFirebaseConfigured()) {
 // alarme de remedio. Independe do Firebase. No-op seguro se o modulo nativo do
 // notifee ainda nao estiver no build.
 registerAlarmBackgroundHandler();
+
+// Modo Soninho: registra o playback service do track-player (escopo de modulo).
+// Guardado — no-op se o modulo nativo ainda nao estiver no build.
+try {
+  TrackPlayer.registerPlaybackService(() => require('./service'));
+} catch {
+  // track-player nativo indisponivel (antes do rebuild): ignora.
+}
 
 AppRegistry.registerComponent(appName, () => App);
