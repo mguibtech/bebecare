@@ -41,15 +41,23 @@ export const ALARM_CATEGORY_ICONS: Record<AlarmCategory, string> = {
   [AlarmCategory.CUSTOM]: 'bell-outline',
 };
 
+/** Opcoes de intervalo (horas) oferecidas no form. Divisores de 24. */
+export const INTERVAL_OPTIONS = [2, 3, 4, 6] as const;
+
 export type Alarm = {
   id: string;
   userId: string;
   label: string;
-  /** HH:mm 24h. */
+  /** HH:mm 24h. No modo intervalo, e o horario de INICIO. */
   time: string;
   /** Bitmask 1-127. */
   daysOfWeekMask: number;
   category: AlarmCategory;
+  /**
+   * Modo intervalo: toca a cada N horas a partir de `time` (24h).
+   * null = horario unico (toca so em `time`).
+   */
+  intervalHours: number | null;
   /** Chave de som interno, ou null = som padrao. */
   soundKey: string | null;
   isActive: boolean;
@@ -64,6 +72,8 @@ export type CreateAlarmBody = {
   /** Bitmask 1-127. */
   daysOfWeekMask: number;
   category?: AlarmCategory;
+  /** A cada N horas (2/3/4/6); omitir = horario unico. */
+  intervalHours?: number | null;
   soundKey?: string;
   isActive?: boolean;
 };

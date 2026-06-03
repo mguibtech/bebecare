@@ -37,6 +37,7 @@ import {
   ALARM_CATEGORY_LABELS,
   ALL_DAYS_MASK,
   AlarmCategory,
+  INTERVAL_OPTIONS,
   daysFromMask,
   maskFromDays,
   type DayKey,
@@ -69,6 +70,8 @@ export function AlarmFormScreen({
   const [label, setLabel] = useState('');
   const [category, setCategory] = useState<AlarmCategory>(AlarmCategory.FEEDING);
   const [time, setTime] = useState('06:00');
+  // null = horario unico; numero = a cada N horas.
+  const [intervalHours, setIntervalHours] = useState<number | null>(null);
   const [days, setDays] = useState<DayKey[]>(daysFromMask(ALL_DAYS_MASK));
   const [isActive, setIsActive] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -79,6 +82,7 @@ export function AlarmFormScreen({
       setLabel(editing.label);
       setCategory(editing.category);
       setTime(editing.time);
+      setIntervalHours(editing.intervalHours);
       setDays(daysFromMask(editing.daysOfWeekMask));
       setIsActive(editing.isActive);
     }
@@ -108,6 +112,7 @@ export function AlarmFormScreen({
       time,
       daysOfWeekMask: maskFromDays(days),
       category,
+      intervalHours,
       isActive,
     };
 
@@ -179,9 +184,40 @@ export function AlarmFormScreen({
         </View>
 
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Horário
+          {intervalHours ? 'A partir de' : 'Horário'}
         </Text>
         <TimeField value={time} onChange={setTime} />
+
+        <Text variant="titleSmall" style={styles.sectionTitle}>
+          Repetir
+        </Text>
+        <View style={styles.chips}>
+          <Chip
+            selected={intervalHours === null}
+            showSelectedCheck
+            onPress={() => setIntervalHours(null)}
+            style={styles.chip}
+          >
+            Horário único
+          </Chip>
+          {INTERVAL_OPTIONS.map((h) => (
+            <Chip
+              key={h}
+              selected={intervalHours === h}
+              showSelectedCheck
+              onPress={() => setIntervalHours(h)}
+              style={styles.chip}
+            >
+              A cada {h}h
+            </Chip>
+          ))}
+        </View>
+        {intervalHours && (
+          <MutedText variant="bodySmall" style={styles.intervalHint}>
+            Toca de {intervalHours} em {intervalHours} horas a partir de {time},
+            dia e noite ({24 / intervalHours}x ao dia).
+          </MutedText>
+        )}
 
         <DaysOfWeekPicker
           value={days}
@@ -251,6 +287,9 @@ const styles = StyleSheet.create({
   },
   chip: {
     marginBottom: 4,
+  },
+  intervalHint: {
+    marginTop: 8,
   },
   switchRow: {
     flexDirection: 'row',

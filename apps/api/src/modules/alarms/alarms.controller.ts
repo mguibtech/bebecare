@@ -88,6 +88,7 @@ export class AlarmsController {
       time: a.time,
       daysOfWeekMask: a.daysOfWeekMask,
       category: a.category,
+      intervalHours: a.intervalHours,
       soundKey: a.soundKey,
       isActive: a.isActive,
       createdAt: a.createdAt.toISOString(),

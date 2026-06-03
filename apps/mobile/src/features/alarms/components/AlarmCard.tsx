@@ -58,6 +58,9 @@ export function AlarmCard({ alarm, busy, onToggle, onPress }: AlarmCardProps) {
             {alarm.label}
           </Text>
           <MutedText variant="bodySmall">
+            {alarm.intervalHours
+              ? `A cada ${alarm.intervalHours}h • `
+              : ''}
             {ALARM_CATEGORY_LABELS[alarm.category]} • {formatDays(alarm.daysOfWeekMask)}
           </MutedText>
         </View>

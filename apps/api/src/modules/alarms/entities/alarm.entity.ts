@@ -33,6 +33,12 @@ export class Alarm extends SoftDeletableEntity {
   @Column({ name: 'days_of_week_mask', type: 'int', default: 127 })
   daysOfWeekMask!: number;
 
+  // Modo intervalo (M7): se preenchido (ex: 3), o despertador toca a cada N
+  // horas a partir de `time`, cobrindo 24h (ex: 06:00 → 06/09/12/15/18/21/00/03).
+  // null = horário único (toca só em `time`). O mobile expande os disparos.
+  @Column({ name: 'interval_hours', type: 'int', nullable: true })
+  intervalHours: number | null = null;
+
   @Column({ type: 'enum', enum: AlarmCategory, default: AlarmCategory.CUSTOM })
   category: AlarmCategory = AlarmCategory.CUSTOM;
 
