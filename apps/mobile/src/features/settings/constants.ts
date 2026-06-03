@@ -5,6 +5,6 @@
 // Manter em sincronia com android/app/build.gradle (versionName) a cada release.
 export const APP_VERSION = '1.0.0';
 
-// Politica de privacidade — publicar numa URL publica antes do release na Play
-// Store (roadmap D2). Placeholder ate la.
-export const PRIVACY_URL = 'https://mguibtech.github.io/bebecare/privacidade';
+// Documentos legais publicados via GitHub Pages (ver docs/ + PR dos termos).
+export const PRIVACY_URL = 'https://mguibtech.github.io/bebecare/privacidade.html';
+export const TERMS_URL = 'https://mguibtech.github.io/bebecare/termos.html';

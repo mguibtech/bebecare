@@ -37,7 +37,7 @@ import { useDeleteAccount } from '@/features/auth/hooks/useDeleteAccount';
 import { ApiError } from '@/shared/api/types';
 import { PalettePicker } from '@/features/settings/components/PalettePicker';
 import { ModePicker } from '@/features/settings/components/ModePicker';
-import { APP_VERSION, PRIVACY_URL } from '@/features/settings/constants';
+import { APP_VERSION, PRIVACY_URL, TERMS_URL } from '@/features/settings/constants';
 import type { AppTheme } from '@/app/theme';
 import type { AppStackParamList } from '@/app/navigation/types';
 
@@ -262,15 +262,26 @@ export function MoreScreen() {
         <Text variant="labelSmall" style={styles.muted}>
           BebeCare v{APP_VERSION}
         </Text>
-        <Button
-          mode="text"
-          compact
-          onPress={() => {
-            Linking.openURL(PRIVACY_URL);
-          }}
-        >
-          Política de privacidade
-        </Button>
+        <View style={styles.aboutLinks}>
+          <Button
+            mode="text"
+            compact
+            onPress={() => {
+              Linking.openURL(PRIVACY_URL);
+            }}
+          >
+            Privacidade
+          </Button>
+          <Button
+            mode="text"
+            compact
+            onPress={() => {
+              Linking.openURL(TERMS_URL);
+            }}
+          >
+            Termos de uso
+          </Button>
+        </View>
       </View>
       </ScrollView>
 
@@ -396,5 +407,9 @@ const styles = StyleSheet.create({
     marginTop: 24,
     alignItems: 'center',
     gap: 2,
+  },
+  aboutLinks: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
