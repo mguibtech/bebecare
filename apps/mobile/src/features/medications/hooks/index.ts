@@ -14,6 +14,7 @@ export {
 
 // Alarmes locais (notifee)
 export { useMedicationAlarmSync } from './useMedicationAlarmSync';
+export { useAlarmDeepLink } from './useAlarmDeepLink';
 
 // Dose logs
 export { useTodayDoses } from './useTodayDoses';

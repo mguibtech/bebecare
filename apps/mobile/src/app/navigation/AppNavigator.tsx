@@ -8,7 +8,10 @@ import { AppointmentFormScreen } from '@/features/appointments/screens/Appointme
 import { AppointmentDetailScreen } from '@/features/appointments/screens/AppointmentDetailScreen';
 import { MedicationFormScreen } from '@/features/medications/screens/MedicationFormScreen';
 import { MedicationDetailScreen } from '@/features/medications/screens/MedicationDetailScreen';
-import { useMedicationAlarmSync } from '@/features/medications/hooks';
+import {
+  useAlarmDeepLink,
+  useMedicationAlarmSync,
+} from '@/features/medications/hooks';
 import {
   NotificationPermissionGate,
   useFcmTokenSync,
@@ -33,6 +36,8 @@ export function AppNavigator() {
   // bebe selecionado muda (e no launch). No-op se o notifee ainda nao estiver
   // no build nativo.
   useMedicationAlarmSync();
+  // Deep-link: toque no alarme abre a aba "Hoje" (em vez da home).
+  useAlarmDeepLink();
 
   return (
     <>

@@ -14,6 +14,7 @@ import type { AppTheme } from '@/app/theme';
 import { AppNavigator } from './AppNavigator';
 import { AuthNavigator } from './AuthNavigator';
 import { linking } from './linking';
+import { navigationRef } from './navigationRef';
 
 /**
  * Decide qual stack montar baseado no status do auth.
@@ -66,7 +67,7 @@ export function RootNavigator() {
   }
 
   return (
-    <NavigationContainer theme={navTheme} linking={linking}>
+    <NavigationContainer ref={navigationRef} theme={navTheme} linking={linking}>
       {status === 'authenticated' ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
