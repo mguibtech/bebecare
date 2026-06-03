@@ -123,10 +123,22 @@ horário exato, por cima da lockscreen, mesmo com o app fechado.
   famílias com 2+ bebês não sobrescrevem os alarmes umas das outras.
 - No logout, `cancelAllMedicationAlarms()` limpa os alarmes da conta que sai.
 
-**Permissão de alarme exato (Android 12+):** pedida *just-in-time* — quando há
-alarmes ativos mas a permissão está revogada, um snackbar oferece "Ativar" que
-abre a tela do sistema. Sem ela, o alarme cai pro agendamento inexato (atrasa,
-mas não quebra).
+**Permissões (just-in-time, ao ativar um alarme — `promptAlarmPermissions`):**
+disparadas no save do horário com "Alarme local" ON, uma orientação por vez,
+priorizada:
+
+1. **`POST_NOTIFICATIONS`** (Android 13+) — pedida via `notifee.requestPermission()`,
+   **independente do Firebase** (o alarme não precisa de push). Sem ela o SO
+   suprime a notificação silenciosamente. Negada → snackbar com atalho pros
+   ajustes.
+2. **`SCHEDULE_EXACT_ALARM`** (Android 12+) — `USE_EXACT_ALARM` auto-concede na
+   maioria; se revogada, snackbar "Ativar" → tela do sistema. Sem ela, agendamento
+   inexato (atrasa, não quebra).
+3. **`USE_FULL_SCREEN_INTENT`** (Android 14+) — **não vem concedida por padrão**
+   pra apps comuns; sem ela o alarme abre como heads-up, não em tela cheia. O
+   notifee não expõe o estado dessa permissão, então mostramos só uma **dica**
+   (1x por sessão) com atalho best-effort pras configurações. Fallback aceitável
+   pelo roadmap (heads-up + som).
 
 > ⚠️ **`@notifee/react-native` é um módulo nativo.** Depois de instalar (já feito),
 > é obrigatório **rebuildar** o app — `npm run android` — para o JS enxergar o

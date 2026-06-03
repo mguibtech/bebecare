@@ -8,24 +8,24 @@
  * mutation precisar conhecer o notifee. No launch, o primeiro fetch da lista
  * tambem dispara o sync — cobrindo "reagendar ao abrir o app".
  *
+ * Este hook so RE-AGENDA (efeito de fundo). A UX de permissoes vive no momento
+ * em que o usuario ativa um alarme (ScheduleEditorSheet -> promptAlarmPermissions),
+ * pra nao disparar pedidos de permissao "do nada" no launch.
+ *
  * Montado uma vez na arvore autenticada (AppNavigator), ao lado do
  * useFcmTokenSync.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 import { useBabySelectorStore } from '@/features/babies/store/baby-selector.store';
-import { snackbar } from '@/shared/feedback';
 
-import { openExactAlarmSettings, syncMedicationAlarms } from '../alarms';
+import { syncMedicationAlarms } from '../alarms';
 import { useMedications } from './useMedications';
 
 export function useMedicationAlarmSync(): void {
   const selectedBabyId = useBabySelectorStore((s) => s.selectedBabyId);
   const { data } = useMedications(selectedBabyId);
-
-  // So pede a permissao de alarme exato UMA vez por sessao, pra nao virar nag.
-  const promptedExactRef = useRef(false);
 
   useEffect(() => {
     if (!selectedBabyId || !data) return;
@@ -33,24 +33,8 @@ export function useMedicationAlarmSync(): void {
     let cancelled = false;
     (async () => {
       try {
-        const result = await syncMedicationAlarms(selectedBabyId, data);
+        await syncMedicationAlarms(selectedBabyId, data);
         if (cancelled) return;
-
-        if (result.needsExactPermission && !promptedExactRef.current) {
-          promptedExactRef.current = true;
-          snackbar.show(
-            'Pra os remédios tocarem na hora exata, ative "Alarmes e lembretes" do BebeCare.',
-            {
-              variant: 'info',
-              action: {
-                label: 'Ativar',
-                onPress: () => {
-                  openExactAlarmSettings();
-                },
-              },
-            },
-          );
-        }
       } catch (err) {
         // notifee indisponivel (ex.: app ainda nao rebuildado com o modulo
         // nativo, ou rodando em ambiente sem suporte). Mantem o app vivo.

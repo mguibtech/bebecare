@@ -11,6 +11,16 @@ export {
   cancelAllMedicationAlarms,
   type AlarmSyncResult,
 } from './scheduler';
-export { canScheduleExactAlarms, openExactAlarmSettings } from './permission';
+export {
+  canScheduleExactAlarms,
+  hasNotificationPermission,
+  requestNotificationPermission,
+  openExactAlarmSettings,
+  openNotificationSettings,
+  openFullScreenIntentSettings,
+  ensureAlarmPermissions,
+  type AlarmPermissionStatus,
+} from './permission';
+export { promptAlarmPermissions } from './permission-prompt';
 export { ensureAlarmChannel } from './channel';
 export { registerAlarmBackgroundHandler } from './background';
