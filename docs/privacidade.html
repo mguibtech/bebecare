@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Política de Privacidade — BebeCare</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 24px 18px 64px;
+        color: #1a1a1a;
+        background: #fff;
+      }
+      @media (prefers-color-scheme: dark) {
+        body { color: #e6e6e6; background: #141414; }
+        a { color: #8ab4f8; }
+        code { background: #2a2a2a; }
+      }
+      h1 { font-size: 1.6rem; margin-bottom: 4px; }
+      h2 { font-size: 1.2rem; margin-top: 32px; border-bottom: 1px solid rgba(128,128,128,.25); padding-bottom: 4px; }
+      .meta { color: #888; font-size: .9rem; margin-bottom: 24px; }
+      ul { padding-left: 20px; }
+      code { background: #f0f0f0; padding: 1px 5px; border-radius: 4px; font-size: .9em; }
+      a { color: #1a5fd0; }
+      .note { background: rgba(91,141,239,.12); border-left: 3px solid #5B8DEF; padding: 10px 14px; border-radius: 6px; }
+      footer { margin-top: 48px; font-size: .85rem; color: #888; }
+    </style>
+  </head>
+  <body>
+    <h1>Política de Privacidade — BebeCare</h1>
+    <p class="meta">Última atualização: 3 de junho de 2026</p>
+
+    <p>
+      Esta Política descreve como o aplicativo <strong>BebeCare</strong> coleta,
+      usa, armazena e protege os dados pessoais dos seus usuários, em conformidade
+      com a <strong>Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018)</strong>.
+      Ao usar o BebeCare, você concorda com as práticas aqui descritas.
+    </p>
+
+    <h2>1. Quem é o controlador</h2>
+    <p>
+      O BebeCare é um app pessoal de cuidados com o bebê, desenvolvido e operado por
+      seu autor (a seguir, "nós"). Para qualquer assunto relacionado a privacidade e
+      proteção de dados, fale com a gente:
+    </p>
+    <ul>
+      <li>E-mail: <a href="mailto:mguibtech@gmail.com">mguibtech@gmail.com</a></li>
+    </ul>
+
+    <h2>2. Quais dados coletamos</h2>
+    <p>Coletamos apenas o necessário para o app funcionar:</p>
+    <ul>
+      <li><strong>Conta:</strong> nome, e-mail e senha (a senha é guardada apenas como <em>hash</em>, nunca em texto puro).</li>
+      <li><strong>Dispositivo:</strong> token de notificação (FCM) para enviar lembretes; tipo/estilo do avatar (DiceBear).</li>
+      <li><strong>Dados do bebê</strong> (fornecidos por você): nome, sexo, data de nascimento, peso e altura, tipo sanguíneo, alergias, cor dos olhos e anotações.</li>
+      <li><strong>Cuidados:</strong> registros de vacinas, consultas, medicamentos e despertadores (horários e lembretes).</li>
+    </ul>
+    <p class="note">
+      <strong>Não coletamos</strong> fotos, diagnósticos médicos, dados de geolocalização,
+      contatos, dados de pagamento, nem usamos publicidade ou rastreadores de terceiros.
+    </p>
+
+    <h2>3. Por que tratamos esses dados (bases legais)</h2>
+    <ul>
+      <li><strong>Execução de contrato</strong> (art. 7º, V da LGPD): criar sua conta e oferecer as funções do app.</li>
+      <li><strong>Consentimento</strong> (art. 7º, I): enviar notificações/lembretes — você pode revogar nas configurações do sistema a qualquer momento.</li>
+    </ul>
+
+    <h2>4. Dados de crianças</h2>
+    <p>
+      Os dados do bebê são inseridos e gerenciados <strong>por você, responsável legal</strong>,
+      no melhor interesse da criança (art. 14 da LGPD). O bebê não é usuário do app. Você é
+      responsável por garantir que tem direito de tratar esses dados.
+    </p>
+
+    <h2>5. Como usamos os dados</h2>
+    <ul>
+      <li>Organizar e exibir os cuidados do seu bebê (vacinas, consultas, remédios).</li>
+      <li>Enviar lembretes e alarmes que você configurou.</li>
+      <li>Compartilhar os dados do bebê entre os membros da mesma família/casal que você convidar.</li>
+    </ul>
+    <p>Não vendemos nem alugamos seus dados. Ponto.</p>
+
+    <h2>6. Compartilhamento com terceiros</h2>
+    <p>Usamos um único serviço de terceiro, estritamente operacional:</p>
+    <ul>
+      <li><strong>Google Firebase Cloud Messaging</strong> — entrega das notificações push. Recebe apenas o token do dispositivo e o conteúdo do lembrete. Veja a <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">política do Firebase</a>.</li>
+    </ul>
+
+    <h2>7. Armazenamento e segurança</h2>
+    <ul>
+      <li>Senhas são guardadas como <em>hash</em> (bcrypt) — não temos acesso à sua senha.</li>
+      <li>A comunicação entre o app e o servidor é criptografada (HTTPS).</li>
+      <li>O acesso aos seus dados exige autenticação por token.</li>
+    </ul>
+
+    <h2>8. Retenção e exclusão</h2>
+    <p>
+      Mantemos seus dados enquanto sua conta existir. Você pode <strong>excluir sua conta</strong>
+      a qualquer momento dentro do app (Mais → Excluir minha conta). A exclusão é imediata
+      (<em>soft delete</em>) e os dados são apagados definitivamente após até 30 dias. Se você
+      for o único membro da família, os dados do bebê são excluídos junto.
+    </p>
+
+    <h2>9. Seus direitos (LGPD)</h2>
+    <p>Você pode, a qualquer momento:</p>
+    <ul>
+      <li>Acessar e corrigir seus dados (dentro do app);</li>
+      <li>Excluir sua conta e seus dados;</li>
+      <li>Revogar o consentimento de notificações;</li>
+      <li>Solicitar informações sobre o tratamento dos dados pelo e-mail acima.</li>
+    </ul>
+
+    <h2>10. Alterações nesta Política</h2>
+    <p>
+      Podemos atualizar esta Política. Mudanças relevantes serão comunicadas no app ou por
+      e-mail. A data no topo indica a versão vigente.
+    </p>
+
+    <footer>
+      BebeCare — cuidados do bebê, com privacidade. Contato:
+      <a href="mailto:mguibtech@gmail.com">mguibtech@gmail.com</a><br />
+      <a href="termos.html">Termos de Uso</a> · <a href="index.html">Início</a>
+    </footer>
+  </body>
+</html>
