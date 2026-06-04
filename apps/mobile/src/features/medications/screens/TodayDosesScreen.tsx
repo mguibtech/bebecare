@@ -15,6 +15,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -46,16 +47,18 @@ import {
 } from '../hooks/useDoseActions';
 import { DoseStatus, type MedDoseLog } from '../types';
 
-function todayLabel(): string {
-  const d = new Date();
-  const dias = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
-  return `${dias[d.getDay()]}, ${String(d.getDate()).padStart(2, '0')}/${String(
-    d.getMonth() + 1,
-  ).padStart(2, '0')}`;
+/** Data de hoje localizada conforme o idioma ativo (ex.: "quinta-feira, 04/06"). */
+function todayLabel(lng: string): string {
+  return new Date().toLocaleDateString(lng, {
+    weekday: 'long',
+    day: '2-digit',
+    month: '2-digit',
+  });
 }
 
 export function TodayDosesScreen() {
   const theme = useTheme<AppTheme>();
+  const { t, i18n } = useTranslation();
   const navigation =
     useNavigation<MainTabScreenProps<'Today'>['navigation']>();
   const babies = useBabies();
@@ -110,11 +113,10 @@ export function TodayDosesScreen() {
           color={theme.colors.primary}
         />
         <Text variant="headlineSmall" style={styles.emptyTitle}>
-          Cadastre um bebê primeiro
+          {t('today.noBabyTitle')}
         </Text>
         <MutedText variant="bodyMedium" style={styles.emptyBody}>
-          As doses do dia aparecem aqui depois que você{'\n'}
-          cadastrar um bebê e os remédios dele.
+          {t('today.noBabyBody')}
         </MutedText>
       </SafeAreaView>
     );
@@ -130,10 +132,10 @@ export function TodayDosesScreen() {
           color={theme.colors.primary}
         />
         <Text variant="headlineSmall" style={styles.emptyTitle}>
-          Qual bebê?
+          {t('today.whichBabyTitle')}
         </Text>
         <MutedText variant="bodyMedium" style={styles.emptyBody}>
-          Selecione um bebê na tab Início pra ver as doses dele.
+          {t('today.whichBabyBody')}
         </MutedText>
       </SafeAreaView>
     );
@@ -143,11 +145,15 @@ export function TodayDosesScreen() {
     <SafeAreaView style={[styles.root, containerStyle]} edges={['top']}>
       <View style={styles.header}>
         <Text variant="headlineMedium" style={styles.title}>
-          Hoje
+          {t('today.title')}
         </Text>
         <MutedText variant="bodyMedium" style={styles.subtitle}>
-          {todayLabel()}
-          {doses.length > 0 && ` • ${takenCount}/${doses.length} tomadas`}
+          {todayLabel(i18n.language)}
+          {doses.length > 0 &&
+            ` • ${t('today.summaryTaken', {
+              taken: takenCount,
+              total: doses.length,
+            })}`}
         </MutedText>
       </View>
 
@@ -168,8 +174,8 @@ export function TodayDosesScreen() {
           </View>
         ) : query.isError ? (
           <View style={styles.loadingBox}>
-            <Text>Erro ao carregar as doses</Text>
-            <Button onPress={() => query.refetch()}>Tentar de novo</Button>
+            <Text>{t('today.loadError')}</Text>
+            <Button onPress={() => query.refetch()}>{t('common.retry')}</Button>
           </View>
         ) : doses.length === 0 ? (
           <View style={styles.emptyListBox}>
@@ -179,11 +185,10 @@ export function TodayDosesScreen() {
               color={theme.app.success}
             />
             <Text variant="titleMedium" style={styles.emptyListTitle}>
-              Nada para hoje
+              {t('today.nothingTitle')}
             </Text>
             <MutedText variant="bodyMedium" style={styles.emptyListText}>
-              Nenhuma dose agendada para hoje.{'\n'}
-              Cadastre horários em Saúde → Remédios.
+              {t('today.nothingBody')}
             </MutedText>
           </View>
         ) : (
@@ -206,13 +211,11 @@ export function TodayDosesScreen() {
                 snoozeDose(dose, DEFAULT_SNOOZE_MINUTES)
                   .then(() =>
                     snackbar.show(
-                      `Lembramos de novo em ${DEFAULT_SNOOZE_MINUTES} min`,
+                      t('today.snoozeOk', { min: DEFAULT_SNOOZE_MINUTES }),
                       { variant: 'info' },
                     ),
                   )
-                  .catch(() =>
-                    snackbar.showError('Não foi possível agendar a soneca'),
-                  );
+                  .catch(() => snackbar.showError(t('today.snoozeError')));
               }}
               onPress={() =>
                 navigation.navigate('MedicationDetail', {
@@ -230,24 +233,25 @@ export function TodayDosesScreen() {
           visible={skipTarget !== null}
           onDismiss={() => setSkipTarget(null)}
         >
-          <Dialog.Title>Pular dose</Dialog.Title>
+          <Dialog.Title>{t('today.skipTitle')}</Dialog.Title>
           <Dialog.Content>
             <MutedText variant="bodyMedium" style={styles.dialogBody}>
-              {skipTarget?.medication.name} — pode registrar o motivo
-              (opcional).
+              {t('today.skipBody', { name: skipTarget?.medication.name ?? '' })}
             </MutedText>
             <TextInput
               mode="outlined"
-              label="Motivo (opcional)"
+              label={t('today.skipReasonLabel')}
               value={skipReason}
               onChangeText={setSkipReason}
               maxLength={200}
-              placeholder="ex: bebê dormindo, recusou"
+              placeholder={t('today.skipReasonPlaceholder')}
             />
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setSkipTarget(null)}>Cancelar</Button>
-            <Button onPress={confirmSkip}>Pular dose</Button>
+            <Button onPress={() => setSkipTarget(null)}>
+              {t('common.cancel')}
+            </Button>
+            <Button onPress={confirmSkip}>{t('today.skipTitle')}</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

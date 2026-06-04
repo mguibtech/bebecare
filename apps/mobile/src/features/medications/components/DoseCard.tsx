@@ -11,6 +11,7 @@
  * Tap no corpo abre o detalhe do medicamento.
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Button, Card, IconButton, Text, useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -51,6 +52,7 @@ export function DoseCard({
   onPress,
 }: DoseCardProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
 
   const isPending = dose.status === DoseStatus.PENDING;
   const isTaken = dose.status === DoseStatus.TAKEN;
@@ -106,7 +108,7 @@ export function DoseCard({
               variant="labelSmall"
               style={[styles.statusLabel, { color: theme.app.warning }]}
             >
-              Atrasada
+              {t('doseCard.overdue')}
             </Text>
           )}
           {isTaken && dose.takenAt && (
@@ -114,12 +116,13 @@ export function DoseCard({
               variant="labelSmall"
               style={[styles.statusLabel, { color: theme.app.success }]}
             >
-              Tomada às {formatTime(dose.takenAt)}
+              {t('doseCard.takenAt', { time: formatTime(dose.takenAt) })}
             </Text>
           )}
           {isSkipped && (
             <MutedText variant="labelSmall" style={styles.statusLabel}>
-              Pulada{dose.skipReason ? ` — ${dose.skipReason}` : ''}
+              {t('doseCard.skipped')}
+              {dose.skipReason ? ` — ${dose.skipReason}` : ''}
             </MutedText>
           )}
 
@@ -134,7 +137,7 @@ export function DoseCard({
                 disabled={busy}
                 style={styles.takeBtn}
               >
-                Tomei
+                {t('doseCard.take')}
               </Button>
               <Button
                 mode="text"
@@ -142,13 +145,13 @@ export function DoseCard({
                 onPress={onSkip}
                 disabled={busy}
               >
-                Pular
+                {t('doseCard.skip')}
               </Button>
               {onSnooze && (
                 <IconButton
                   icon="alarm-snooze"
                   size={20}
-                  accessibilityLabel="Soneca"
+                  accessibilityLabel={t('doseCard.snooze')}
                   onPress={onSnooze}
                   disabled={busy}
                   style={styles.snoozeBtn}
@@ -162,7 +165,7 @@ export function DoseCard({
           <IconButton
             icon="undo-variant"
             size={20}
-            accessibilityLabel="Desfazer"
+            accessibilityLabel={t('doseCard.undo')}
             onPress={onReset}
             disabled={busy}
           />
