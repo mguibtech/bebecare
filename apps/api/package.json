@@ -8,7 +8,11 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "db:up": "docker compose -f ../../docker-compose.yml up -d postgres",
+    "db:down": "docker compose -f ../../docker-compose.yml stop postgres",
+    "prestart": "npm run db:up",
     "start": "nest start",
+    "prestart:dev": "npm run db:up",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
