@@ -3,6 +3,7 @@
  * Cores e ícone derivam do tema via getStatusVisuals.
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,7 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import type { AppTheme } from '@/app/theme';
 
 import { getStatusVisuals } from '../utils/statusVisuals';
-import type { VaccineStatus } from '../types';
+import { VaccineStatus } from '../types';
 
 type StatusChipProps = {
   status: VaccineStatus;
@@ -18,8 +19,17 @@ type StatusChipProps = {
   compact?: boolean;
 };
 
+/** Status -> chave i18n do label (cor/icone vem do getStatusVisuals). */
+const STATUS_LABEL_KEY = {
+  [VaccineStatus.APPLIED]: 'vaccines.statusApplied',
+  [VaccineStatus.OVERDUE]: 'vaccines.statusOverdue',
+  [VaccineStatus.DUE]: 'vaccines.statusDue',
+  [VaccineStatus.UPCOMING]: 'vaccines.statusUpcoming',
+} as const;
+
 export function StatusChip({ status, compact }: StatusChipProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const visual = getStatusVisuals(status, theme);
 
   const padH = compact ? 8 : 12;
@@ -44,7 +54,7 @@ export function StatusChip({ status, compact }: StatusChipProps) {
         color={visual.color}
       />
       <Text style={[styles.label, { color: visual.color, fontSize }]}>
-        {visual.label}
+        {t(STATUS_LABEL_KEY[status])}
       </Text>
     </View>
   );
