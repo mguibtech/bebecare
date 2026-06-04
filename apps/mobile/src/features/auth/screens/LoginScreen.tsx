@@ -14,10 +14,18 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Snackbar, Text, useTheme } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { FormInput, FormPassword, SubmitButton } from '@/shared/components';
+import {
+  BrandGradient,
+  FormInput,
+  FormPassword,
+  Logo,
+  MutedText,
+  SubmitButton,
+} from '@/shared/components';
 import { ApiError } from '@/shared/api/types';
 import type { AuthScreenProps } from '@/app/navigation/types';
 import type { AppTheme } from '@/app/theme';
@@ -63,47 +71,54 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
-        <Text variant="headlineMedium" style={styles.title}>
-          BebeCare
-        </Text>
-        <Text variant="bodyMedium" style={styles.subtitle}>
-          Entre para acompanhar o seu bebe
-        </Text>
+        {/* HERO com gradiente da marca + logo branco */}
+        <BrandGradient style={styles.hero}>
+          <SafeAreaView edges={['top']} style={styles.heroInner}>
+            <Logo variant="full" size={56} mono="#fff" />
+            <Text variant="bodyLarge" style={styles.heroTagline}>
+              Tudo do seu bebe, num lugar so
+            </Text>
+          </SafeAreaView>
+        </BrandGradient>
 
-        <FormInput
-          control={control}
-          name="email"
-          label="Email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-          textContentType="emailAddress"
-        />
-        <FormPassword
-          control={control}
-          name="password"
-          label="Senha"
-        />
-
-        <SubmitButton
-          onPress={onSubmit}
-          loading={login.isPending}
-          disabled={!formState.isValid && formState.isSubmitted}
-        >
-          {login.isPending ? 'Entrando...' : 'Entrar'}
-        </SubmitButton>
-
-        <View style={styles.footer}>
-          <Text variant="bodyMedium" style={styles.footerText}>
-            Ainda nao tem conta?{' '}
+        {/* FORMULARIO */}
+        <View style={styles.form}>
+          <Text variant="titleLarge" style={styles.formTitle}>
+            Entrar
           </Text>
-          <Text
-            variant="bodyMedium"
-            style={styles.link}
-            onPress={() => navigation.navigate('Register')}
+          <MutedText variant="bodyMedium" style={styles.formSubtitle}>
+            Bem-vindo de volta!
+          </MutedText>
+
+          <FormInput
+            control={control}
+            name="email"
+            label="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            textContentType="emailAddress"
+          />
+          <FormPassword control={control} name="password" label="Senha" />
+
+          <SubmitButton
+            onPress={onSubmit}
+            loading={login.isPending}
+            disabled={!formState.isValid && formState.isSubmitted}
           >
-            Cadastre-se
-          </Text>
+            {login.isPending ? 'Entrando...' : 'Entrar'}
+          </SubmitButton>
+
+          <View style={styles.footer}>
+            <MutedText variant="bodyMedium">Ainda nao tem conta? </MutedText>
+            <Text
+              variant="bodyMedium"
+              style={[styles.link, { color: theme.colors.primary }]}
+              onPress={() => navigation.navigate('Register')}
+            >
+              Cadastre-se
+            </Text>
+          </View>
         </View>
       </ScrollView>
 
@@ -125,26 +140,40 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flexGrow: 1,
+  },
+  hero: {
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    overflow: 'hidden',
+  },
+  heroInner: {
+    alignItems: 'center',
+    paddingTop: 56,
+    paddingBottom: 48,
+    paddingHorizontal: 24,
+  },
+  heroTagline: {
+    color: '#FFFFFF',
+    marginTop: 12,
+    textAlign: 'center',
+    opacity: 0.95,
+  },
+  form: {
+    flex: 1,
     justifyContent: 'center',
     padding: 24,
+    paddingTop: 32,
   },
-  title: {
-    marginBottom: 8,
-    fontWeight: '700',
-    textAlign: 'center',
+  formTitle: {
+    marginBottom: 2,
   },
-  subtitle: {
-    marginBottom: 32,
-    opacity: 0.7,
-    textAlign: 'center',
+  formSubtitle: {
+    marginBottom: 24,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 24,
-  },
-  footerText: {
-    opacity: 0.7,
   },
   link: {
     fontWeight: '600',

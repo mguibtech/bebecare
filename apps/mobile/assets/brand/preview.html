@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BebeCare — preview de logo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Nunito:wght@600;700;800;900&display=swap');
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:'Inter',sans-serif; background:#0f1620; color:#e6eaf2; padding:32px; }
+  h1 { font-family:'Nunito',sans-serif; font-weight:800; }
+  h2 { font-family:'Nunito',sans-serif; font-weight:700; margin-top:48px; border-bottom:1px solid #2b3a4f; padding-bottom:8px; }
+  .row { display:flex; flex-wrap:wrap; gap:24px; align-items:center; margin:24px 0; }
+  .card { border-radius:20px; padding:28px; display:flex; flex-direction:column; align-items:center; gap:12px; min-width:160px; }
+  .light { background:#FAFAFC; color:#1A1A1F; }
+  .dark  { background:#1A2233; color:#E6EAF2; }
+  .grad  { background:linear-gradient(135deg,#5B9BD5,#F4A6B8); color:#fff; }
+  .label { font-size:12px; opacity:.6; font-family:'Inter'; }
+  .wordmark { font-family:'Nunito',sans-serif; font-size:34px; letter-spacing:-.5px; }
+  .wordmark b { font-weight:900; }
+  .wordmark span { font-weight:600; }
+  .sizes { display:flex; gap:20px; align-items:flex-end; }
+  .note { opacity:.5; font-size:13px; max-width:640px; line-height:1.6; }
+</style>
+</head>
+<body>
+<h1>🍼 BebeCare — preview de logo</h1>
+<p class="note">Três variações do conceito "coração + pezinho". Olhe nos três fundos (claro / escuro / gradiente) e em tamanhos pequenos (é o teste de verdade — precisa funcionar a 24px na tab bar e no ícone). Me diga qual variação prefere (A, B ou C) e o que ajustar.</p>
+
+<!-- ============ DEFS compartilhados ============ -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="brand" x1="12" y1="16" x2="88" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5B9BD5"/><stop offset="1" stop-color="#F4A6B8"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ============ VARIAÇÃO A: coração-sola + dedinhos ============ -->
+<h2>Variação A — coração é a sola, dedinhos arqueados em cima</h2>
+<div class="row">
+  <div class="card light"><svg width="96" height="115" viewBox="0 0 100 120"><use href="#markA"/></svg><span class="label">claro</span></div>
+  <div class="card dark"><svg width="96" height="115" viewBox="0 0 100 120"><use href="#markA"/></svg><span class="label">escuro</span></div>
+  <div class="card grad"><svg width="96" height="115" viewBox="0 0 100 120"><use href="#markA-mono"/></svg><span class="label">gradiente (mono branco)</span></div>
+  <div class="card light sizes">
+    <svg width="24" height="29" viewBox="0 0 100 120"><use href="#markA"/></svg>
+    <svg width="40" height="48" viewBox="0 0 100 120"><use href="#markA"/></svg>
+    <svg width="64" height="77" viewBox="0 0 100 120"><use href="#markA"/></svg>
+    <span class="label">24 / 40 / 64px</span>
+  </div>
+</div>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <g id="markA">
+    <path d="M50 110 C 22 86 12 68 12 52 C 12 40 21 33 31 33 C 40 33 47 39 50 47 C 53 39 60 33 69 33 C 79 33 88 40 88 52 C 88 68 78 86 50 110 Z" fill="url(#brand)"/>
+    <circle cx="24" cy="30" r="8" fill="url(#brand)"/><circle cx="39" cy="19" r="6.5" fill="url(#brand)"/>
+    <circle cx="53" cy="15" r="6" fill="url(#brand)"/><circle cx="66" cy="18" r="5.5" fill="url(#brand)"/>
+    <circle cx="78" cy="27" r="5" fill="url(#brand)"/>
+  </g>
+  <g id="markA-mono">
+    <path d="M50 110 C 22 86 12 68 12 52 C 12 40 21 33 31 33 C 40 33 47 39 50 47 C 53 39 60 33 69 33 C 79 33 88 40 88 52 C 88 68 78 86 50 110 Z" fill="#fff"/>
+    <circle cx="24" cy="30" r="8" fill="#fff"/><circle cx="39" cy="19" r="6.5" fill="#fff"/>
+    <circle cx="53" cy="15" r="6" fill="#fff"/><circle cx="66" cy="18" r="5.5" fill="#fff"/>
+    <circle cx="78" cy="27" r="5" fill="#fff"/>
+  </g>
+</defs></svg>
+
+<!-- ============ VARIAÇÃO A2: coração-sola + dedinhos NATURAIS (assimétricos) ============ -->
+<h2>Variação A2 — igual a A, mas dedinhos naturais (assimétricos, ovalados, em diagonal) — "mais pé de verdade"</h2>
+<div class="row">
+  <div class="card light"><svg width="96" height="115" viewBox="0 0 100 120"><use href="#markA2"/></svg><span class="label">claro</span></div>
+  <div class="card dark"><svg width="96" height="115" viewBox="0 0 100 120"><use href="#markA2"/></svg><span class="label">escuro</span></div>
+  <div class="card grad"><svg width="96" height="115" viewBox="0 0 100 120"><use href="#markA2-mono"/></svg><span class="label">gradiente (mono)</span></div>
+  <div class="card light sizes">
+    <svg width="24" height="29" viewBox="0 0 100 120"><use href="#markA2"/></svg>
+    <svg width="40" height="48" viewBox="0 0 100 120"><use href="#markA2"/></svg>
+    <svg width="64" height="77" viewBox="0 0 100 120"><use href="#markA2"/></svg>
+    <span class="label">24 / 40 / 64px</span>
+  </div>
+</div>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <g id="markA2">
+    <path d="M50 110 C 22 86 12 68 12 52 C 12 40 21 33 31 33 C 40 33 47 39 50 47 C 53 39 60 33 69 33 C 79 33 88 40 88 52 C 88 68 78 86 50 110 Z" fill="url(#brand)"/>
+    <!-- dedão grande (esquerda) decrescendo em diagonal pro mindinho (direita) -->
+    <ellipse cx="22" cy="32" rx="8.5" ry="9.5" transform="rotate(-12 22 32)" fill="url(#brand)"/>
+    <ellipse cx="36" cy="22" rx="7"   ry="8"   transform="rotate(-6 36 22)"  fill="url(#brand)"/>
+    <ellipse cx="50" cy="18" rx="6"   ry="7"   fill="url(#brand)"/>
+    <ellipse cx="63" cy="20" rx="5"   ry="6"   transform="rotate(8 63 20)"   fill="url(#brand)"/>
+    <ellipse cx="74" cy="27" rx="4.2" ry="5"   transform="rotate(16 74 27)"  fill="url(#brand)"/>
+  </g>
+  <g id="markA2-mono">
+    <path d="M50 110 C 22 86 12 68 12 52 C 12 40 21 33 31 33 C 40 33 47 39 50 47 C 53 39 60 33 69 33 C 79 33 88 40 88 52 C 88 68 78 86 50 110 Z" fill="#fff"/>
+    <ellipse cx="22" cy="32" rx="8.5" ry="9.5" transform="rotate(-12 22 32)" fill="#fff"/>
+    <ellipse cx="36" cy="22" rx="7"   ry="8"   transform="rotate(-6 36 22)"  fill="#fff"/>
+    <ellipse cx="50" cy="18" rx="6"   ry="7"   fill="#fff"/>
+    <ellipse cx="63" cy="20" rx="5"   ry="6"   transform="rotate(8 63 20)"   fill="#fff"/>
+    <ellipse cx="74" cy="27" rx="4.2" ry="5"   transform="rotate(16 74 27)"  fill="#fff"/>
+  </g>
+</defs></svg>
+
+<!-- ============ VARIAÇÃO B: pezinho recortado DENTRO do coração ============ -->
+<h2>Variação B — coração cheio com pezinho vazado (negative space)</h2>
+<div class="row">
+  <div class="card light"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markB"/></svg><span class="label">claro</span></div>
+  <div class="card dark"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markB"/></svg><span class="label">escuro</span></div>
+  <div class="card grad"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markB-w"/></svg><span class="label">gradiente</span></div>
+  <div class="card light sizes">
+    <svg width="24" height="24" viewBox="0 0 100 100"><use href="#markB"/></svg>
+    <svg width="40" height="40" viewBox="0 0 100 100"><use href="#markB"/></svg>
+    <svg width="64" height="64" viewBox="0 0 100 100"><use href="#markB"/></svg>
+    <span class="label">24 / 40 / 64px</span>
+  </div>
+</div>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <!-- heart fill with footprint punched out via fill-rule evenodd -->
+  <g id="markB">
+    <path fill-rule="evenodd" fill="url(#brand)" d="
+      M50 90 C 20 66 8 48 8 32 C 8 18 18 10 30 10 C 40 10 47 16 50 24 C 53 16 60 10 70 10 C 82 10 92 18 92 32 C 92 48 80 66 50 90 Z
+      M50 78 C 60 68 66 60 66 54 C 66 49 62 46 57 47 C 53 48 51 51 50 55 C 49 51 47 48 43 47 C 38 46 34 49 34 54 C 34 60 40 68 50 78 Z
+      M40 40 a4 4 0 1 0 0.1 0 Z M48 36 a3.4 3.4 0 1 0 0.1 0 Z M56 36 a3.2 3.2 0 1 0 0.1 0 Z M62 40 a3 3 0 1 0 0.1 0 Z" />
+  </g>
+  <g id="markB-w">
+    <path fill-rule="evenodd" fill="#fff" d="
+      M50 90 C 20 66 8 48 8 32 C 8 18 18 10 30 10 C 40 10 47 16 50 24 C 53 16 60 10 70 10 C 82 10 92 18 92 32 C 92 48 80 66 50 90 Z
+      M50 78 C 60 68 66 60 66 54 C 66 49 62 46 57 47 C 53 48 51 51 50 55 C 49 51 47 48 43 47 C 38 46 34 49 34 54 C 34 60 40 68 50 78 Z
+      M40 40 a4 4 0 1 0 0.1 0 Z M48 36 a3.4 3.4 0 1 0 0.1 0 Z M56 36 a3.2 3.2 0 1 0 0.1 0 Z M62 40 a3 3 0 1 0 0.1 0 Z" />
+  </g>
+</defs></svg>
+
+<!-- ============ VARIAÇÃO C: coração formado por 2 pezinhos ============ -->
+<h2>Variação C — dois pezinhos espelhados formando um coração</h2>
+<div class="row">
+  <div class="card light"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markC"/></svg><span class="label">claro</span></div>
+  <div class="card dark"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markC"/></svg><span class="label">escuro</span></div>
+  <div class="card grad"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markC-w"/></svg><span class="label">gradiente</span></div>
+  <div class="card light sizes">
+    <svg width="24" height="24" viewBox="0 0 100 100"><use href="#markC"/></svg>
+    <svg width="40" height="40" viewBox="0 0 100 100"><use href="#markC"/></svg>
+    <svg width="64" height="64" viewBox="0 0 100 100"><use href="#markC"/></svg>
+    <span class="label">24 / 40 / 64px</span>
+  </div>
+</div>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <g id="markC">
+    <!-- left foot -->
+    <g fill="#5B9BD5">
+      <ellipse cx="35" cy="58" rx="16" ry="22" transform="rotate(-18 35 58)"/>
+      <circle cx="20" cy="34" r="5"/><circle cx="29" cy="29" r="4.2"/><circle cx="38" cy="28" r="3.8"/>
+    </g>
+    <!-- right foot -->
+    <g fill="#F4A6B8">
+      <ellipse cx="65" cy="58" rx="16" ry="22" transform="rotate(18 65 58)"/>
+      <circle cx="80" cy="34" r="5"/><circle cx="71" cy="29" r="4.2"/><circle cx="62" cy="28" r="3.8"/>
+    </g>
+  </g>
+  <g id="markC-w">
+    <g fill="#fff" opacity="0.95">
+      <ellipse cx="35" cy="58" rx="16" ry="22" transform="rotate(-18 35 58)"/>
+      <circle cx="20" cy="34" r="5"/><circle cx="29" cy="29" r="4.2"/><circle cx="38" cy="28" r="3.8"/>
+    </g>
+    <g fill="#fff">
+      <ellipse cx="65" cy="58" rx="16" ry="22" transform="rotate(18 65 58)"/>
+      <circle cx="80" cy="34" r="5"/><circle cx="71" cy="29" r="4.2"/><circle cx="62" cy="28" r="3.8"/>
+    </g>
+  </g>
+</defs></svg>
+
+<!-- ============ VARIAÇÃO C2: dois pezinhos refinados (coração mais nítido) ============ -->
+<h2>Variação C2 — dois pezinhos REFINADOS, mais juntos = coração nítido (versão duas-cores + versão gradiente)</h2>
+<div class="row">
+  <div class="card light"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markC2"/></svg><span class="label">duas cores · claro</span></div>
+  <div class="card dark"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markC2"/></svg><span class="label">duas cores · escuro</span></div>
+  <div class="card light"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markC2g"/></svg><span class="label">gradiente único · claro</span></div>
+  <div class="card grad"><svg width="96" height="96" viewBox="0 0 100 100"><use href="#markC2-w"/></svg><span class="label">mono · gradiente</span></div>
+  <div class="card light sizes">
+    <svg width="24" height="24" viewBox="0 0 100 100"><use href="#markC2"/></svg>
+    <svg width="40" height="40" viewBox="0 0 100 100"><use href="#markC2"/></svg>
+    <svg width="64" height="64" viewBox="0 0 100 100"><use href="#markC2"/></svg>
+    <span class="label">24 / 40 / 64px</span>
+  </div>
+</div>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <!-- duas cores: pé esq azul, pé dir rosa, heels se encontram embaixo formando a ponta do coração -->
+  <g id="markC2">
+    <g fill="#5B9BD5">
+      <ellipse cx="39" cy="56" rx="15" ry="21" transform="rotate(-24 39 56)"/>
+      <circle cx="20" cy="30" r="5.2"/><circle cx="29" cy="24" r="4.3"/><circle cx="38" cy="22" r="3.6"/>
+    </g>
+    <g fill="#F4A6B8">
+      <ellipse cx="61" cy="56" rx="15" ry="21" transform="rotate(24 61 56)"/>
+      <circle cx="80" cy="30" r="5.2"/><circle cx="71" cy="24" r="4.3"/><circle cx="62" cy="22" r="3.6"/>
+    </g>
+  </g>
+  <!-- gradiente único cobrindo os dois pés -->
+  <g id="markC2g">
+    <g fill="url(#brand)">
+      <ellipse cx="39" cy="56" rx="15" ry="21" transform="rotate(-24 39 56)"/>
+      <circle cx="20" cy="30" r="5.2"/><circle cx="29" cy="24" r="4.3"/><circle cx="38" cy="22" r="3.6"/>
+      <ellipse cx="61" cy="56" rx="15" ry="21" transform="rotate(24 61 56)"/>
+      <circle cx="80" cy="30" r="5.2"/><circle cx="71" cy="24" r="4.3"/><circle cx="62" cy="22" r="3.6"/>
+    </g>
+  </g>
+  <g id="markC2-w">
+    <g fill="#fff">
+      <ellipse cx="39" cy="56" rx="15" ry="21" transform="rotate(-24 39 56)"/>
+      <circle cx="20" cy="30" r="5.2"/><circle cx="29" cy="24" r="4.3"/><circle cx="38" cy="22" r="3.6"/>
+      <ellipse cx="61" cy="56" rx="15" ry="21" transform="rotate(24 61 56)"/>
+      <circle cx="80" cy="30" r="5.2"/><circle cx="71" cy="24" r="4.3"/><circle cx="62" cy="22" r="3.6"/>
+    </g>
+  </g>
+</defs></svg>
+
+<!-- ============ WORDMARK ============ -->
+<h2>Wordmark (logo + texto) — usando Nunito</h2>
+<div class="row">
+  <div class="card light" style="flex-direction:row;gap:14px;">
+    <svg width="48" height="58" viewBox="0 0 100 120"><use href="#markA"/></svg>
+    <div class="wordmark" style="color:#1A1A1F"><b>Bebe</b><span>Care</span></div>
+  </div>
+  <div class="card grad" style="flex-direction:row;gap:14px;">
+    <svg width="48" height="58" viewBox="0 0 100 120"><use href="#markA-mono"/></svg>
+    <div class="wordmark" style="color:#fff"><b>Bebe</b><span>Care</span></div>
+  </div>
+</div>
+
+<p class="note" style="margin-top:48px">Quando escolher a variação, eu refino os detalhes (curvas, espaçamento dos dedinhos, ângulo do gradiente), gero o ícone do app a partir dela e transformo num componente &lt;Logo /&gt; React Native.</p>
+</body>
+</html>

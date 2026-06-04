@@ -1,6 +1,9 @@
-import { MD3DarkTheme, MD3LightTheme, configureFonts } from 'react-native-paper';
+import { MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 
+import { appFonts } from './fonts';
 import {
+  brand,
+  brandGradient,
   palettes,
   radii,
   spacing,
@@ -81,7 +84,7 @@ export function buildTheme(palette: PaletteName, mode: ThemeMode) {
       onSurface: colors.onSurface,
       outline: colors.outline,
     },
-    fonts: configureFonts({ config: { fontFamily: 'System' } }),
+    fonts: appFonts,
     // Tokens proprios — acessiveis via useTheme<AppTheme>()
     app: {
       spacing,
@@ -107,5 +110,5 @@ export function buildTheme(palette: PaletteName, mode: ThemeMode) {
 /** Tipo derivado pra useTheme<AppTheme>(). */
 export type AppTheme = ReturnType<typeof buildTheme>;
 
-export { palettes, spacing, radii };
+export { palettes, spacing, radii, brand, brandGradient };
 export type { PaletteName, ThemeMode };

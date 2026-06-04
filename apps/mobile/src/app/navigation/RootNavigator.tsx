@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import {
   DarkTheme as NavDarkTheme,
   DefaultTheme as NavDefaultTheme,
@@ -8,7 +8,10 @@ import {
 } from '@react-navigation/native';
 import { useTheme } from 'react-native-paper';
 
+import { BrandGradient, Logo } from '@/shared/components';
 import { useAuthStore } from '@/features/auth/store/auth.store';
+import { OnboardingScreen } from '@/features/onboarding/screens/OnboardingScreen';
+import { useOnboardingStore } from '@/features/onboarding/store/onboarding.store';
 import type { AppTheme } from '@/app/theme';
 
 import { AppNavigator } from './AppNavigator';
@@ -27,6 +30,7 @@ import { navigationRef } from './navigationRef';
 export function RootNavigator() {
   const status = useAuthStore((s) => s.status);
   const hydrate = useAuthStore((s) => s.hydrate);
+  const onboardingSeen = useOnboardingStore((s) => s.seen);
   const paperTheme = useTheme<AppTheme>();
 
   useEffect(() => {
@@ -55,15 +59,20 @@ export function RootNavigator() {
 
   if (status === 'booting') {
     return (
-      <View
-        style={[
-          styles.splash,
-          { backgroundColor: paperTheme.colors.background },
-        ]}
-      >
-        <ActivityIndicator size="large" />
-      </View>
+      <BrandGradient style={styles.splash}>
+        <Logo variant="full" size={72} mono="#fff" />
+        <ActivityIndicator
+          size="small"
+          color="#FFFFFF"
+          style={styles.splashSpinner}
+        />
+      </BrandGradient>
     );
+  }
+
+  // Primeira abertura (e ainda deslogado): mostra onboarding antes do Login.
+  if (status === 'unauthenticated' && !onboardingSeen) {
+    return <OnboardingScreen />;
   }
 
   return (
@@ -78,5 +87,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  splashSpinner: {
+    marginTop: 24,
   },
 });
