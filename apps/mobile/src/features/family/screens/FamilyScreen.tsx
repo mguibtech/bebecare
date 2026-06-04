@@ -11,6 +11,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, Share, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -50,12 +51,11 @@ function formatExpiry(iso: string): string {
   return `${day}/${month}/${d.getFullYear()}`;
 }
 
-/** Mensagem do convite a compartilhar (texto + link). */
-function inviteMessage(code: string): string {
-  return `Vamos cuidar do bebê juntos no BebeCare!\n\nUse o código ${code} ao criar sua conta — válido por 7 dias.\n\nLink direto: bebecare://invite/${code}`;
-}
-
 export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
+  const { t } = useTranslation();
+  /** Mensagem do convite a compartilhar (texto + link), localizada. */
+  const inviteMessage = (code: string) =>
+    t('family.inviteMessage', { code });
   const theme = useTheme<AppTheme>();
   const family = useFamily();
   const updateFamily = useUpdateFamily();
@@ -80,12 +80,12 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
   if (family.isError || !family.data) {
     return (
       <View style={[styles.center, containerStyle]}>
-        <Text variant="bodyLarge">Erro ao carregar família</Text>
+        <Text variant="bodyLarge">{t('family.loadError')}</Text>
         <Text variant="bodyMedium" style={styles.errorBody}>
-          {family.error?.message ?? 'Tente voltar e abrir de novo.'}
+          {family.error?.message ?? t('family.loadErrorHint')}
         </Text>
         <Button mode="outlined" onPress={() => family.refetch()}>
-          Tentar de novo
+          {t('common.retry')}
         </Button>
       </View>
     );
@@ -115,23 +115,26 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
       const message =
         err instanceof ApiError
           ? err.message
-          : 'Não foi possível gerar convite.';
+          : t('family.createError');
       setSnackbar(message);
     }
   };
 
   const handleRevoke = (invite: Invite) => {
-    Alert.alert('Revogar convite', `Revogar o código ${invite.code}?`, [
-      { text: 'Cancelar', style: 'cancel' },
+    Alert.alert(
+      t('family.revokeTitle'),
+      t('family.revokeConfirm', { code: invite.code }),
+      [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Revogar',
+        text: t('family.revoke'),
         style: 'destructive',
         onPress: async () => {
           try {
             await revokeInvite.mutateAsync(invite.id);
           } catch (err) {
             setSnackbar(
-              err instanceof ApiError ? err.message : 'Erro ao revogar.',
+              err instanceof ApiError ? err.message : t('family.revokeError'),
             );
           }
         },
@@ -151,18 +154,20 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
         name: renameValue.trim() === '' ? null : renameValue.trim(),
       });
     } catch (err) {
-      setSnackbar(err instanceof ApiError ? err.message : 'Erro ao renomear.');
+      setSnackbar(
+        err instanceof ApiError ? err.message : t('family.renameError'),
+      );
     }
   };
 
   const handleLeave = () => {
     Alert.alert(
-      'Sair da família',
-      'Você ira para uma nova família solo. Bebês ficam com quem permanece. Continuar?',
+      t('family.leaveTitle'),
+      t('family.leaveConfirm'),
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Sair',
+          text: t('family.leave'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -170,7 +175,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
               navigation.goBack();
             } catch (err) {
               setSnackbar(
-                err instanceof ApiError ? err.message : 'Erro ao sair.',
+                err instanceof ApiError ? err.message : t('family.leaveError'),
               );
             }
           },
@@ -185,14 +190,17 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
         {/* CABECALHO da família */}
         <Card style={styles.card} mode="outlined">
           <Card.Title
-            title={data.name ?? 'Minha família'}
-            subtitle={`${data.members.length} de ${data.maxMembers} membros`}
+            title={data.name ?? t('family.defaultName')}
+            subtitle={t('family.membersOf', {
+              count: data.members.length,
+              max: data.maxMembers,
+            })}
             // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
             right={(props) => (
               <IconButton
                 {...props}
                 icon="pencil"
-                accessibilityLabel="Renomear família"
+                accessibilityLabel={t('family.renameA11y')}
                 onPress={handleOpenRename}
               />
             )}
@@ -201,12 +209,12 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
 
         {/* MEMBROS */}
         <Card style={styles.card} mode="outlined">
-          <Card.Title title="Membros" />
+          <Card.Title title={t('family.membersTitle')} />
           <Card.Content style={styles.cardContentTight}>
             {data.members.map((m, idx) => (
               <View key={m.id}>
                 <List.Item
-                  title={m.name + (m.isMe ? ' (você)' : '')}
+                  title={m.name + (m.isMe ? t('family.meSuffix') : '')}
                   // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
                   left={() => (
                     <View style={styles.avatarWrap}>
@@ -228,11 +236,13 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
         {/* CONVITES */}
         <Card style={styles.card} mode="outlined">
           <Card.Title
-            title="Convites pendentes"
+            title={t('family.invitesTitle')}
             subtitle={
               data.pendingInvites.length === 0
-                ? 'Nenhum convite ativo'
-                : `${data.pendingInvites.length} convite(s)`
+                ? t('family.noInvites')
+                : t('family.invitesCount', {
+                    count: data.pendingInvites.length,
+                  })
             }
           />
           <Card.Content style={styles.cardContentTight}>
@@ -245,17 +255,20 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
                       {invite.code}
                     </Text>
                     <Text variant="bodySmall" style={styles.muted}>
-                      Expira em {formatExpiry(invite.expiresAt)} • Por {invite.createdByName}
+                      {t('family.expiresBy', {
+                        date: formatExpiry(invite.expiresAt),
+                        name: invite.createdByName,
+                      })}
                     </Text>
                   </View>
                   <IconButton
                     icon="share-variant"
-                    accessibilityLabel="Compartilhar"
+                    accessibilityLabel={t('family.shareA11y')}
                     onPress={() => handleShare(invite.code)}
                   />
                   <IconButton
                     icon="close-circle-outline"
-                    accessibilityLabel="Revogar"
+                    accessibilityLabel={t('family.revokeA11y')}
                     onPress={() => handleRevoke(invite)}
                     iconColor={theme.colors.error}
                   />
@@ -264,8 +277,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
 
             {isAtCapacity ? (
               <Text variant="bodySmall" style={styles.atCapacity}>
-                Família no limite de {data.maxMembers} membros. Revogue
-                convites pendentes ou aguarde alguem sair pra convidar mais.
+                {t('family.atCapacity', { max: data.maxMembers })}
               </Text>
             ) : (
               <Button
@@ -275,7 +287,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
                 loading={createInvite.isPending}
                 style={styles.createInviteButton}
               >
-                Gerar convite e compartilhar
+                {t('family.createInvite')}
               </Button>
             )}
           </Card.Content>
@@ -291,7 +303,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
             loading={leaveFamily.isPending}
             style={styles.leaveButton}
           >
-            Sair da família
+            {t('family.leaveButton')}
           </Button>
         )}
       </ScrollView>
@@ -302,24 +314,26 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
           visible={renameDialogOpen}
           onDismiss={() => setRenameDialogOpen(false)}
         >
-          <Dialog.Title>Nome da família</Dialog.Title>
+          <Dialog.Title>{t('family.renameTitle')}</Dialog.Title>
           <Dialog.Content>
             <TextInput
               mode="outlined"
               value={renameValue}
               onChangeText={setRenameValue}
-              placeholder="Ex: Família Silva"
+              placeholder={t('family.renamePlaceholder')}
               maxLength={100}
               autoFocus
             />
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setRenameDialogOpen(false)}>Cancelar</Button>
+            <Button onPress={() => setRenameDialogOpen(false)}>
+              {t('common.cancel')}
+            </Button>
             <Button
               onPress={handleConfirmRename}
               loading={updateFamily.isPending}
             >
-              Salvar
+              {t('common.save')}
             </Button>
           </Dialog.Actions>
         </Dialog>
@@ -329,7 +343,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
         visible={snackbar !== null}
         onDismiss={() => setSnackbar(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setSnackbar(null) }}
+        action={{ label: t('common.ok'), onPress: () => setSnackbar(null) }}
       >
         {snackbar ?? ''}
       </Snackbar>

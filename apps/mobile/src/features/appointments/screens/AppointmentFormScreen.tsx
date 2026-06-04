@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -52,6 +53,7 @@ export function AppointmentFormScreen({
   const { babyId, appointmentId } = route.params;
   const isEdit = typeof appointmentId === 'string';
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
 
   const editingAppointment = useAppointment(babyId, appointmentId);
@@ -94,9 +96,9 @@ export function AppointmentFormScreen({
   // Header title dinamico
   useEffect(() => {
     navigation.setOptions({
-      title: isEdit ? 'Editar consulta' : 'Marcar consulta',
+      title: isEdit ? t('appointments.titleEdit') : t('appointments.titleNew'),
     });
-  }, [navigation, isEdit]);
+  }, [navigation, isEdit, t]);
 
   const reminderEnabled = watch('reminderEnabled');
 
@@ -127,9 +129,7 @@ export function AppointmentFormScreen({
       navigation.goBack();
     } catch (err) {
       setErrorBanner(
-        err instanceof ApiError
-          ? err.message
-          : 'Erro inesperado. Tente de novo.',
+        err instanceof ApiError ? err.message : t('common.unexpectedError'),
       );
     }
   });
@@ -158,22 +158,22 @@ export function AppointmentFormScreen({
         keyboardShouldPersistTaps="handled"
       >
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Dados da consulta
+          {t('appointments.sectionData')}
         </Text>
 
         <FormInput
           control={control}
           name="title"
-          label="Título"
-          placeholder="ex: Puericultura"
+          label={t('appointments.titleLabel')}
+          placeholder={t('appointments.titlePlaceholder')}
           maxLength={120}
         />
 
         <FormInput
           control={control}
           name="doctorName"
-          label="Médico (opcional)"
-          placeholder="ex: Dra. Ana Souza"
+          label={t('appointments.doctorLabel')}
+          placeholder={t('appointments.doctorPlaceholder')}
           autoCapitalize="words"
           maxLength={120}
         />
@@ -181,36 +181,35 @@ export function AppointmentFormScreen({
         <FormInput
           control={control}
           name="specialty"
-          label="Especialidade (opcional)"
-          placeholder="ex: Pediatra"
+          label={t('appointments.specialtyLabel')}
+          placeholder={t('appointments.specialtyPlaceholder')}
           maxLength={80}
         />
 
         <DateTimeField
           control={control}
           name="scheduledAt"
-          labelDate="Data"
-          labelTime="Horário"
+          labelDate={t('appointments.dateLabel')}
+          labelTime={t('appointments.timeLabel')}
         />
 
         <FormInput
           control={control}
           name="location"
-          label="Local (opcional)"
-          placeholder="ex: Clínica Vida — Rua X, 123"
+          label={t('appointments.locationLabel')}
+          placeholder={t('appointments.locationPlaceholder')}
           maxLength={200}
         />
 
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Lembrete
+          {t('appointments.sectionReminder')}
         </Text>
         <MutedText variant="bodySmall" style={styles.sectionHint}>
-          Receba uma notificação antes da consulta (push chega quando você
-          tiver o app instalado e permissão concedida — disponível em breve).
+          {t('appointments.reminderHint')}
         </MutedText>
 
         <View style={styles.switchRow}>
-          <Text variant="bodyMedium">Ativar lembrete</Text>
+          <Text variant="bodyMedium">{t('appointments.reminderToggle')}</Text>
           <Switch
             value={reminderEnabled}
             onValueChange={(v) => setValue('reminderEnabled', v)}
@@ -225,15 +224,15 @@ export function AppointmentFormScreen({
         )}
 
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Anotações (opcional)
+          {t('appointments.sectionNotes')}
         </Text>
         <MutedText variant="bodySmall" style={styles.sectionHint}>
-          Sintomas, perguntas a fazer, observações…
+          {t('appointments.notesHint')}
         </MutedText>
         <FormInput
           control={control}
           name="notes"
-          label="Anotações"
+          label={t('appointments.notesLabel')}
           multiline
           numberOfLines={3}
         />
@@ -244,10 +243,10 @@ export function AppointmentFormScreen({
           disabled={!formState.isValid && formState.isSubmitted}
         >
           {isSaving
-            ? 'Salvando...'
+            ? t('common.saving')
             : isEdit
-              ? 'Salvar alterações'
-              : 'Marcar consulta'}
+              ? t('common.saveChanges')
+              : t('appointments.titleNew')}
         </SubmitButton>
       </ScrollView>
 
@@ -255,7 +254,7 @@ export function AppointmentFormScreen({
         visible={errorBanner !== null}
         onDismiss={() => setErrorBanner(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setErrorBanner(null) }}
+        action={{ label: t('common.ok'), onPress: () => setErrorBanner(null) }}
       >
         {errorBanner ?? ''}
       </Snackbar>

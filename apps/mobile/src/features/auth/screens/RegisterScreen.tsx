@@ -9,6 +9,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Snackbar, Text, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -34,6 +35,7 @@ import {
 } from '../schemas/auth.schema';
 
 export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'>) {
+  const { t } = useTranslation();
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const theme = useTheme<AppTheme>();
 
@@ -67,11 +69,11 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
       const message =
         err instanceof ApiError
           ? err.status === 409
-            ? 'Esse email já esta cadastrado'
+            ? t('auth.err409')
             : err.status === 400 && /convite/i.test(err.message)
-              ? 'Código de convite inválido ou expirado'
+              ? t('auth.errInvite')
               : err.message
-          : 'Erro inesperado. Tente novamente.';
+          : t('auth.errGeneric');
       setErrorBanner(message);
     }
   });
@@ -87,23 +89,23 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
           <SafeAreaView edges={['top']} style={styles.heroInner}>
             <Logo variant="full" size={56} mono="#fff" />
             <Text variant="bodyLarge" style={styles.heroTagline}>
-              Sua família em um so lugar
+              {t('auth.registerTagline')}
             </Text>
           </SafeAreaView>
         </BrandGradient>
 
         <View style={styles.form}>
           <Text variant="titleLarge" style={styles.formTitle}>
-            Criar conta
+            {t('auth.registerTitle')}
           </Text>
           <MutedText variant="bodyMedium" style={styles.formSubtitle}>
-            E rapidinho, prometo!
+            {t('auth.registerSubtitle')}
           </MutedText>
 
           <FormInput
             control={control}
             name="name"
-            label="Seu nome"
+            label={t('auth.nameLabel')}
             autoCapitalize="words"
             autoComplete="name"
             textContentType="name"
@@ -111,7 +113,7 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
         <FormInput
           control={control}
           name="email"
-          label="Email"
+          label={t('common.email')}
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
@@ -120,13 +122,13 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
         <FormPassword
           control={control}
           name="password"
-          label="Senha (mínimo 8 caracteres)"
+          label={t('auth.passwordNewLabel')}
           isNew
         />
         <FormInput
           control={control}
           name="inviteCode"
-          label="Código de convite (opcional)"
+          label={t('auth.inviteLabel')}
           keyboardType="number-pad"
           maxLength={6}
           autoCapitalize="none"
@@ -137,17 +139,17 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
           loading={register.isPending}
           disabled={!formState.isValid && formState.isSubmitted}
         >
-          {register.isPending ? 'Criando conta...' : 'Criar conta'}
+          {register.isPending ? t('auth.creating') : t('auth.createAccount')}
         </SubmitButton>
 
           <View style={styles.footer}>
-            <MutedText variant="bodyMedium">Ja tem conta? </MutedText>
+            <MutedText variant="bodyMedium">{t('auth.hasAccount')}</MutedText>
             <Text
               variant="bodyMedium"
               style={[styles.link, { color: theme.colors.primary }]}
               onPress={() => navigation.navigate('Login')}
             >
-              Entrar
+              {t('auth.signIn')}
             </Text>
           </View>
         </View>
@@ -157,7 +159,7 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
         visible={errorBanner !== null}
         onDismiss={() => setErrorBanner(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setErrorBanner(null) }}
+        action={{ label: t('common.ok'), onPress: () => setErrorBanner(null) }}
       >
         {errorBanner ?? ''}
       </Snackbar>

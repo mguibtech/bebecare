@@ -3,6 +3,8 @@
  * categoria. Switch liga/desliga sem abrir o form. Tap no corpo edita.
  */
 
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { StyleSheet, View } from 'react-native';
 import { Card, Switch, Text, useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,7 +14,7 @@ import type { AppTheme } from '@/app/theme';
 
 import {
   ALARM_CATEGORY_ICONS,
-  ALARM_CATEGORY_LABELS,
+  AlarmCategory,
   ALL_DAYS_MASK,
   DAY_LABELS,
   WEEKDAYS_MASK,
@@ -21,10 +23,19 @@ import {
   type Alarm,
 } from '../types';
 
-export function formatDays(mask: number): string {
-  if (mask === ALL_DAYS_MASK) return 'Todos os dias';
-  if (mask === WEEKDAYS_MASK) return 'Dias úteis';
-  if (mask === WEEKEND_MASK) return 'Fim de semana';
+/** Categoria -> chave i18n do label. */
+const CATEGORY_KEY = {
+  [AlarmCategory.FEEDING]: 'alarms.catFeeding',
+  [AlarmCategory.DIAPER]: 'alarms.catDiaper',
+  [AlarmCategory.NAP]: 'alarms.catNap',
+  [AlarmCategory.CUSTOM]: 'alarms.catCustom',
+} as const;
+
+export function formatDays(mask: number, t: TFunction): string {
+  if (mask === ALL_DAYS_MASK) return t('alarms.daysAll');
+  if (mask === WEEKDAYS_MASK) return t('alarms.daysWeekdays');
+  if (mask === WEEKEND_MASK) return t('alarms.daysWeekend');
+  // DAY_LABELS (abreviacoes pt) ainda nao localizadas — fatia de dominio.
   return daysFromMask(mask)
     .map((d) => DAY_LABELS[d])
     .join(', ');
@@ -39,6 +50,7 @@ export type AlarmCardProps = {
 
 export function AlarmCard({ alarm, busy, onToggle, onPress }: AlarmCardProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const accent = alarm.isActive ? theme.colors.primary : theme.app.text.muted;
 
   return (
@@ -59,9 +71,10 @@ export function AlarmCard({ alarm, busy, onToggle, onPress }: AlarmCardProps) {
           </Text>
           <MutedText variant="bodySmall">
             {alarm.intervalHours
-              ? `A cada ${alarm.intervalHours}h • `
+              ? `${t('alarms.everyHours', { h: alarm.intervalHours })} • `
               : ''}
-            {ALARM_CATEGORY_LABELS[alarm.category]} • {formatDays(alarm.daysOfWeekMask)}
+            {t(CATEGORY_KEY[alarm.category])} •{' '}
+            {formatDays(alarm.daysOfWeekMask, t)}
           </MutedText>
         </View>
 
