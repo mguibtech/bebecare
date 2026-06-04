@@ -16,12 +16,15 @@ import { Platform } from 'react-native';
  * Por isso TODOS os paths nas funcoes de api.ts ficam relativos
  * ('/auth/login', '/babies', etc.) sem precisar repetir '/api' manualmente.
  *
- * - Android emulator: 10.0.2.2 = host loopback
+ * Usa `localhost` no Android tambem: com `adb reverse tcp:3000 tcp:3000`
+ * o localhost:3000 do aparelho (device fisico OU emulador) e' mapeado pro
+ * PC. O script `npm run adb` ja faz esse reverse. Sem isso, no device fisico
+ * o `10.0.2.2` (atalho so de emulador) nao alcanca o PC.
+ *
  * - iOS simulator: localhost funciona direto
- * - Device fisico: trocar pelo IP da maquina na rede local
  */
 const API_BASE_URL_DEV = Platform.select({
-  android: 'http://10.0.2.2:3000/api',
+  android: 'http://localhost:3000/api',
   ios: 'http://localhost:3000/api',
   default: 'http://localhost:3000/api',
 });
