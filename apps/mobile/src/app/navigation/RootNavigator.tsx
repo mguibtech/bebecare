@@ -10,6 +10,8 @@ import { useTheme } from 'react-native-paper';
 
 import { BrandGradient, Logo } from '@/shared/components';
 import { useAuthStore } from '@/features/auth/store/auth.store';
+import { OnboardingScreen } from '@/features/onboarding/screens/OnboardingScreen';
+import { useOnboardingStore } from '@/features/onboarding/store/onboarding.store';
 import type { AppTheme } from '@/app/theme';
 
 import { AppNavigator } from './AppNavigator';
@@ -28,6 +30,7 @@ import { navigationRef } from './navigationRef';
 export function RootNavigator() {
   const status = useAuthStore((s) => s.status);
   const hydrate = useAuthStore((s) => s.hydrate);
+  const onboardingSeen = useOnboardingStore((s) => s.seen);
   const paperTheme = useTheme<AppTheme>();
 
   useEffect(() => {
@@ -65,6 +68,11 @@ export function RootNavigator() {
         />
       </BrandGradient>
     );
+  }
+
+  // Primeira abertura (e ainda deslogado): mostra onboarding antes do Login.
+  if (status === 'unauthenticated' && !onboardingSeen) {
+    return <OnboardingScreen />;
   }
 
   return (
