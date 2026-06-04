@@ -8,6 +8,7 @@ import { env } from '@/shared/config/env';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 
 import { ApiError, type ApiErrorPayload } from './types';
+import { extractErrorMessage } from './errors';
 
 /**
  * Cliente HTTP unico do app.
@@ -154,9 +155,7 @@ apiClient.interceptors.response.use(
       await useAuthStore.getState().signOut();
     }
 
-    const message = Array.isArray(payload?.message)
-      ? payload.message.join(', ')
-      : payload?.message ?? error.message ?? 'Erro de conexao';
+    const message = extractErrorMessage(payload, error.message);
 
     return Promise.reject(new ApiError(message, status, payload));
   },
