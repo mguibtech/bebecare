@@ -5,6 +5,7 @@
  * reagenda o notifee). Empty state quando não ha nenhum.
  */
 
+import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -25,6 +26,7 @@ import { useUpdateAlarm } from '../hooks/useAlarmMutations';
 
 export function AlarmsListScreen({ navigation }: AppScreenProps<'Alarms'>) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const query = useAlarms();
   const update = useUpdateAlarm();
 
@@ -49,8 +51,8 @@ export function AlarmsListScreen({ navigation }: AppScreenProps<'Alarms'>) {
           </View>
         ) : query.isError ? (
           <View style={styles.loadingBox}>
-            <Text>Erro ao carregar despertadores</Text>
-            <Button onPress={() => query.refetch()}>Tentar de novo</Button>
+            <Text>{t('alarms.loadError')}</Text>
+            <Button onPress={() => query.refetch()}>{t('common.retry')}</Button>
           </View>
         ) : !query.data || query.data.length === 0 ? (
           <View style={styles.emptyBox}>
@@ -60,11 +62,10 @@ export function AlarmsListScreen({ navigation }: AppScreenProps<'Alarms'>) {
               color={theme.colors.primary}
             />
             <Text variant="titleMedium" style={styles.emptyTitle}>
-              Nenhum despertador
+              {t('alarms.emptyTitle')}
             </Text>
             <MutedText variant="bodyMedium" style={styles.emptyText}>
-              Crie lembretes de mamada, troca de fralda{'\n'}
-              ou soneca. Tocam mesmo com o app fechado.
+              {t('alarms.emptyBody')}
             </MutedText>
           </View>
         ) : (
@@ -84,7 +85,7 @@ export function AlarmsListScreen({ navigation }: AppScreenProps<'Alarms'>) {
 
       <FAB
         icon="plus"
-        label="Adicionar"
+        label={t('alarms.fabAdd')}
         style={styles.fab}
         onPress={() => navigation.navigate('AlarmForm')}
       />

@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -34,7 +35,6 @@ import {
   useUpdateAlarm,
 } from '../hooks/useAlarmMutations';
 import {
-  ALARM_CATEGORY_LABELS,
   ALL_DAYS_MASK,
   AlarmCategory,
   INTERVAL_OPTIONS,
@@ -50,6 +50,14 @@ const CATEGORIES = [
   AlarmCategory.CUSTOM,
 ];
 
+/** Categoria -> chave i18n do label. */
+const CATEGORY_KEY = {
+  [AlarmCategory.FEEDING]: 'alarms.catFeeding',
+  [AlarmCategory.DIAPER]: 'alarms.catDiaper',
+  [AlarmCategory.NAP]: 'alarms.catNap',
+  [AlarmCategory.CUSTOM]: 'alarms.catCustom',
+} as const;
+
 export function AlarmFormScreen({
   route,
   navigation,
@@ -57,6 +65,7 @@ export function AlarmFormScreen({
   const alarmId = route.params?.alarmId;
   const isEdit = typeof alarmId === 'string';
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
 
   const alarms = useAlarms();
   const editing = isEdit
@@ -90,19 +99,19 @@ export function AlarmFormScreen({
 
   useEffect(() => {
     navigation.setOptions({
-      title: isEdit ? 'Editar despertador' : 'Novo despertador',
+      title: isEdit ? t('alarms.titleEdit') : t('alarms.titleNew'),
     });
-  }, [navigation, isEdit]);
+  }, [navigation, isEdit, t]);
 
   const saving = create.isPending || update.isPending;
 
   const onSave = async () => {
     if (label.trim().length === 0) {
-      setError('Dê um nome ao despertador');
+      setError(t('alarms.errNoName'));
       return;
     }
     if (days.length === 0) {
-      setError('Selecione pelo menos um dia');
+      setError(t('alarms.errNoDay'));
       return;
     }
     setError(null);
@@ -128,7 +137,7 @@ export function AlarmFormScreen({
       }
       navigation.goBack();
     } catch {
-      setError('Não foi possível salvar. Tente de novo.');
+      setError(t('alarms.saveError'));
     }
   };
 
@@ -138,7 +147,7 @@ export function AlarmFormScreen({
       await remove.mutateAsync(alarmId);
       navigation.goBack();
     } catch {
-      snackbar.showError('Erro ao excluir');
+      snackbar.showError(t('alarms.deleteError'));
     }
   };
 
@@ -158,8 +167,8 @@ export function AlarmFormScreen({
       >
         <TextInput
           mode="outlined"
-          label="Nome"
-          placeholder="ex: Mamada da manhã"
+          label={t('alarms.nameLabel')}
+          placeholder={t('alarms.namePlaceholder')}
           value={label}
           onChangeText={setLabel}
           maxLength={80}
@@ -167,7 +176,7 @@ export function AlarmFormScreen({
         />
 
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Categoria
+          {t('alarms.categorySection')}
         </Text>
         <View style={styles.chips}>
           {CATEGORIES.map((c) => (
@@ -178,18 +187,18 @@ export function AlarmFormScreen({
               onPress={() => setCategory(c)}
               style={styles.chip}
             >
-              {ALARM_CATEGORY_LABELS[c]}
+              {t(CATEGORY_KEY[c])}
             </Chip>
           ))}
         </View>
 
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          {intervalHours ? 'A partir de' : 'Horário'}
+          {intervalHours ? t('alarms.timeFrom') : t('alarms.timeAt')}
         </Text>
         <TimeField value={time} onChange={setTime} />
 
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Repetir
+          {t('alarms.repeatSection')}
         </Text>
         <View style={styles.chips}>
           <Chip
@@ -198,7 +207,7 @@ export function AlarmFormScreen({
             onPress={() => setIntervalHours(null)}
             style={styles.chip}
           >
-            Horário único
+            {t('alarms.single')}
           </Chip>
           {INTERVAL_OPTIONS.map((h) => (
             <Chip
@@ -208,14 +217,17 @@ export function AlarmFormScreen({
               onPress={() => setIntervalHours(h)}
               style={styles.chip}
             >
-              A cada {h}h
+              {t('alarms.everyHours', { h })}
             </Chip>
           ))}
         </View>
         {intervalHours && (
           <MutedText variant="bodySmall" style={styles.intervalHint}>
-            Toca de {intervalHours} em {intervalHours} horas a partir de {time},
-            dia e noite ({24 / intervalHours}x ao dia).
+            {t('alarms.intervalHint', {
+              h: intervalHours,
+              time,
+              count: 24 / intervalHours,
+            })}
           </MutedText>
         )}
 
@@ -223,15 +235,15 @@ export function AlarmFormScreen({
           value={days}
           onChange={setDays}
           error={
-            error && days.length === 0 ? 'Selecione pelo menos um dia' : undefined
+            error && days.length === 0 ? t('alarms.errNoDay') : undefined
           }
         />
 
         <View style={styles.switchRow}>
           <View style={styles.switchText}>
-            <Text variant="bodyMedium">Ativo</Text>
+            <Text variant="bodyMedium">{t('alarms.activeSwitch')}</Text>
             <MutedText variant="bodySmall">
-              Desligue pra pausar sem excluir.
+              {t('alarms.activeSwitchSub')}
             </MutedText>
           </View>
           <Switch value={isActive} onValueChange={setIsActive} />
@@ -250,7 +262,7 @@ export function AlarmFormScreen({
           disabled={saving}
           style={styles.saveBtn}
         >
-          {isEdit ? 'Salvar' : 'Criar despertador'}
+          {isEdit ? t('common.save') : t('alarms.create')}
         </Button>
 
         {isEdit && (
@@ -262,7 +274,7 @@ export function AlarmFormScreen({
             disabled={remove.isPending}
             style={styles.deleteBtn}
           >
-            Excluir despertador
+            {t('alarms.deleteBtn')}
           </Button>
         )}
       </ScrollView>
