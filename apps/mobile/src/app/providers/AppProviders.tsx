@@ -1,9 +1,9 @@
 import { useEffect, type PropsWithChildren } from 'react';
-import { StyleSheet } from 'react-native';
+import { AppState, StyleSheet, type AppStateStatus } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider, focusManager } from '@tanstack/react-query';
 
 import { useAppTheme } from '@/app/theme/useAppTheme';
 import { useThemeStore } from '@/app/theme/store';
@@ -15,8 +15,8 @@ import { queryClient } from './queryClient';
 /**
  * Composicao de providers globais.
  * Ordem importa:
- *  GestureHandlerRoot  (peer obrigatorio do React Navigation)
- *  SafeArea            (insets disponiveis para tudo abaixo)
+ *  GestureHandlerRoot  (peer obrigatório do React Navigation)
+ *  SafeArea            (insets disponíveis para tudo abaixo)
  *  Query               (cache de server-state)
  *  Paper               (tema reativo a paleta + modo do sistema)
  *
@@ -35,6 +35,17 @@ export function AppProviders({ children }: PropsWithChildren) {
     hydrateTheme();
     hydrateBabySelector();
   }, [hydrateTheme, hydrateBabySelector]);
+
+  // Liga o focusManager do React Query ao ciclo de vida do app: quando volta
+  // pro foreground, queries stale/com-erro refazem sozinhas (recupera de blips
+  // de rede sem o usuário precisar de pull-to-refresh).
+  useEffect(() => {
+    function onAppStateChange(status: AppStateStatus) {
+      focusManager.setFocused(status === 'active');
+    }
+    const sub = AppState.addEventListener('change', onAppStateChange);
+    return () => sub.remove();
+  }, []);
 
   return (
     <GestureHandlerRootView style={styles.root}>

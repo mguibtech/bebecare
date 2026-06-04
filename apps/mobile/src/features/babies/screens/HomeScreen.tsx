@@ -47,7 +47,7 @@ function ageShort(b: Baby): string {
   if (b.ageMonths === 0) {
     return `${b.ageDays} dia${b.ageDays !== 1 ? 's' : ''}`;
   }
-  return `${b.ageMonths} ${b.ageMonths === 1 ? 'mes' : 'meses'}`;
+  return `${b.ageMonths} ${b.ageMonths === 1 ? 'mês' : 'meses'}`;
 }
 
 /** Saudação conforme o horário. */
@@ -65,7 +65,7 @@ function formatWhen(iso: string): string {
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const h = String(d.getHours()).padStart(2, '0');
   const m = String(d.getMinutes()).padStart(2, '0');
-  return `${day}/${month} as ${h}:${m}`;
+  return `${day}/${month} às ${h}:${m}`;
 }
 
 type ActivityRowProps = {
@@ -128,7 +128,9 @@ export function HomeScreen() {
     );
   }
 
-  const userName = me.data?.user.name ?? 'voce';
+  // Sem nome (perfil ainda carregando ou em erro) -> saudacao sem nome, em vez
+  // de inventar um "você" minusculo que parece bug.
+  const firstName = me.data?.user.name?.split(' ')[0];
   const hasBabies = babies.data && babies.data.length > 0;
 
   // ----- Agrega "próximas atividades" -----
@@ -153,12 +155,13 @@ export function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         {/* SAUDACAO */}
         <Text variant="titleMedium" style={styles.greeting}>
-          {greeting(new Date().getHours())}, {userName.split(' ')[0]}!
+          {greeting(new Date().getHours())}
+          {firstName ? `, ${firstName}` : ''}!
         </Text>
         <MutedText variant="bodySmall">
           {hasBabies
-            ? 'Aqui esta o resumo do dia.'
-            : 'Vamos comecar cadastrando seu bebe.'}
+            ? 'Aqui está o resumo do dia.'
+            : 'Vamos começar cadastrando seu bebê.'}
         </MutedText>
 
         {/* BEBE SELECIONADO ou EMPTY STATE */}
@@ -195,7 +198,7 @@ export function HomeScreen() {
                 />
               </View>
               <Text variant="titleMedium" style={styles.emptyTitle}>
-                Cadastre seu bebe
+                Cadastre seu bebê
               </Text>
               <MutedText variant="bodyMedium" style={styles.emptyBody}>
                 Vacinas, consultas, marcos e mais — tudo num lugar so.
@@ -206,7 +209,7 @@ export function HomeScreen() {
                 onPress={() => navigation.navigate('BabyForm', undefined)}
                 style={styles.emptyButton}
               >
-                Cadastrar bebe
+                Cadastrar bebê
               </Button>
             </Card.Content>
           </Card>
@@ -215,7 +218,7 @@ export function HomeScreen() {
         {/* PROXIMAS ATIVIDADES (dados reais) */}
         {hasBabies && selectedBaby && (
           <Card style={styles.activityCard} mode="outlined">
-            <Card.Title title="Proximas atividades" />
+            <Card.Title title="Próximas atividades" />
             <Card.Content>
               {activitiesLoading ? (
                 <ActivityIndicator style={styles.activityLoading} />
@@ -227,7 +230,7 @@ export function HomeScreen() {
                       icon="needle"
                       tint={theme.colors.error}
                       label={`${overdueVaccines} vacina${overdueVaccines > 1 ? 's' : ''} atrasada${overdueVaccines > 1 ? 's' : ''}`}
-                      sub="Toque pra ver o calendario"
+                      sub="Toque pra ver o calendário"
                       onPress={() => navigation.navigate('Vaccines')}
                     />
                   )}
@@ -251,7 +254,7 @@ export function HomeScreen() {
                       theme={theme}
                       icon="pill"
                       tint={theme.app.warning}
-                      label={`${pendingDoses} dose${pendingDoses > 1 ? 's' : ''} de remedio hoje`}
+                      label={`${pendingDoses} dose${pendingDoses > 1 ? 's' : ''} de remédio hoje`}
                       sub="Toque pra ver as doses"
                       onPress={() => navigation.navigate('Today')}
                     />
@@ -274,7 +277,7 @@ export function HomeScreen() {
         )}
       </ScrollView>
 
-      {/* SHEET de selecao de bebe */}
+      {/* SHEET de selecao de bebê */}
       <BabySelectorSheet
         visible={sheetOpen}
         onDismiss={() => setSheetOpen(false)}

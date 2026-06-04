@@ -1,14 +1,14 @@
 /**
- * Tab "Mais" — agrega features secundarias e configuracoes.
+ * Tab "Mais" — agrega features secundarias e configurações.
  *
  * Sections atuais:
- *  - Usuario (avatar, nome, email)
- *  - Familia (membros + lugar futuro pra convidar)
- *  - Aparencia (paleta + modo)
+ *  - Usuário (avatar, nome, email)
+ *  - Família (membros + lugar futuro pra convidar)
+ *  - Aparência (paleta + modo)
  *  - Sair
  *
  * Sera expandido com:
- *  - Diario (M9)
+ *  - Diário (M9)
  *  - Receitas medicas (M7)
  *  - Lista de compras (M8)
  *  - "Sobre" / privacidade / suporte (M10)
@@ -63,7 +63,7 @@ export function MoreScreen() {
       const message =
         err instanceof ApiError
           ? err.message
-          : 'Nao foi possivel excluir a conta. Tente de novo.';
+          : 'Não foi possível excluir a conta. Tente de novo.';
       setSnackbar(message);
     }
   };
@@ -82,6 +82,17 @@ export function MoreScreen() {
         <Text variant="bodyLarge" style={styles.errorTitle}>
           Erro ao carregar perfil
         </Text>
+        <Text variant="bodySmall" style={[styles.muted, styles.errorSubtitle]}>
+          Verifique sua conexão e tente de novo.
+        </Text>
+        <Button
+          mode="contained"
+          onPress={() => me.refetch()}
+          loading={me.isFetching}
+          style={styles.retryButton}
+        >
+          Tentar de novo
+        </Button>
         <Button mode="text" onPress={() => logout.mutate()} loading={logout.isPending}>
           Sair
         </Button>
@@ -118,7 +129,7 @@ export function MoreScreen() {
       <Pressable onPress={() => navigation.navigate('Family')}>
         <Card style={styles.card} mode="outlined">
           <Card.Title
-            title={family.name ?? 'Minha familia'}
+            title={family.name ?? 'Minha família'}
             subtitle={`${family.members.length + 1} membro${family.members.length + 1 > 1 ? 's' : ''} • Gerenciar`}
             // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
             left={() => (
@@ -188,7 +199,7 @@ export function MoreScreen() {
 
       {/* APARENCIA */}
       <Card style={styles.card} mode="outlined">
-        <Card.Title title="Aparencia" />
+        <Card.Title title="Aparência" />
         <Card.Content>
           <Text variant="labelMedium" style={styles.settingsLabel}>
             Tema
@@ -229,7 +240,7 @@ export function MoreScreen() {
       </Pressable>
 
       <Text variant="bodySmall" style={styles.placeholder}>
-        Em breve: diario, receitas medicas, lista de compras.
+        Em breve: diário, receitas medicas, lista de compras.
       </Text>
 
       <Button
@@ -294,10 +305,10 @@ export function MoreScreen() {
           <Dialog.Title style={styles.dialogTitle}>Excluir conta</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium" style={styles.dialogText}>
-              Voce vai sair do BebeCare e perder acesso a:
+              Você vai sair do BebeCare e perder acesso a:
             </Text>
             <Text variant="bodyMedium" style={styles.dialogBullet}>
-              {'•'} Bebes cadastrados (se for o unico membro da familia)
+              {'•'} Bebês cadastrados (se for o unico membro da família)
             </Text>
             <Text variant="bodyMedium" style={styles.dialogBullet}>
               {'•'} Vacinas, consultas e lembretes
@@ -306,7 +317,7 @@ export function MoreScreen() {
               {'•'} Convites pendentes
             </Text>
             <Text variant="bodyMedium" style={styles.dialogText}>
-              Voce pode recuperar a conta em ate 30 dias entrando em contato com
+              Você pode recuperar a conta em ate 30 dias entrando em contato com
               o suporte. Depois disso, todos os dados serao apagados.
             </Text>
           </Dialog.Content>
@@ -400,8 +411,15 @@ const styles = StyleSheet.create({
   },
   errorTitle: {
     fontWeight: '600',
-    marginBottom: 12,
+    marginBottom: 4,
     textAlign: 'center',
+  },
+  errorSubtitle: {
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  retryButton: {
+    marginBottom: 4,
   },
   about: {
     marginTop: 24,
