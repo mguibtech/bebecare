@@ -1,5 +1,6 @@
-import { MD3DarkTheme, MD3LightTheme, configureFonts } from 'react-native-paper';
+import { MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 
+import { appFonts } from './fonts';
 import {
   palettes,
   radii,
@@ -81,7 +82,7 @@ export function buildTheme(palette: PaletteName, mode: ThemeMode) {
       onSurface: colors.onSurface,
       outline: colors.outline,
     },
-    fonts: configureFonts({ config: { fontFamily: 'System' } }),
+    fonts: appFonts,
     // Tokens proprios — acessiveis via useTheme<AppTheme>()
     app: {
       spacing,

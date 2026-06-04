@@ -21,6 +21,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import Svg, { Circle, Ellipse, G } from 'react-native-svg';
 
+import { fontFamilies } from '@/app/theme/fonts';
 import type { AppTheme } from '@/app/theme';
 
 /** Cores oficiais da marca. */
@@ -78,7 +79,9 @@ export function Logo({ size = 96, variant = 'mark', mono }: LogoProps) {
     <View style={styles.row}>
       <LogoMark size={size} mono={mono} />
       <Text style={[styles.wordmark, { fontSize, color: textColor }]}>
-        <Text style={[styles.wordmark, { fontSize, color: textColor }, styles.bold]}>
+        <Text
+          style={[styles.wordmark, styles.bold, { fontSize, color: textColor }]}
+        >
           Bebe
         </Text>
         Care
@@ -93,12 +96,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   wordmark: {
-    fontWeight: '600',
+    fontFamily: fontFamilies.headingSoft, // Nunito SemiBold ("Care")
     letterSpacing: -0.5,
     marginLeft: 8,
   },
   bold: {
-    fontWeight: '800',
+    fontFamily: fontFamilies.brand, // Nunito ExtraBold ("Bebe")
     marginLeft: 0,
   },
 });
