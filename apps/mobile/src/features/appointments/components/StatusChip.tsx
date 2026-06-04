@@ -6,21 +6,27 @@
  *  - MISSED:    error (vermelho)
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import type { AppTheme } from '@/app/theme';
 
-import {
-  AppointmentStatus,
-  APPOINTMENT_STATUS_LABELS,
-} from '../types';
+import { AppointmentStatus } from '../types';
 
 type StatusChipProps = {
   status: AppointmentStatus;
   compact?: boolean;
 };
+
+/** Status -> chave i18n do label (cor/icone vem de getVisuals). */
+const STATUS_LABEL_KEY = {
+  [AppointmentStatus.SCHEDULED]: 'appointments.statusScheduled',
+  [AppointmentStatus.COMPLETED]: 'appointments.statusCompleted',
+  [AppointmentStatus.CANCELED]: 'appointments.statusCanceled',
+  [AppointmentStatus.MISSED]: 'appointments.statusMissed',
+} as const;
 
 function getVisuals(status: AppointmentStatus, theme: AppTheme) {
   switch (status) {
@@ -53,6 +59,7 @@ function getVisuals(status: AppointmentStatus, theme: AppTheme) {
 
 export function StatusChip({ status, compact }: StatusChipProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const v = getVisuals(status, theme);
 
   const padH = compact ? 8 : 12;
@@ -73,7 +80,7 @@ export function StatusChip({ status, compact }: StatusChipProps) {
     >
       <MaterialCommunityIcons name={v.icon} size={iconSize} color={v.color} />
       <Text style={[styles.label, { color: v.color, fontSize }]}>
-        {APPOINTMENT_STATUS_LABELS[status]}
+        {t(STATUS_LABEL_KEY[status])}
       </Text>
     </View>
   );

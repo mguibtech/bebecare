@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -51,6 +52,7 @@ export function AppointmentDetailScreen({
 }: AppScreenProps<'AppointmentDetail'>) {
   const { babyId, appointmentId } = route.params;
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const query = useAppointment(babyId, appointmentId);
   const completeMutation = useCompleteAppointment();
   const cancelMutation = useCancelAppointment();
@@ -71,7 +73,7 @@ export function AppointmentDetailScreen({
         ? () => (
             <Appbar.Action
               icon="pencil"
-              accessibilityLabel="Editar"
+              accessibilityLabel={t('common.edit')}
               onPress={() =>
                 navigation.navigate('AppointmentForm', {
                   babyId,
@@ -82,7 +84,7 @@ export function AppointmentDetailScreen({
           )
         : undefined,
     });
-  }, [navigation, query.data, babyId, appointmentId]);
+  }, [navigation, query.data, babyId, appointmentId, t]);
 
   if (query.isPending) {
     return (
@@ -105,7 +107,7 @@ export function AppointmentDetailScreen({
           { backgroundColor: theme.colors.background },
         ]}
       >
-        <Text variant="bodyLarge">Consulta não encontrada</Text>
+        <Text variant="bodyLarge">{t('appointments.notFound')}</Text>
       </View>
     );
   }
@@ -124,7 +126,7 @@ export function AppointmentDetailScreen({
       setCompleteNotes('');
     } catch (err) {
       setSnackbar(
-        err instanceof ApiError ? err.message : 'Erro ao concluir',
+        err instanceof ApiError ? err.message : t('appointments.completeError'),
       );
     }
   };
@@ -140,19 +142,19 @@ export function AppointmentDetailScreen({
       setCancelReason('');
     } catch (err) {
       setSnackbar(
-        err instanceof ApiError ? err.message : 'Erro ao cancelar',
+        err instanceof ApiError ? err.message : t('appointments.cancelError'),
       );
     }
   };
 
   const handleDelete = () => {
     Alert.alert(
-      'Apagar consulta',
-      'Isso remove o registro completamente. Não dá pra desfazer.',
+      t('appointments.deleteTitle'),
+      t('appointments.deleteConfirm'),
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Apagar',
+          text: t('appointments.delete'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -163,7 +165,7 @@ export function AppointmentDetailScreen({
               navigation.goBack();
             } catch (err) {
               setSnackbar(
-                err instanceof ApiError ? err.message : 'Erro ao apagar',
+                err instanceof ApiError ? err.message : t('appointments.deleteError'),
               );
             }
           },
@@ -195,33 +197,35 @@ export function AppointmentDetailScreen({
           <Card.Content style={styles.cardContent}>
             {a.doctorName && (
               <Text variant="bodyMedium" style={styles.row}>
-                <MutedText>Médico: </MutedText>
+                <MutedText>{t('appointments.doctorInline')}</MutedText>
                 {a.doctorName}
               </Text>
             )}
             {a.specialty && (
               <Text variant="bodyMedium" style={styles.row}>
-                <MutedText>Especialidade: </MutedText>
+                <MutedText>{t('appointments.specialtyInline')}</MutedText>
                 {a.specialty}
               </Text>
             )}
             {a.location && (
               <Text variant="bodyMedium" style={styles.row}>
-                <MutedText>Local: </MutedText>
+                <MutedText>{t('appointments.locationInline')}</MutedText>
                 {a.location}
               </Text>
             )}
             {a.notes && (
               <Text variant="bodyMedium" style={styles.row}>
-                <MutedText>Anotações: </MutedText>
+                <MutedText>{t('appointments.notesInline')}</MutedText>
                 {a.notes}
               </Text>
             )}
             <Text variant="bodySmall" style={styles.row}>
-              <MutedText>Lembrete: </MutedText>
+              <MutedText>{t('appointments.reminderInline')}</MutedText>
               {a.reminderEnabled
-                ? `${a.reminderMinutesBefore} min antes`
-                : 'Desativado'}
+                ? t('appointments.reminderValue', {
+                    min: a.reminderMinutesBefore,
+                  })
+                : t('appointments.reminderOff')}
             </Text>
           </Card.Content>
         </Card>
@@ -229,17 +233,21 @@ export function AppointmentDetailScreen({
         {/* PÓS-CONSULTA (se houver) */}
         {a.status === AppointmentStatus.COMPLETED && (
           <Card mode="outlined" style={styles.card}>
-            <Card.Title title="Anotações pós-consulta" />
+            <Card.Title title={t('appointments.postTitle')} />
             <Card.Content style={styles.cardContent}>
               {a.completedAt && (
                 <MutedText variant="bodySmall">
-                  Realizada em {formatLong(a.completedAt)}
+                  {t('appointments.doneAt', {
+                    date: formatLong(a.completedAt),
+                  })}
                 </MutedText>
               )}
               {a.completedNotes ? (
                 <Text variant="bodyMedium">{a.completedNotes}</Text>
               ) : (
-                <MutedText variant="bodyMedium">Sem anotações.</MutedText>
+                <MutedText variant="bodyMedium">
+                  {t('appointments.noNotes')}
+                </MutedText>
               )}
             </Card.Content>
           </Card>
@@ -248,17 +256,21 @@ export function AppointmentDetailScreen({
         {/* CANCELAMENTO (se houver) */}
         {a.status === AppointmentStatus.CANCELED && (
           <Card mode="outlined" style={styles.card}>
-            <Card.Title title="Cancelamento" />
+            <Card.Title title={t('appointments.cancelSection')} />
             <Card.Content style={styles.cardContent}>
               {a.canceledAt && (
                 <MutedText variant="bodySmall">
-                  Cancelada em {formatLong(a.canceledAt)}
+                  {t('appointments.canceledAt', {
+                    date: formatLong(a.canceledAt),
+                  })}
                 </MutedText>
               )}
               {a.cancelReason ? (
                 <Text variant="bodyMedium">{a.cancelReason}</Text>
               ) : (
-                <MutedText variant="bodyMedium">Sem motivo registrado.</MutedText>
+                <MutedText variant="bodyMedium">
+                  {t('appointments.noReason')}
+                </MutedText>
               )}
             </Card.Content>
           </Card>
@@ -274,7 +286,7 @@ export function AppointmentDetailScreen({
                 onPress={() => setCompleteOpen(true)}
                 style={styles.actionBtn}
               >
-                Marcar como realizada
+                {t('appointments.markDone')}
               </Button>
               <Button
                 mode="outlined"
@@ -282,7 +294,7 @@ export function AppointmentDetailScreen({
                 onPress={() => setCancelOpen(true)}
                 style={styles.actionBtn}
               >
-                Cancelar consulta
+                {t('appointments.cancelAppt')}
               </Button>
             </>
           )}
@@ -294,7 +306,7 @@ export function AppointmentDetailScreen({
             loading={deleteMutation.isPending}
             style={styles.actionBtn}
           >
-            Apagar
+            {t('appointments.delete')}
           </Button>
         </View>
       </ScrollView>
@@ -305,11 +317,10 @@ export function AppointmentDetailScreen({
           visible={completeOpen}
           onDismiss={() => setCompleteOpen(false)}
         >
-          <Dialog.Title>Marcar como realizada</Dialog.Title>
+          <Dialog.Title>{t('appointments.markDone')}</Dialog.Title>
           <Dialog.Content>
             <MutedText variant="bodyMedium" style={styles.dialogHint}>
-              Anote o que o pediatra disse: peso, altura, prescrições,
-              próxima consulta.
+              {t('appointments.completeHint')}
             </MutedText>
             <TextInput
               mode="outlined"
@@ -317,43 +328,47 @@ export function AppointmentDetailScreen({
               onChangeText={setCompleteNotes}
               multiline
               numberOfLines={4}
-              placeholder="ex: Peso 8.2kg, altura 70cm. Iniciar vit D 400UI. Próxima em 3m."
+              placeholder={t('appointments.completePlaceholder')}
             />
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setCompleteOpen(false)}>Cancelar</Button>
+            <Button onPress={() => setCompleteOpen(false)}>
+              {t('common.cancel')}
+            </Button>
             <Button
               onPress={handleComplete}
               loading={completeMutation.isPending}
             >
-              Confirmar
+              {t('common.confirm')}
             </Button>
           </Dialog.Actions>
         </Dialog>
 
         {/* DIALOG: Cancelar */}
         <Dialog visible={cancelOpen} onDismiss={() => setCancelOpen(false)}>
-          <Dialog.Title>Cancelar consulta</Dialog.Title>
+          <Dialog.Title>{t('appointments.cancelAppt')}</Dialog.Title>
           <Dialog.Content>
             <MutedText variant="bodyMedium" style={styles.dialogHint}>
-              Motivo do cancelamento (opcional).
+              {t('appointments.cancelHint')}
             </MutedText>
             <TextInput
               mode="outlined"
               value={cancelReason}
               onChangeText={setCancelReason}
               maxLength={200}
-              placeholder="ex: Remarcada pra semana que vem"
+              placeholder={t('appointments.cancelPlaceholder')}
             />
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setCancelOpen(false)}>Voltar</Button>
+            <Button onPress={() => setCancelOpen(false)}>
+              {t('common.back')}
+            </Button>
             <Button
               onPress={handleCancel}
               loading={cancelMutation.isPending}
               textColor={theme.colors.error}
             >
-              Cancelar consulta
+              {t('appointments.cancelAppt')}
             </Button>
           </Dialog.Actions>
         </Dialog>
@@ -363,7 +378,7 @@ export function AppointmentDetailScreen({
         visible={snackbar !== null}
         onDismiss={() => setSnackbar(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setSnackbar(null) }}
+        action={{ label: t('common.ok'), onPress: () => setSnackbar(null) }}
       >
         {snackbar ?? ''}
       </Snackbar>

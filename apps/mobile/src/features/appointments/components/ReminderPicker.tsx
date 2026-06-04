@@ -5,6 +5,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Menu, TextInput } from 'react-native-paper';
 import {
@@ -22,21 +23,32 @@ type ReminderPickerProps<TForm extends FieldValues> = {
   label?: string;
 };
 
+/** value (minutos) -> chave i18n da opcao. */
+const OPTION_KEY = {
+  30: 'appointments.reminderOpt30',
+  60: 'appointments.reminderOpt60',
+  180: 'appointments.reminderOpt180',
+  1440: 'appointments.reminderOpt1440',
+  10080: 'appointments.reminderOpt10080',
+} as const;
+
 export function ReminderPicker<TForm extends FieldValues>({
   control,
   name,
-  label = 'Quando avisar',
+  label,
 }: ReminderPickerProps<TForm>) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
+  const fieldLabel = label ?? t('appointments.reminderWhen');
 
   return (
     <Controller
       control={control}
       name={name}
       render={({ field: { value, onChange } }) => {
-        const display =
-          REMINDER_OPTIONS.find((o) => o.value === value)?.label ??
-          REMINDER_OPTIONS[3].label; // default 1 dia
+        const optValue = (REMINDER_OPTIONS.find((o) => o.value === value)
+          ?.value ?? 1440) as keyof typeof OPTION_KEY; // default 1 dia
+        const display = t(OPTION_KEY[optValue]);
 
         return (
           <View style={styles.wrapper}>
@@ -48,7 +60,7 @@ export function ReminderPicker<TForm extends FieldValues>({
                   <View pointerEvents="box-only">
                     <TextInput
                       mode="outlined"
-                      label={label}
+                      label={fieldLabel}
                       value={display}
                       editable={false}
                       right={
@@ -70,7 +82,7 @@ export function ReminderPicker<TForm extends FieldValues>({
                     onChange(opt.value);
                     setVisible(false);
                   }}
-                  title={opt.label}
+                  title={t(OPTION_KEY[opt.value])}
                 />
               ))}
             </Menu>
