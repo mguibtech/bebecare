@@ -101,6 +101,35 @@ function ActivityRow({ icon, tint, label, sub, onPress, theme }: ActivityRowProp
   );
 }
 
+type QuickActionProps = {
+  icon: string;
+  label: string;
+  onPress: () => void;
+  theme: AppTheme;
+};
+
+/** Atalho compacto (icone em circulo + label) pra fileira de acoes da Home. */
+function QuickAction({ icon, label, onPress, theme }: QuickActionProps) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.quickAction, pressed && styles.pressed]}
+    >
+      <View
+        style={[
+          styles.quickIcon,
+          { backgroundColor: theme.colors.primaryContainer },
+        ]}
+      >
+        <Icon source={icon} size={26} color={theme.colors.primary} />
+      </View>
+      <Text variant="labelSmall" style={styles.quickLabel} numberOfLines={1}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
 export function HomeScreen() {
   const navigation = useNavigation<MainTabScreenProps<'Home'>['navigation']>();
   const me = useMe();
@@ -201,7 +230,7 @@ export function HomeScreen() {
                 Cadastre seu bebê
               </Text>
               <MutedText variant="bodyMedium" style={styles.emptyBody}>
-                Vacinas, consultas, marcos e mais — tudo num lugar so.
+                Vacinas, consultas, marcos e mais — tudo num lugar só.
               </MutedText>
               <Button
                 mode="contained"
@@ -213,6 +242,44 @@ export function HomeScreen() {
               </Button>
             </Card.Content>
           </Card>
+        )}
+
+        {/* ATALHOS RAPIDOS — acoes frequentes + expoe Soninho/Despertadores */}
+        {hasBabies && selectedBaby && (
+          <View style={styles.quickRow}>
+            <QuickAction
+              theme={theme}
+              icon="calendar-plus"
+              label="Consulta"
+              onPress={() =>
+                navigation.navigate('AppointmentForm', {
+                  babyId: selectedBaby.id,
+                })
+              }
+            />
+            <QuickAction
+              theme={theme}
+              icon="pill"
+              label="Remédio"
+              onPress={() =>
+                navigation.navigate('MedicationForm', {
+                  babyId: selectedBaby.id,
+                })
+              }
+            />
+            <QuickAction
+              theme={theme}
+              icon="weather-night"
+              label="Soninho"
+              onPress={() => navigation.navigate('Sleep')}
+            />
+            <QuickAction
+              theme={theme}
+              icon="alarm"
+              label="Despertar"
+              onPress={() => navigation.navigate('Alarms')}
+            />
+          </View>
         )}
 
         {/* PROXIMAS ATIVIDADES (dados reais) */}
@@ -268,7 +335,7 @@ export function HomeScreen() {
                     color={theme.app.success}
                   />
                   <MutedText variant="bodyMedium" style={styles.allClearText}>
-                    Esta tudo em dia por aqui! 🎉
+                    Está tudo em dia por aqui! 🎉
                   </MutedText>
                 </View>
               )}
@@ -328,6 +395,26 @@ const styles = StyleSheet.create({
   },
   emptyButton: {
     marginTop: 8,
+  },
+  quickRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  quickAction: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 6,
+  },
+  quickIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickLabel: {
+    textAlign: 'center',
   },
   activityCard: {
     marginTop: 8,
