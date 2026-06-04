@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import {
   DarkTheme as NavDarkTheme,
   DefaultTheme as NavDefaultTheme,
@@ -8,6 +8,7 @@ import {
 } from '@react-navigation/native';
 import { useTheme } from 'react-native-paper';
 
+import { BrandGradient, Logo } from '@/shared/components';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 import type { AppTheme } from '@/app/theme';
 
@@ -55,14 +56,14 @@ export function RootNavigator() {
 
   if (status === 'booting') {
     return (
-      <View
-        style={[
-          styles.splash,
-          { backgroundColor: paperTheme.colors.background },
-        ]}
-      >
-        <ActivityIndicator size="large" />
-      </View>
+      <BrandGradient style={styles.splash}>
+        <Logo variant="full" size={72} mono="#fff" />
+        <ActivityIndicator
+          size="small"
+          color="#FFFFFF"
+          style={styles.splashSpinner}
+        />
+      </BrandGradient>
     );
   }
 
@@ -78,5 +79,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  splashSpinner: {
+    marginTop: 24,
   },
 });
