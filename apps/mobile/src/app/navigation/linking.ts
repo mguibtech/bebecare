@@ -2,19 +2,19 @@
  * Configuracao de deep links (React Navigation v7 linking API).
  *
  * Schemes suportados:
- *  - bebecare://invite/:inviteCode  → Register com codigo pre-preenchido
- *  - bebecare://familia              → FamilyScreen (logado)
- *  - bebecare://bebe/novo            → BabyForm (logado)
- *  - bebecare://bebe/:babyId         → BabyDetail (logado)
- *  - bebecare://vacinas|saude|mais  → Tab correspondente
+ *  - bebecare://invite/:inviteCode  → Register com código pre-preenchido
+ *  - bebecare://família              → FamilyScreen (logado)
+ *  - bebecare://bebê/novo            → BabyForm (logado)
+ *  - bebecare://bebê/:babyId         → BabyDetail (logado)
+ *  - bebecare://vacinas|saúde|mais  → Tab correspondente
  *
  * Quando o user toca um link `bebecare://invite/ABC123`:
  *  1. Android intent-filter (AndroidManifest.xml) captura o scheme.
  *  2. RN Navigation `linking` parseia o caminho.
  *  3. Se deslogado: AuthNavigator monta Register com inviteCode='ABC123'.
- *  4. Se logado: linking nao tem efeito (Register nao existe no AppStack).
+ *  4. Se logado: linking não tem efeito (Register não existe no AppStack).
  *     Edge case futuro: criar AcceptInviteScreen no AppStack pra "trocar de
- *     familia" sem precisar deslogar.
+ *     família" sem precisar deslogar.
  *
  * Por que `LinkingOptions<ReactNavigation.RootParamList>`: o tipo combina
  * AuthStack + AppStack + MainTabs (declaracao global no types.ts), permitindo
@@ -37,13 +37,13 @@ export const linking: LinkingOptions<ReactNavigation.RootParamList> = {
         screens: {
           Home: '',
           Vaccines: 'vacinas',
-          Health: 'saude',
+          Health: 'saúde',
           More: 'mais',
         },
       },
-      Family: 'familia',
-      BabyForm: 'bebe/novo',
-      BabyDetail: 'bebe/:babyId',
+      Family: 'família',
+      BabyForm: 'bebê/novo',
+      BabyDetail: 'bebê/:babyId',
     },
   },
 };

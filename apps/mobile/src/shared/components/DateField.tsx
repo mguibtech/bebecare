@@ -8,7 +8,7 @@
  *  - iOS: picker componente inline (display='spinner') — UX padrao do iOS.
  *
  * Valor armazenado no form como YYYY-MM-DD (formato que o backend espera).
- * Visual: Paper TextInput readonly com icone de calendario clicavel.
+ * Visual: Paper TextInput readonly com ícone de calendário clicavel.
  */
 
 import { useState } from 'react';
@@ -32,9 +32,9 @@ export type DateFieldProps<TForm extends FieldValues> = {
   /** Limite inferior (default: sem limite). */
   minimumDate?: Date;
   /**
-   * Limite superior (default: sem limite). Telas que nao podem ter data futura
-   * (nascimento do bebe, data de aplicacao de vacina) passam `new Date()`
-   * explicitamente. Datas de tratamento (remedio) ficam sem limite.
+   * Limite superior (default: sem limite). Telas que não podem ter data futura
+   * (nascimento do bebê, data de aplicacao de vacina) passam `new Date()`
+   * explicitamente. Datas de tratamento (remédio) ficam sem limite.
    */
   maximumDate?: Date;
   /** Placeholder quando vazio. */
@@ -49,7 +49,7 @@ function toYmd(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-/** Date a partir de YYYY-MM-DD; null se invalida. */
+/** Date a partir de YYYY-MM-DD; null se inválida. */
 function fromYmd(s: string | undefined | null): Date | null {
   if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) {
     return null;
@@ -92,10 +92,10 @@ export function DateField<TForm extends FieldValues>({
           selectedDate: Date | undefined,
         ) => {
           // iOS: picker fica aberto, fechamos manualmente.
-          // Android: API imperativa ja fecha sozinho; este callback recebe
+          // Android: API imperativa já fecha sozinho; este callback recebe
           // type 'set' (user confirmou) ou 'dismissed' (user cancelou).
           if (Platform.OS === 'ios') {
-            // iOS spinner nao fecha automatico — fechamos so se nao for change continuo
+            // iOS spinner não fecha automatico — fechamos so se não for change continuo
             // (deixa o user rolar a roda sem fechar a cada tick).
           }
           if (event.type === 'set' && selectedDate) {
@@ -141,7 +141,7 @@ export function DateField<TForm extends FieldValues>({
               {fieldState.error?.message ?? ' '}
             </HelperText>
 
-            {/* iOS: picker inline. Android nao renderiza nada — usa API imperativa. */}
+            {/* iOS: picker inline. Android não renderiza nada — usa API imperativa. */}
             {Platform.OS === 'ios' && pickerOpenIOS && (
               <DateTimePicker
                 value={currentDate}

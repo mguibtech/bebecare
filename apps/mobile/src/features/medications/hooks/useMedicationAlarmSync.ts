@@ -1,16 +1,16 @@
 /**
- * Mantem os alarmes locais (notifee) em sincronia com os medicamentos do bebe
+ * Mantem os alarmes locais (notifee) em sincronia com os medicamentos do bebê
  * selecionado.
  *
- * Por que aqui e nao nas mutations: a lista (`useMedications`) ja e invalidada
+ * Por que aqui e não nas mutations: a lista (`useMedications`) já e invalidada
  * por todo CRUD de medicamento/schedule. Observando a lista, qualquer mudanca
- * (criar/editar/excluir remedio ou horario) converge os alarmes sem cada
+ * (criar/editar/excluir remédio ou horário) converge os alarmes sem cada
  * mutation precisar conhecer o notifee. No launch, o primeiro fetch da lista
- * tambem dispara o sync — cobrindo "reagendar ao abrir o app".
+ * também dispara o sync — cobrindo "reagendar ao abrir o app".
  *
- * Este hook so RE-AGENDA (efeito de fundo). A UX de permissoes vive no momento
- * em que o usuario ativa um alarme (ScheduleEditorSheet -> promptAlarmPermissions),
- * pra nao disparar pedidos de permissao "do nada" no launch.
+ * Este hook so RE-AGENDA (efeito de fundo). A UX de permissões vive no momento
+ * em que o usuário ativa um alarme (ScheduleEditorSheet -> promptAlarmPermissions),
+ * pra não disparar pedidos de permissão "do nada" no launch.
  *
  * Montado uma vez na arvore autenticada (AppNavigator), ao lado do
  * useFcmTokenSync.
@@ -36,7 +36,7 @@ export function useMedicationAlarmSync(): void {
         await syncMedicationAlarms(selectedBabyId, data);
         if (cancelled) return;
       } catch (err) {
-        // notifee indisponivel (ex.: app ainda nao rebuildado com o modulo
+        // notifee indisponivel (ex.: app ainda não rebuildado com o modulo
         // nativo, ou rodando em ambiente sem suporte). Mantem o app vivo.
         if (__DEV__) {
           console.warn('[med-alarm] sync falhou', err);

@@ -1,10 +1,10 @@
 /**
- * Grid de 8 estilos DiceBear pra escolher avatar do bebe.
+ * Grid de 8 estilos DiceBear pra escolher avatar do bebê.
  *
- * Mostra preview de cada estilo usando a seed atual (geralmente o nome do bebe).
+ * Mostra preview de cada estilo usando a seed atual (geralmente o nome do bebê).
  * Tocar troca o estilo (atualiza o form). Estilo selecionado tem borda visivel.
  *
- * Tambem permite "regenerar seed" — botao que gera uma seed aleatoria,
+ * Também permite "regenerar seed" — botao que gera uma seed aleatoria,
  * util quando o nome resulta num avatar feio.
  */
 
@@ -67,7 +67,7 @@ export function AvatarStylePicker({
               onPress={() => onChange(style)}
               style={[
                 styles.item,
-                // eslint-disable-next-line react-native/no-inline-styles -- cores derivam de theme + estado, nao cabe em StyleSheet.create
+                // eslint-disable-next-line react-native/no-inline-styles -- cores derivam de theme + estado, não cabe em StyleSheet.create
                 {
                   borderColor: selected ? theme.colors.primary : 'transparent',
                   backgroundColor: theme.colors.surfaceVariant,
@@ -89,7 +89,7 @@ export function AvatarStylePicker({
         icon="dice-multiple"
         style={styles.regenerate}
       >
-        Trocar aparencia (regenerar)
+        Trocar aparência (regenerar)
       </Button>
     </View>
   );

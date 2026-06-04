@@ -1,8 +1,8 @@
 /**
- * Cria novo convite (codigo de 6 digitos, valido 7 dias).
+ * Cria novo convite (código de 6 digitos, valido 7 dias).
  *
- * onSuccess invalida a familia inteira (pra trazer o pendingInvites
- * atualizado). UI espera o convite no retorno pra ja abrir a Share API.
+ * onSuccess inválida a família inteira (pra trazer o pendingInvites
+ * atualizado). UI espera o convite no retorno pra já abrir a Share API.
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';

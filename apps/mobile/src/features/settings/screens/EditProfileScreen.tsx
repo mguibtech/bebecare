@@ -1,7 +1,7 @@
 /**
- * Editar perfil do usuario — nome + avatar DiceBear.
+ * Editar perfil do usuário — nome + avatar DiceBear.
  *
- * Reusa o AvatarStylePicker do dominio babies (mesma UX do cadastro de bebe).
+ * Reusa o AvatarStylePicker do dominio babies (mesma UX do cadastro de bebê).
  * Obs: AvatarStyle existe duplicado (auth/types e babies/types) com valores
  * IDENTICOS (ambos espelham o enum do backend). Convertemos via valor string
  * na fronteira — sem risco, mesmas chaves.

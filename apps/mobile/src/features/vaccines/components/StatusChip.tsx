@@ -1,6 +1,6 @@
 /**
  * Chip de status de vacina (Aplicada/Atrasada/No prazo/Em breve).
- * Cores e icone derivam do tema via getStatusVisuals.
+ * Cores e ícone derivam do tema via getStatusVisuals.
  */
 
 import { StyleSheet, View } from 'react-native';

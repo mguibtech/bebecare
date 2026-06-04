@@ -1,5 +1,5 @@
 /**
- * Controla se o usuario ja viu o onboarding (mostrado 1x na 1a vez).
+ * Controla se o usuário já viu o onboarding (mostrado 1x na 1a vez).
  *
  * MMKV e' sincrono, entao o estado inicial le direto do storage no create —
  * sem precisar de hydrate assincrono. `complete()` marca como visto e persiste.

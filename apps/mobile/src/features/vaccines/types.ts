@@ -5,10 +5,10 @@
  *  - VaccineStatus enum
  *
  * Status (calculado no backend, NAO recalcular no mobile):
- *  - APPLIED  ja tomou (existe VaccineRecord)
+ *  - APPLIED  já tomou (existe VaccineRecord)
  *  - OVERDUE  passou da idade recomendada + 6m tolerancia
  *  - DUE      esta no prazo agora
- *  - UPCOMING ainda nao atingiu idade minima
+ *  - UPCOMING ainda não atingiu idade minima
  */
 
 // ============================================================
@@ -33,32 +33,32 @@ export const VACCINE_STATUS_LABELS: Record<VaccineStatus, string> = {
 // Catalogo PNI
 // ============================================================
 
-/** Item do catalogo PNI — uma "linha" de uma dose especifica. */
+/** Item do catalogo PNI — uma "linha" de uma dose específica. */
 export type Vaccine = {
   id: string;
-  /** Codigo curto (ex: 'PENTA_1'). */
+  /** Código curto (ex: 'PENTA_1'). */
   code: string;
   /** Nome (ex: 'Pentavalente'). */
   name: string;
   description: string | null;
   /** Label da dose (ex: '1ª dose', 'Reforço'). */
   doseLabel: string;
-  /** Numero da dose nessa serie (1, 2, 3...). */
+  /** Número da dose nessa serie (1, 2, 3...). */
   doseNumber: number;
   /** True se eh um reforco. */
   isBooster: boolean;
   /** Idade recomendada em meses. */
   recommendedAgeMonths: number;
-  /** Idade minima (alguns sao 0 = ao nascer). */
+  /** Idade minima (alguns são 0 = ao nascer). */
   minAgeMonths: number;
   /** Idade maxima (null = sem limite). */
   maxAgeMonths: number | null;
-  /** Ordem de exibicao no calendario (do PNI). */
+  /** Ordem de exibicao no calendário (do PNI). */
   displayOrder: number;
 };
 
 // ============================================================
-// Schedule do bebe
+// Schedule do bebê
 // ============================================================
 
 /** Entrada do schedule: uma dose com status calculado pelo backend. */

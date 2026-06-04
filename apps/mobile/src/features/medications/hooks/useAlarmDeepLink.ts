@@ -1,10 +1,10 @@
 /**
- * Liga o toque na notificacao de alarme à navegacao (M6/6D).
+ * Liga o toque na notificação de alarme à navegacao (M6/6D).
  *
  * Dois caminhos de entrada do notifee:
  *  1. App ABERTO/background → toque dispara EventType.PRESS no onForegroundEvent.
  *  2. App em QUIT, aberto PELO toque → getInitialNotification() devolve a
- *     notificacao que lancou o app.
+ *     notificação que lancou o app.
  *
  * (Acoes em background sem abrir o app — ex.: snooze — ficam no
  * onBackgroundEvent, registrado em alarms/background.ts.)

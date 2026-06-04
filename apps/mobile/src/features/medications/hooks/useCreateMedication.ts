@@ -23,8 +23,8 @@ export function useCreateMedication() {
         med,
       );
       queryClient.invalidateQueries({ queryKey: qk.medications.all });
-      // Dose logs sao criados pelo cron — invalida pra refletir quando
-      // o usuario voltar pra tela "Hoje".
+      // Dose logs são criados pelo cron — inválida pra refletir quando
+      // o usuário voltar pra tela "Hoje".
       queryClient.invalidateQueries({ queryKey: qk.doseLogs.all });
       snackbar.showSuccess(`${med.name} cadastrado`);
     },

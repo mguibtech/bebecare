@@ -1,11 +1,11 @@
 /**
  * Onboarding — 4 slides mostrados 1x na primeira abertura (antes do Login).
  *
- * Paginacao horizontal (swipe) + dots + botoes "Pular" / "Proximo" / "Comecar".
+ * Paginacao horizontal (swipe) + dots + botoes "Pular" / "Próximo" / "Comecar".
  * Ao concluir/pular, marca seen=true (MMKV) e o RootNavigator troca pro Login.
  *
- * Nao usa React Navigation — e' renderizado direto pelo RootNavigator como
- * "gate" entre booting e a stack publica.
+ * Não usa React Navigation — e' renderizado direto pelo RootNavigator como
+ * "gate" entre booting e a stack pública.
  */
 
 import { useRef, useState } from 'react';
@@ -37,26 +37,26 @@ const SLIDES: Slide[] = [
   {
     key: 'welcome',
     icon: 'logo',
-    title: 'Tudo do seu bebe, num lugar so',
-    body: 'Vacinas, consultas, remedios e rotina — sem papelzinho e sem esquecer nada.',
+    title: 'Tudo do seu bebê, num lugar so',
+    body: 'Vacinas, consultas, remédios e rotina — sem papelzinho e sem esquecer nada.',
   },
   {
     key: 'health',
     icon: 'needle',
-    title: 'Saude sempre em dia',
-    body: 'Calendario de vacinas (PNI) e consultas do pediatra, com lembretes na hora certa.',
+    title: 'Saúde sempre em dia',
+    body: 'Calendário de vacinas (PNI) e consultas do pediatra, com lembretes na hora certa.',
   },
   {
     key: 'routine',
     icon: 'weather-night',
     title: 'A rotina mais leve',
-    body: 'Despertador da mamada e o Modo Soninho, com sons que ajudam o bebe a dormir.',
+    body: 'Despertador da mamada e o Modo Soninho, com sons que ajudam o bebê a dormir.',
   },
   {
     key: 'couple',
     icon: 'account-multiple-outline',
     title: 'Cuidem juntos',
-    body: 'Pai e mae acompanham o mesmo bebe, cada um no seu celular, sempre sincronizado.',
+    body: 'Pai e mae acompanham o mesmo bebê, cada um no seu celular, sempre sincronizado.',
   },
 ];
 
@@ -90,7 +90,7 @@ export function OnboardingScreen() {
       style={[styles.root, { backgroundColor: theme.colors.background }]}
       edges={['top', 'bottom']}
     >
-      {/* Pular (some no ultimo slide) */}
+      {/* Pular (some no último slide) */}
       <View style={styles.topBar}>
         {!isLast && (
           <Button mode="text" compact onPress={complete} textColor={theme.colors.primary}>
@@ -141,7 +141,7 @@ export function OnboardingScreen() {
       {/* Acao */}
       <View style={styles.footer}>
         <Button mode="contained" onPress={next} style={styles.cta}>
-          {isLast ? 'Comecar' : 'Proximo'}
+          {isLast ? 'Comecar' : 'Próximo'}
         </Button>
       </View>
     </SafeAreaView>

@@ -1,6 +1,6 @@
 /**
  * Schemas zod para forms de auth.
- * Mensagens em PT-BR direto aqui — sao exibidas ao usuario.
+ * Mensagens em PT-BR direto aqui — são exibidas ao usuário.
  *
  * Sao MAIS permissivas que o backend de proposito: a UX deve validar
  * cliente-side rapido, e o backend e a fonte da verdade final.
@@ -10,39 +10,39 @@ import { z } from 'zod';
 
 /** Regras compartilhadas entre login e register. */
 const emailSchema = z
-  .string({ required_error: 'Email e obrigatorio' })
-  .min(1, 'Email e obrigatorio')
-  .email('Email invalido')
+  .string({ required_error: 'Email e obrigatório' })
+  .min(1, 'Email e obrigatório')
+  .email('Email inválido')
   .trim()
   .toLowerCase();
 
 /**
- * Login aceita qualquer senha nao-vazia — quem decide se eh valida e o backend.
- * Evita confundir o usuario com "senha curta" quando a senha do cadastro ja eh longa.
+ * Login aceita qualquer senha não-vazia — quem decide se eh valida e o backend.
+ * Evita confundir o usuário com "senha curta" quando a senha do cadastro já eh longa.
  */
 const loginPasswordSchema = z
-  .string({ required_error: 'Senha e obrigatoria' })
-  .min(1, 'Senha e obrigatoria');
+  .string({ required_error: 'Senha e obrigatória' })
+  .min(1, 'Senha e obrigatória');
 
 /**
- * Register: minimo 8 caracteres (alinhado com o backend).
- * Backend tambem aceita 8+; manter sincronizado.
+ * Register: mínimo 8 caracteres (alinhado com o backend).
+ * Backend também aceita 8+; manter sincronizado.
  */
 const registerPasswordSchema = z
-  .string({ required_error: 'Senha e obrigatoria' })
+  .string({ required_error: 'Senha e obrigatória' })
   .min(8, 'Senha precisa ter ao menos 8 caracteres');
 
 const nameSchema = z
-  .string({ required_error: 'Nome e obrigatorio' })
+  .string({ required_error: 'Nome e obrigatório' })
   .trim()
   .min(2, 'Nome muito curto')
   .max(120, 'Nome muito longo');
 
-/** Codigo de convite: 6 digitos numericos exatos (formato do backend). */
+/** Código de convite: 6 digitos numericos exatos (formato do backend). */
 const inviteCodeSchema = z
   .string()
   .trim()
-  .regex(/^\d{6}$/, 'Codigo deve ter 6 digitos numericos');
+  .regex(/^\d{6}$/, 'Código deve ter 6 digitos numericos');
 
 export const loginSchema = z.object({
   email: emailSchema,
@@ -53,7 +53,7 @@ export const registerSchema = z.object({
   email: emailSchema,
   name: nameSchema,
   password: registerPasswordSchema,
-  /** Opcional: deixar string vazia tambem e valido (vira undefined antes do send). */
+  /** Opcional: deixar string vazia também e valido (vira undefined antes do send). */
   inviteCode: z
     .union([inviteCodeSchema, z.literal('')])
     .optional()

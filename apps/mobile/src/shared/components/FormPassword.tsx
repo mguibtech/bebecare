@@ -3,7 +3,7 @@
  *
  * Diferencas em relacao a FormInput:
  * - `secureTextEntry` controlado por estado local (toggle do olho).
- * - Icone a direita: 'eye' (mostrar) / 'eye-off' (esconder).
+ * - Ícone a direita: 'eye' (mostrar) / 'eye-off' (esconder).
  * - autoCapitalize='none' e autoCorrect=false por default (overridable).
  * - autoComplete e textContentType apropriados pra senha por default.
  *
@@ -15,7 +15,7 @@
  *   />
  *
  * Pra cadastro use `isNew` que ajusta o autoComplete pra 'password-new'
- * (faz iOS/Android nao oferecerem senha existente).
+ * (faz iOS/Android não oferecerem senha existente).
  */
 
 import { useState } from 'react';
@@ -37,7 +37,7 @@ export type FormPasswordProps<TForm extends FieldValues> = {
    * Use em telas de cadastro/reset; deixe false (default) em telas de login.
    */
   isNew?: boolean;
-  /** Esconde a HelperText quando nao ha erro. */
+  /** Esconde a HelperText quando não ha erro. */
   hideHelperWhenValid?: boolean;
 } & Omit<
   TextInputProps,

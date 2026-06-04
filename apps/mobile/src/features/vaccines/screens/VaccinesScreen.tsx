@@ -1,8 +1,8 @@
 /**
- * Tab Vacinas — calendario PNI do bebê selecionado, agrupado por idade.
+ * Tab Vacinas — calendário PNI do bebê selecionado, agrupado por idade.
  *
  * Estados:
- *  - 0 bebês na familia → empty state com CTA "Cadastrar bebê"
+ *  - 0 bebês na família → empty state com CTA "Cadastrar bebê"
  *  - 0 bebê selecionado → CTA pra selecionar
  *  - Schedule carregando → spinner
  *  - Schedule pronto → SectionList agrupada por idade
@@ -55,7 +55,7 @@ export function VaccinesScreen() {
     [schedule.data],
   );
 
-  // ===== 0 bebes na familia
+  // ===== 0 bebês na família
   if (babies.data && babies.data.length === 0) {
     return (
       <SafeAreaView edges={['top']} style={[styles.center, containerStyle]}>
@@ -86,7 +86,7 @@ export function VaccinesScreen() {
     );
   }
 
-  // ===== Sem bebe selecionado
+  // ===== Sem bebê selecionado
   if (!selectedBabyId) {
     return (
       <SafeAreaView edges={['top']} style={[styles.center, containerStyle]}>
@@ -161,7 +161,7 @@ export function VaccinesScreen() {
           />
         }
       >
-        {/* HEADER do bebe + resumo */}
+        {/* HEADER do bebê + resumo */}
         <View style={styles.header}>
           <Text variant="titleLarge" style={styles.babyName}>
             {data.babyName}

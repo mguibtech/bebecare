@@ -1,5 +1,5 @@
 /**
- * Mapeamento status → recursos visuais (cor, icone, label) usados em chips
+ * Mapeamento status → recursos visuais (cor, ícone, label) usados em chips
  * de status nas telas de vacinas.
  *
  * Centralizado aqui pra UI consistente entre VaccineCalendarScreen, badges

@@ -1,8 +1,8 @@
 /**
  * Apagar um registro (caso de engano de digitacao).
  *
- * Backend faz DELETE definitivo (nao soft-delete) — engano no histo de
- * vacina deve sumir mesmo, nao "ficar pendurado".
+ * Backend faz DELETE definitivo (não soft-delete) — engano no histo de
+ * vacina deve sumir mesmo, não "ficar pendurado".
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';

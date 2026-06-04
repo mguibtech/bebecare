@@ -1,9 +1,9 @@
 /**
- * Schemas zod do form de bebe.
+ * Schemas zod do form de bebê.
  *
  * Validacoes batem com o backend (CreateBabyDto):
  *  - name: 1-120 chars
- *  - birthDate: YYYY-MM-DD, nao no futuro
+ *  - birthDate: YYYY-MM-DD, não no futuro
  *  - birthWeightGrams: 300-8000 (inteiro)
  *  - birthHeightCm: 20-70 (2 decimais)
  *  - allergies: ate 500 chars
@@ -17,16 +17,16 @@ import { z } from 'zod';
 
 import { AvatarStyle, BloodType, Sex } from '../types';
 
-/** Helper: valida data ISO YYYY-MM-DD e que nao seja no futuro. */
+/** Helper: valida data ISO YYYY-MM-DD e que não seja no futuro. */
 const birthDateSchema = z
-  .string({ required_error: 'Data de nascimento obrigatoria' })
-  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato invalido (use AAAA-MM-DD)')
+  .string({ required_error: 'Data de nascimento obrigatória' })
+  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato inválido (use AAAA-MM-DD)')
   .refine(
     (s) => {
       const parsed = new Date(s + 'T00:00:00');
       return !Number.isNaN(parsed.getTime()) && parsed <= new Date();
     },
-    { message: 'Data de nascimento nao pode ser no futuro' },
+    { message: 'Data de nascimento não pode ser no futuro' },
   );
 
 /**
@@ -35,13 +35,13 @@ const birthDateSchema = z
  */
 export const createBabySchema = z.object({
   name: z
-    .string({ required_error: 'Nome obrigatorio' })
+    .string({ required_error: 'Nome obrigatório' })
     .trim()
-    .min(1, 'Nome obrigatorio')
+    .min(1, 'Nome obrigatório')
     .max(120, 'Nome muito longo'),
 
   sex: z.nativeEnum(Sex, {
-    errorMap: () => ({ message: 'Sexo obrigatorio' }),
+    errorMap: () => ({ message: 'Sexo obrigatório' }),
   }),
 
   birthDate: birthDateSchema,
@@ -58,10 +58,10 @@ export const createBabySchema = z.object({
       return Number.isNaN(n) ? v : n;
     },
     z
-      .number({ invalid_type_error: 'Peso invalido' })
+      .number({ invalid_type_error: 'Peso inválido' })
       .int('Peso em gramas (inteiro)')
-      .min(300, 'Peso minimo 300g')
-      .max(8000, 'Peso maximo 8000g')
+      .min(300, 'Peso mínimo 300g')
+      .max(8000, 'Peso máximo 8000g')
       .optional(),
   ),
 
@@ -72,7 +72,7 @@ export const createBabySchema = z.object({
       return Number.isNaN(n) ? v : n;
     },
     z
-      .number({ invalid_type_error: 'Altura invalida' })
+      .number({ invalid_type_error: 'Altura inválida' })
       .min(20, 'Altura minima 20cm')
       .max(70, 'Altura maxima 70cm')
       .optional(),
@@ -83,14 +83,14 @@ export const createBabySchema = z.object({
   allergies: z
     .string()
     .trim()
-    .max(500, 'Maximo 500 caracteres')
+    .max(500, 'Máximo 500 caracteres')
     .optional()
     .transform((v) => (v === '' ? undefined : v)),
 
   eyeColor: z
     .string()
     .trim()
-    .max(30, 'Maximo 30 caracteres')
+    .max(30, 'Máximo 30 caracteres')
     .optional()
     .transform((v) => (v === '' ? undefined : v)),
 
@@ -105,7 +105,7 @@ export const createBabySchema = z.object({
   avatarSeed: z
     .string()
     .trim()
-    .max(100, 'Maximo 100 caracteres')
+    .max(100, 'Máximo 100 caracteres')
     .optional()
     .transform((v) => (v === '' ? undefined : v)),
 });

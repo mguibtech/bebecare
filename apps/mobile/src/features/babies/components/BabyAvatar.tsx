@@ -1,5 +1,5 @@
 /**
- * Avatar do bebe via DiceBear PNG (mesma origem do user).
+ * Avatar do bebê via DiceBear PNG (mesma origem do user).
  *
  * Reutilizavel em:
  *  - Home header (size grande)

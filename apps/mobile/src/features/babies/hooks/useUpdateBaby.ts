@@ -1,13 +1,13 @@
 /**
- * Atualizar bebe (PATCH parcial).
+ * Atualizar bebê (PATCH parcial).
  *
  * onSuccess atualiza ambos caches: detalhe (setQueryData) e lista
  * (invalidate, mais conservador — o backend pode mudar ageMonths/ageDays
  * recalculados, melhor pegar fresh).
  *
- * Se o sex foi alterado e a paleta atual nao bate com a sugerida pra esse
+ * Se o sex foi alterado e a paleta atual não bate com a sugerida pra esse
  * sex, oferece troca via snackbar com acao (mesma logica do useCreateBaby).
- * Opt-in respeitoso: nao troca sozinho, soh oferece.
+ * Opt-in respeitoso: não troca sozinho, soh oferece.
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -39,7 +39,7 @@ export function useUpdateBaby() {
       queryClient.setQueryData(qk.babies.detail(baby.id), baby);
       queryClient.invalidateQueries({ queryKey: qk.babies.list() });
 
-      // Se sex foi alterado e a paleta nao bate, sugere troca.
+      // Se sex foi alterado e a paleta não bate, sugere troca.
       const sexChanged = body.sex !== undefined;
       const currentPalette = useThemeStore.getState().palette;
       const suggested = suggestedPaletteFor(baby.sex);

@@ -1,5 +1,5 @@
 /**
- * Picker da unidade de dose (Menu Paper) — 5 opcoes do enum DoseUnit.
+ * Picker da unidade de dose (Menu Paper) — 5 opções do enum DoseUnit.
  */
 
 import { useState } from 'react';

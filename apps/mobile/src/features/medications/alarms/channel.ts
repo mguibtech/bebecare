@@ -1,5 +1,5 @@
 /**
- * Canal de notificacao Android dos alarmes de remedio.
+ * Canal de notificação Android dos alarmes de remédio.
  *
  * IMPORTANCE.HIGH = heads-up + som; combinado com category ALARM e
  * fullScreenAction (ver scheduler.ts), o alarme se comporta como um
@@ -22,11 +22,11 @@ export async function ensureAlarmChannel(): Promise<void> {
     name: ALARM_CHANNEL_NAME,
     importance: AndroidImportance.HIGH,
     // Som padrao do sistema. Som customizado por categoria fica pro M7
-    // (despertador da mamada) quando os assets de audio entrarem.
+    // (despertador da mamada) quando os assets de áudio entrarem.
     sound: 'default',
     vibration: true,
     vibrationPattern: [300, 500, 300, 500],
-    // Mostra conteudo completo na lockscreen (e um lembrete, nao dado sensivel).
+    // Mostra conteudo completo na lockscreen (e um lembrete, não dado sensivel).
     visibility: AndroidVisibility.PUBLIC,
     bypassDnd: false,
   });

@@ -4,7 +4,7 @@ import * as Keychain from 'react-native-keychain';
  * Wrapper sobre react-native-keychain para guardar segredos
  * (JWT, refresh token). Usa Keystore (Android) / Keychain (iOS).
  *
- * NAO usar pra dados nao-sensiveis: prefira MMKV (rapido, sincrono).
+ * NAO usar pra dados não-sensiveis: prefira MMKV (rapido, sincrono).
  */
 
 const SERVICE = 'com.bebecare.auth';

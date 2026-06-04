@@ -1,7 +1,7 @@
 /**
  * Detalhe de medicamento — info + schedules + acoes.
  *
- * Schedules sao mostrados como lista compacta com:
+ * Schedules são mostrados como lista compacta com:
  *  - Hora + dias da semana
  *  - Toggle de useAlarm (alarme local vs push)
  *  - Botao remover (com confirmacao)
@@ -49,7 +49,7 @@ function formatDate(s: string | null): string {
 }
 
 function daysSummary(schedule: MedSchedule): string {
-  // backend ja manda nomes formatados em PT-BR
+  // backend já manda nomes formatados em PT-BR
   return schedule.daysOfWeekNames.join(', ');
 }
 

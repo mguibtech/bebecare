@@ -1,8 +1,8 @@
 /**
- * Detalhe do bebe — perfil visualizavel.
+ * Detalhe do bebê — perfil visualizavel.
  *
  * Acesso: via BabySelectorSheet ("Ver perfil") ou via long-press no avatar.
- * Mostra todas as informacoes em cards. Botao "Editar" no header navega
+ * Mostra todas as informações em cards. Botao "Editar" no header navega
  * pro BabyForm com babyId.
  */
 
@@ -34,7 +34,7 @@ function formatAge(baby: Baby): string {
   if (ageMonths === 0) {
     return `${ageDays} dia${ageDays !== 1 ? 's' : ''}`;
   }
-  return `${ageMonths} ${ageMonths === 1 ? 'mes' : 'meses'} (${ageDays} dias)`;
+  return `${ageMonths} ${ageMonths === 1 ? 'mês' : 'meses'} (${ageDays} dias)`;
 }
 
 /** Formata YYYY-MM-DD pra DD/MM/AAAA. */
@@ -81,7 +81,7 @@ export function BabyDetailScreen({
       <View
         style={[styles.center, { backgroundColor: theme.colors.background }]}
       >
-        <Text variant="bodyLarge">Bebe nao encontrado</Text>
+        <Text variant="bodyLarge">Bebê não encontrado</Text>
         <Text variant="bodyMedium" style={styles.errorMessage}>
           {baby.error?.message ?? 'Tente voltar e abrir de novo.'}
         </Text>
@@ -172,7 +172,7 @@ export function BabyDetailScreen({
 
       {!hasMeasurements && !hasMedical && !b.notes && (
         <Text variant="bodySmall" style={styles.placeholder}>
-          Toque em Editar pra adicionar mais informacoes.
+          Toque em Editar pra adicionar mais informações.
         </Text>
       )}
     </ScrollView>

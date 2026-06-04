@@ -4,8 +4,8 @@
  * Mesmo fluxo do useLogin: ao sucesso, persiste tokens e o RootNavigator
  * faz o switch pra AppStack.
  *
- * Body opcional inviteCode entra na familia existente em vez de criar
- * uma familia nova solo.
+ * Body opcional inviteCode entra na família existente em vez de criar
+ * uma família nova solo.
  */
 
 import { useMutation } from '@tanstack/react-query';

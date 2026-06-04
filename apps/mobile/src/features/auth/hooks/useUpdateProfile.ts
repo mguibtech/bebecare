@@ -1,6 +1,6 @@
 /**
- * Edita nome e/ou avatar do usuario logado (PATCH /users/me).
- * Invalida /auth/me pra a UI (MoreScreen, headers) refletir.
+ * Edita nome e/ou avatar do usuário logado (PATCH /users/me).
+ * Inválida /auth/me pra a UI (MoreScreen, headers) refletir.
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';

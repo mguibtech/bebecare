@@ -3,8 +3,8 @@
  *
  * Convencao:
  * - Funcoes finas: 1 chamada axios, retorno tipado, sem regra de negocio.
- * - Erros sao normalizados como ApiError pelo interceptor do apiClient.
- * - NAO fazem signIn/signOut — quem decide o que fazer com a resposta sao
+ * - Erros são normalizados como ApiError pelo interceptor do apiClient.
+ * - NAO fazem signIn/signOut — quem decide o que fazer com a resposta são
  *   os hooks (useLogin, useRegister) e o RootNavigator.
  */
 
@@ -20,7 +20,7 @@ import type {
 } from '../types';
 
 export const authApi = {
-  /** POST /auth/register — cria conta. Se inviteCode, entra na familia existente. */
+  /** POST /auth/register — cria conta. Se inviteCode, entra na família existente. */
   async register(body: RegisterBody): Promise<AuthResponse> {
     const { data } = await apiClient.post<AuthResponse>('/auth/register', body);
     return data;
@@ -34,7 +34,7 @@ export const authApi = {
 
   /**
    * POST /auth/refresh — troca refreshToken por par novo (refresh com rotacao).
-   * Importante: o backend invalida o refreshToken antigo, sempre usar o novo.
+   * Importante: o backend inválida o refreshToken antigo, sempre usar o novo.
    *
    * NAO usar diretamente em components — o interceptor do apiClient cuida do
    * fluxo. Exposto aqui pra possiveis usos manuais (ex.: ao boot, se desejar).
@@ -49,12 +49,12 @@ export const authApi = {
     await apiClient.post('/auth/logout', body);
   },
 
-  /** POST /auth/logout-all — revoga todos os refresh tokens do usuario. */
+  /** POST /auth/logout-all — revoga todos os refresh tokens do usuário. */
   async logoutAll(): Promise<void> {
     await apiClient.post('/auth/logout-all');
   },
 
-  /** GET /auth/me — perfil + familia do usuario logado. */
+  /** GET /auth/me — perfil + família do usuário logado. */
   async me(): Promise<MeResponse> {
     const { data } = await apiClient.get<MeResponse>('/auth/me');
     return data;
@@ -69,8 +69,8 @@ export const authApi = {
   /**
    * DELETE /users/me — exclui a propria conta (soft-delete, LGPD).
    *
-   * Se o user for o unico da familia, backend faz cascade: family e bebes
-   * tambem viram soft-delete. Recuperavel em ate 30 dias antes do purge.
+   * Se o user for o unico da família, backend faz cascade: family e bebês
+   * também viram soft-delete. Recuperavel em ate 30 dias antes do purge.
    *
    * Apos sucesso, mobile DEVE limpar Keychain + cache (signOut) e voltar pro
    * Login — qualquer request subsequente vai dar 401.

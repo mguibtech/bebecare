@@ -1,8 +1,8 @@
 /**
- * Picker de sexo do bebe — SegmentedButtons 2 opcoes.
+ * Picker de sexo do bebê — SegmentedButtons 2 opções.
  *
  * Integra com react-hook-form via Controller. Sexo eh OBRIGATORIO no DTO
- * do backend (curva OMS varia por sexo), entao o picker comeca sem selecao
+ * do backend (curva OMS varia por sexo), entao o picker começa sem selecao
  * e o submit valida via zod.
  */
 

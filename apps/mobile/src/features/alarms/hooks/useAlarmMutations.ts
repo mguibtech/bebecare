@@ -1,7 +1,7 @@
 /**
  * Mutations dos despertadores (create / update / delete).
  *
- * Toda mutation invalida a lista — o sync de alarmes locais (useAlarmSync)
+ * Toda mutation inválida a lista — o sync de alarmes locais (useAlarmSync)
  * observa a lista e reagenda o notifee automaticamente.
  */
 

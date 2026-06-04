@@ -2,7 +2,7 @@
  * Agrupa entries do schedule por marco etario (0m, 2m, 4m, 6m, 12m, etc).
  *
  * O backend ordena entries por status (overdue → due → upcoming → applied),
- * util pra "atalho" no topo da lista. Mas a UX padrao do calendario PNI
+ * util pra "atalho" no topo da lista. Mas a UX padrao do calendário PNI
  * eh agrupar POR IDADE — pais leem como "vacinas dos 2 meses", "dos 6 meses".
  *
  * Esta funcao re-agrupa preservando metadado de status (cada grupo sabe
@@ -25,7 +25,7 @@ export type AgeGroup = {
 /** Converte idade em meses pra label PT-BR amigavel. */
 export function ageLabelFor(months: number): string {
   if (months === 0) return 'Ao nascer';
-  if (months < 12) return `${months} ${months === 1 ? 'mes' : 'meses'}`;
+  if (months < 12) return `${months} ${months === 1 ? 'mês' : 'meses'}`;
   if (months % 12 === 0) {
     const years = months / 12;
     return `${years} ${years === 1 ? 'ano' : 'anos'}`;
@@ -38,7 +38,7 @@ export function ageLabelFor(months: number): string {
  * Agrupa entries por recommendedAgeMonths. Dentro de cada grupo, ordena
  * por displayOrder do PNI.
  *
- * Os grupos sao retornados em ordem crescente de idade.
+ * Os grupos são retornados em ordem crescente de idade.
  */
 export function groupByAge(entries: ScheduleEntry[]): AgeGroup[] {
   const map = new Map<number, ScheduleEntry[]>();

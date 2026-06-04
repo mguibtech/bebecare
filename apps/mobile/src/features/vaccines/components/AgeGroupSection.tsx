@@ -1,5 +1,5 @@
 /**
- * Header de uma secçao do calendario por idade ("Ao nascer", "2 meses"...).
+ * Header de uma secçao do calendário por idade ("Ao nascer", "2 meses"...).
  *
  * Mostra label de idade + mini-resumo de contagens (X de Y aplicadas, e
  * destaque vermelho se ha atrasadas).

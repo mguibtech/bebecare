@@ -5,9 +5,9 @@
  *   GET    /families/me                       detalhes + convites
  *   PATCH  /families/me                       renomeia (body: { name: string | null })
  *   GET    /families/me/invites               lista pendentes
- *   POST   /families/me/invites               gera convite (codigo 6 digitos, 7 dias)
+ *   POST   /families/me/invites               gera convite (código 6 digitos, 7 dias)
  *   DELETE /families/me/invites/:id           revoga
- *   POST   /families/me/leave                 sai da familia (cria nova solo)
+ *   POST   /families/me/leave                 sai da família (cria nova solo)
  *   DELETE /families/me/members/:userId       remove outro membro
  */
 
@@ -46,8 +46,8 @@ export const familyApi = {
   },
 
   /**
-   * POST /families/me/leave — sai da familia atual.
-   * Cria uma nova familia solo pro user. Falha (400) se for o unico membro.
+   * POST /families/me/leave — sai da família atual.
+   * Cria uma nova família solo pro user. Falha (400) se for o unico membro.
    * Apos sucesso, mobile DEVE invalidar /auth/me — familyId mudou.
    */
   async leave(): Promise<void> {

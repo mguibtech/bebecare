@@ -1,9 +1,9 @@
 /**
  * Registrar uma dose aplicada.
  *
- * onSuccess invalida:
- *  - schedule do bebe (status da dose passa pra APPLIED)
- *  - records do bebe (lista cresce em 1)
+ * onSuccess inválida:
+ *  - schedule do bebê (status da dose passa pra APPLIED)
+ *  - records do bebê (lista cresce em 1)
  *
  * Optimistic update do schedule seria ideal mas o backend calcula campos
  * derivados (status, appliedAt) — refetch eh mais seguro que reproduzir

@@ -1,8 +1,8 @@
 /**
  * Mutations dos schedules nested de um medicamento.
  *
- * Schedules sao mexidos diretamente no MedicationFormScreen ou em
- * MedicationDetailScreen — invalida o detalhe do medicamento pra refletir
+ * Schedules são mexidos diretamente no MedicationFormScreen ou em
+ * MedicationDetailScreen — inválida o detalhe do medicamento pra refletir
  * (schedules vem embarcados no Medication response).
  */
 

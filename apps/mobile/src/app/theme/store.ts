@@ -1,5 +1,5 @@
 /**
- * Store de preferencias de tema (paleta + modo escolhidos pelo usuario).
+ * Store de preferencias de tema (paleta + modo escolhidos pelo usuário).
  *
  * Guarda:
  * - `palette`: 'azul' ou 'rosa' (escolha visual)
@@ -17,7 +17,7 @@ import { kv } from '@/shared/storage/mmkv';
 
 import type { PaletteName } from './tokens';
 
-/** Preferencia de modo escolhida pelo usuario (NAO o modo efetivo). */
+/** Preferencia de modo escolhida pelo usuário (NAO o modo efetivo). */
 export type ModePreference = 'light' | 'dark' | 'system';
 
 const PALETTE_KEY = 'theme.palette';
@@ -26,10 +26,10 @@ const MODE_KEY = 'theme.modePreference';
 /**
  * Default da paleta para usuarios novos.
  *
- * Hoje: 'azul' (mantem coerencia com quem ja instalou).
- * Futuro (M3): quando o usuario cadastrar o bebe com sex definido,
+ * Hoje: 'azul' (mantem coerencia com quem já instalou).
+ * Futuro (M3): quando o usuário cadastrar o bebê com sex definido,
  * podemos sugerir trocar pra rosa baseado em sex='female' via prompt
- * opt-in — nao automaticamente. Anotacao no MOBILE_ROADMAP.md (M3).
+ * opt-in — não automaticamente. Anotacao no MOBILE_ROADMAP.md (M3).
  */
 const DEFAULT_PALETTE: PaletteName = 'azul';
 const DEFAULT_MODE: ModePreference = 'system';
@@ -60,7 +60,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
     if (isValidModePreference(storedMode)) {
       set({ modePreference: storedMode });
     }
-    // Sem else: defaults ja foram inicializados acima.
+    // Sem else: defaults já foram inicializados acima.
   },
 
   setPalette(palette) {

@@ -1,8 +1,8 @@
 /**
- * Picker de tipo sanguineo (8 valores ABO+Rh) + opcao "nao sei".
+ * Picker de tipo sanguineo (8 valores ABO+Rh) + opção "não sei".
  *
- * Visualmente: TextInput readonly que abre Menu do Paper com as opcoes.
- * "Nao sei" / "Nao informado" = valor undefined (campo opcional).
+ * Visualmente: TextInput readonly que abre Menu do Paper com as opções.
+ * "Não sei" / "Não informado" = valor undefined (campo opcional).
  *
  * Integra com react-hook-form via Controller.
  */
@@ -42,7 +42,7 @@ export function BloodTypePicker<TForm extends FieldValues>({
         const display =
           value && BLOOD_TYPE_LABELS[value as BloodType]
             ? BLOOD_TYPE_LABELS[value as BloodType]
-            : 'Nao informado';
+            : 'Não informado';
 
         return (
           <View style={styles.wrapper}>
@@ -68,7 +68,7 @@ export function BloodTypePicker<TForm extends FieldValues>({
                   onChange(undefined);
                   setVisible(false);
                 }}
-                title="Nao informado"
+                title="Não informado"
               />
               {ALL_BLOOD_TYPES.map((bt) => (
                 <Menu.Item

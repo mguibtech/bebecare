@@ -1,10 +1,10 @@
 /**
- * Deletar bebe (soft-delete no backend, recuperavel 30 dias).
+ * Deletar bebê (soft-delete no backend, recuperavel 30 dias).
  *
  * onSuccess:
  *  - remove cache do detalhe
- *  - invalida lista
- *  - se o bebe deletado era o selecionado, limpa selecao (useBabies vai
+ *  - inválida lista
+ *  - se o bebê deletado era o selecionado, limpa selecao (useBabies vai
  *    auto-selecionar outro se restou apenas 1)
  */
 

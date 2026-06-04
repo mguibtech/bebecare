@@ -4,8 +4,8 @@
  * - Toca um som em LOOP (RepeatMode.Track) com foreground service (toca de tela
  *   apagada).
  * - Fonte: recurso Android res/raw via URI em runtime (build-safe; ver sounds.ts).
- * - Tudo guardado com try/catch — se o modulo nativo ainda nao estiver no build
- *   (antes do rebuild) ou o audio nao existir, degrada sem quebrar o app.
+ * - Tudo guardado com try/catch — se o modulo nativo ainda não estiver no build
+ *   (antes do rebuild) ou o áudio não existir, degrada sem quebrar o app.
  */
 
 import TrackPlayer, {
@@ -23,7 +23,7 @@ let setupDone = false;
 async function ensureSetup(): Promise<void> {
   if (setupDone) return;
   try {
-    // autoHandleInterruptions: pausa quando outro app toma o audio focus
+    // autoHandleInterruptions: pausa quando outro app toma o áudio focus
     // (ligacao, outro player) e retoma depois.
     await TrackPlayer.setupPlayer({ autoHandleInterruptions: true });
   } catch {

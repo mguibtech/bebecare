@@ -2,7 +2,7 @@
  * Soneca de uma dose (M6/B8).
  *
  * Diferente dos alarmes recorrentes (scheduler.ts), a soneca e um disparo
- * UNICO em "agora + N min" pra uma dose especifica do dia. Reutiliza o mesmo
+ * UNICO em "agora + N min" pra uma dose específica do dia. Reutiliza o mesmo
  * canal/visual de alarme. Re-sonecar a mesma dose substitui o agendamento
  * anterior (id deterministico por dose).
  */

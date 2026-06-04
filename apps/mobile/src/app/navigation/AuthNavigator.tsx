@@ -8,7 +8,7 @@ import type { AuthStackParamList } from './types';
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 /**
- * Stack publica (deslogado).
+ * Stack pública (deslogado).
  * - Login: tela inicial.
  * - Register: navegavel a partir do Login.
  */

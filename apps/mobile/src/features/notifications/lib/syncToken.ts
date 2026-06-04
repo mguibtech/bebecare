@@ -3,10 +3,10 @@
  *
  * Une duas pecas: pega o token atual do FCM (setup.fetchToken) e registra no
  * backend (notificationsApi.putFcmToken). Usado tanto pelo hook de sync no
- * login quanto pela tela de permissao logo apos o usuario conceder acesso.
+ * login quanto pela tela de permissão logo apos o usuário conceder acesso.
  *
  * Best-effort: se a rede falhar, apenas loga em dev — o token sera reenviado no
- * proximo boot/login ou na proxima rotacao (onTokenRefresh).
+ * próximo boot/login ou na próxima rotacao (onTokenRefresh).
  */
 
 import { notificationsApi } from '../api/notifications.api';

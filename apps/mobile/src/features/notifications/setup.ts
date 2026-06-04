@@ -4,10 +4,10 @@
  * Regras:
  *  - Funcoes aqui NAO checam isFirebaseConfigured() — o chamador garante que o
  *    Firebase esta configurado antes de chamar (senao messaging() lanca).
- *  - Sem UI e sem dependencia de React: sao helpers puros. Snackbar, navegacao
- *    e fluxo de permissao vivem nos hooks/components da feature.
+ *  - Sem UI e sem dependencia de React: são helpers puros. Snackbar, navegacao
+ *    e fluxo de permissão vivem nos hooks/components da feature.
  *
- * Mapeamento de permissao (AuthorizationStatus do FCM):
+ * Mapeamento de permissão (AuthorizationStatus do FCM):
  *  - AUTHORIZED (1) / PROVISIONAL (2) → 'granted'
  *  - DENIED (0)                       → 'denied'
  *  - NOT_DETERMINED (-1)              → 'undetermined'
@@ -42,15 +42,15 @@ function toStatus(authStatus: number): PermissionStatus {
   return 'denied';
 }
 
-/** Status atual da permissao SEM disparar o prompt do sistema. */
+/** Status atual da permissão SEM disparar o prompt do sistema. */
 export async function getPermissionStatus(): Promise<PermissionStatus> {
   const status = await hasPermission(getMessaging());
   return toStatus(status);
 }
 
 /**
- * Dispara o prompt nativo de permissao (Android 13+ / iOS) e retorna o status
- * resultante. No-op visual se o usuario ja decidiu antes.
+ * Dispara o prompt nativo de permissão (Android 13+ / iOS) e retorna o status
+ * resultante. No-op visual se o usuário já decidiu antes.
  */
 export async function askPermission(): Promise<PermissionStatus> {
   const status = await requestPermission(getMessaging());
@@ -84,12 +84,12 @@ export function subscribeTokenRefresh(
  * Registra o handler de mensagens em background/quit. DEVE ser chamado no escopo
  * de modulo (index.js), fora da arvore React.
  *
- * O FCM ja exibe a notificacao automaticamente (campo `notification` do payload),
- * entao nao ha nada a renderizar aqui. O deep-link ao tocar na notificacao e
+ * O FCM já exibe a notificação automaticamente (campo `notification` do payload),
+ * entao não ha nada a renderizar aqui. O deep-link ao tocar na notificação e
  * tratado quando o app abre (M6/6D).
  */
 export function registerBackgroundHandler(): void {
   setBackgroundMessageHandler(getMessaging(), async () => {
-    // Sem trabalho: a notificacao e exibida pelo SO. Placeholder pro 6D.
+    // Sem trabalho: a notificação e exibida pelo SO. Placeholder pro 6D.
   });
 }

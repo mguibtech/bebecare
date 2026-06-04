@@ -1,7 +1,7 @@
 /**
  * Picker do tempo de antecedencia do lembrete (Menu Paper).
  *
- * Opcoes: 30m, 1h, 3h, 1d, 1sem.
+ * Opções: 30m, 1h, 3h, 1d, 1sem.
  */
 
 import { useState } from 'react';

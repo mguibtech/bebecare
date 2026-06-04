@@ -1,19 +1,19 @@
 /**
- * Mantem o token FCM sincronizado com o backend enquanto o usuario esta logado.
+ * Mantem o token FCM sincronizado com o backend enquanto o usuário esta logado.
  *
  * Montar UMA vez na arvore autenticada (AppNavigator). Responsabilidades:
- *  1. No mount: se o Firebase esta configurado E a permissao ja foi concedida
+ *  1. No mount: se o Firebase esta configurado E a permissão já foi concedida
  *     (em sessoes anteriores), registra o token atual no backend. Cobre o
  *     "registra ao logar" do criterio do M6.
  *  2. Assina a rotacao de token (FCM troca periodicamente) → reenvia ao backend.
- *  3. Assina mensagens em foreground → mostra Snackbar (o SO nao exibe
- *     notificacao quando o app esta aberto).
+ *  3. Assina mensagens em foreground → mostra Snackbar (o SO não exibe
+ *     notificação quando o app esta aberto).
  *
  * Quando o Firebase NAO esta configurado (sem google-services.json), o hook e
  * inteiramente no-op.
  *
- * Obs.: o fluxo de PEDIR permissao (primeiro acesso) vive no
- * NotificationPermissionGate — aqui so reagimos a uma permissao ja existente.
+ * Obs.: o fluxo de PEDIR permissão (primeiro acesso) vive no
+ * NotificationPermissionGate — aqui so reagimos a uma permissão já existente.
  */
 
 import { useEffect } from 'react';
@@ -47,7 +47,7 @@ export function useFcmTokenSync(): void {
 
     let active = true;
 
-    // 1. Registra token atual se a permissao ja existe.
+    // 1. Registra token atual se a permissão já existe.
     (async () => {
       const status = await getPermissionStatus();
       if (active && status === 'granted') {
@@ -55,10 +55,10 @@ export function useFcmTokenSync(): void {
       }
     })();
 
-    // 2. Rotacao de token → reenvia direto (token ja vem no callback).
+    // 2. Rotacao de token → reenvia direto (token já vem no callback).
     const unsubRefresh = subscribeTokenRefresh((token) => {
       notificationsApi.putFcmToken(token).catch(() => {
-        // best-effort: proxima sincronizacao corrige.
+        // best-effort: próxima sincronizacao corrige.
       });
     });
 

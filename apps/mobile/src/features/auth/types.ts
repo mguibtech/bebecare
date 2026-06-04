@@ -18,7 +18,7 @@ export enum AvatarStyle {
   CROODLES = 'croodles',
 }
 
-/** Usuario na forma "publica" (sem passwordHash, fcmToken, etc.) */
+/** Usuário na forma "pública" (sem passwordHash, fcmToken, etc.) */
 export type UserPublic = {
   id: string;
   email: string;
@@ -28,7 +28,7 @@ export type UserPublic = {
   familyId: string;
 };
 
-/** Membro da familia exibido em /auth/me (sem email/dados privados). */
+/** Membro da família exibido em /auth/me (sem email/dados privados). */
 export type FamilyMemberPublic = {
   id: string;
   name: string;
@@ -39,7 +39,7 @@ export type FamilyMemberPublic = {
 export type FamilySummary = {
   id: string;
   name: string | null;
-  /** Nao inclui o usuario atual. */
+  /** Não inclui o usuário atual. */
   members: FamilyMemberPublic[];
 };
 
@@ -71,7 +71,7 @@ export type RegisterBody = {
   email: string;
   name: string;
   password: string;
-  /** Codigo de 6 digitos opcional para entrar em familia existente. */
+  /** Código de 6 digitos opcional para entrar em família existente. */
   inviteCode?: string;
 };
 
@@ -90,10 +90,10 @@ export type UpdateProfileBody = {
 
 /**
  * Mensagens mais provaveis vindas do backend. Sao usadas para mapear erros
- * comuns para UX amigavel; nao sao um enum exaustivo.
+ * comuns para UX amigavel; não são um enum exaustivo.
  */
 export const AUTH_ERROR_MESSAGES = {
   INVALID_CREDENTIALS: 'Email ou senha invalidos',
-  EMAIL_TAKEN: 'Esse email ja esta cadastrado',
-  INVALID_INVITE: 'Codigo de convite invalido ou expirado',
+  EMAIL_TAKEN: 'Esse email já esta cadastrado',
+  INVALID_INVITE: 'Código de convite inválido ou expirado',
 } as const;

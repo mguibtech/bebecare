@@ -48,7 +48,7 @@ function formatTimeBr(d: Date): string {
   return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }
 
-/** Date a partir de ISO; fallback "agora" se invalido. */
+/** Date a partir de ISO; fallback "agora" se inválido. */
 function fromIso(s: string | undefined | null): Date {
   if (!s) return new Date();
   const parsed = new Date(s);

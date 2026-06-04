@@ -1,8 +1,8 @@
 /**
- * Lista de despertadores do usuario. Acessada por "Mais → Despertadores".
+ * Lista de despertadores do usuário. Acessada por "Mais → Despertadores".
  *
  * FAB pra criar. Tap no card edita. Switch liga/desliga inline (o sync local
- * reagenda o notifee). Empty state quando nao ha nenhum.
+ * reagenda o notifee). Empty state quando não ha nenhum.
  */
 
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';

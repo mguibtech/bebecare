@@ -1,15 +1,15 @@
 /**
- * Guiao just-in-time de permissoes do alarme.
+ * Guiao just-in-time de permissões do alarme.
  *
- * Chamado logo apos o usuario salvar um horario com "Alarme local" ligado — o
+ * Chamado logo apos o usuário salvar um horário com "Alarme local" ligado — o
  * momento em que a intencao esta clara. Mostra NO MAXIMO uma orientacao por vez,
  * priorizada da mais critica pra menos:
  *
- *   1. Notificacao negada  -> alarme nao aparece. Bloqueante. (erro + ajustes)
+ *   1. Notificacao negada  -> alarme não aparece. Bloqueante. (erro + ajustes)
  *   2. Alarme exato off    -> dispara atrasado. (info + ativar)
- *   3. Dica de tela cheia   -> abre como heads-up, nao em tela cheia. (dica, 1x)
+ *   3. Dica de tela cheia   -> abre como heads-up, não em tela cheia. (dica, 1x)
  *
- * Sem isso, o alarme falharia silenciosamente pra um usuario real (foi o que
+ * Sem isso, o alarme falharia silenciosamente pra um usuário real (foi o que
  * vimos no device: POST_NOTIFICATIONS vinha negada).
  */
 
@@ -23,9 +23,9 @@ import {
   openNotificationSettings,
 } from './permission';
 
-// A dica de tela cheia nao da pra detectar (notifee nao expoe o estado), entao
-// mostramos no maximo UMA vez na vida do app (persistido) pra nao incomodar quem
-// ja ativou — diferente das outras, que reaparecem enquanto a permissao faltar.
+// A dica de tela cheia não da pra detectar (notifee não expoe o estado), entao
+// mostramos no máximo UMA vez na vida do app (persistido) pra não incomodar quem
+// já ativou — diferente das outras, que reaparecem enquanto a permissão faltar.
 const FULL_SCREEN_TIP_KEY = 'med-alarm.fullScreenTipShown';
 
 export async function promptAlarmPermissions(): Promise<void> {
@@ -33,7 +33,7 @@ export async function promptAlarmPermissions(): Promise<void> {
   try {
     status = await ensureAlarmPermissions();
   } catch {
-    // notifee indisponivel (app sem rebuild): nao tem o que pedir.
+    // notifee indisponivel (app sem rebuild): não tem o que pedir.
     return;
   }
 

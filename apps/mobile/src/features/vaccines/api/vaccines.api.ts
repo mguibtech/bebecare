@@ -2,7 +2,7 @@
  * Camada HTTP do catalogo + schedule de vacinas.
  *
  *   GET /vaccines/catalog                      catalogo PNI (cacheavel)
- *   GET /babies/:babyId/vaccine-schedule       schedule do bebe c/ status calculado
+ *   GET /babies/:babyId/vaccine-schedule       schedule do bebê c/ status calculado
  *
  * Records (CRUD) tem arquivo proprio: vaccine-records.api.ts
  */

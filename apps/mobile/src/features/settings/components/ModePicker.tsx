@@ -1,7 +1,7 @@
 /**
  * Picker de modo light/dark/system com SegmentedButtons do Paper.
  *
- * 3 opcoes:
+ * 3 opções:
  *  - 'light': forca tema claro, ignora sistema
  *  - 'dark':  forca tema escuro, ignora sistema
  *  - 'system' (default): segue o tema do Android/iOS

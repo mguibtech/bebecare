@@ -1,5 +1,5 @@
 /**
- * Lista os despertadores do usuario logado.
+ * Lista os despertadores do usuário logado.
  */
 
 import { useQuery } from '@tanstack/react-query';

@@ -1,11 +1,11 @@
 /**
- * Bottom sheet pra trocar o bebe selecionado.
+ * Bottom sheet pra trocar o bebê selecionado.
  *
- * Acionado pelo tap no avatar/chip do bebe na Home. Mostra:
- *  - Lista de bebes da familia (com avatar + nome + idade)
- *  - Bebe ativo destacado
- *  - "Ver perfil" / "Editar" no bebe ativo
- *  - "+ Cadastrar bebe" no fim
+ * Acionado pelo tap no avatar/chip do bebê na Home. Mostra:
+ *  - Lista de bebês da família (com avatar + nome + idade)
+ *  - Bebê ativo destacado
+ *  - "Ver perfil" / "Editar" no bebê ativo
+ *  - "+ Cadastrar bebê" no fim
  *
  * Implementacao: Modal portado do Paper (sem dep nova). Quando precisar
  * de gestos de swipe-to-dismiss, migrar pra @gorhom/bottom-sheet.
@@ -43,7 +43,7 @@ function formatAgeShort(b: Baby): string {
   if (b.ageMonths === 0) {
     return `${b.ageDays} dia${b.ageDays !== 1 ? 's' : ''}`;
   }
-  return `${b.ageMonths} ${b.ageMonths === 1 ? 'mes' : 'meses'}`;
+  return `${b.ageMonths} ${b.ageMonths === 1 ? 'mês' : 'meses'}`;
 }
 
 export function BabySelectorSheet({
@@ -90,7 +90,7 @@ export function BabySelectorSheet({
       >
         <View style={styles.handle} />
         <Text variant="titleMedium" style={styles.title}>
-          Bebes da familia
+          Bebês da família
         </Text>
 
         <ScrollView style={styles.scroll}>
@@ -142,7 +142,7 @@ export function BabySelectorSheet({
             })
           ) : (
             <Text variant="bodyMedium" style={styles.empty}>
-              Nenhum bebe cadastrado ainda.
+              Nenhum bebê cadastrado ainda.
             </Text>
           )}
         </ScrollView>
@@ -153,7 +153,7 @@ export function BabySelectorSheet({
           onPress={handleCreate}
           style={styles.addButton}
         >
-          Cadastrar bebe
+          Cadastrar bebê
         </Button>
       </Modal>
     </Portal>

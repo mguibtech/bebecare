@@ -1,5 +1,5 @@
 /**
- * Detalhe de um medicamento especifico (com schedules).
+ * Detalhe de um medicamento específico (com schedules).
  */
 
 import { useQuery } from '@tanstack/react-query';

@@ -1,11 +1,11 @@
 import { MMKV } from 'react-native-mmkv';
 
 /**
- * Storage rapido sincrono para preferencias do usuario e cache leve.
+ * Storage rapido sincrono para preferencias do usuário e cache leve.
  * NAO usar para segredos (use secureStorage).
  *
  * Padrao: instancia unica com id 'bebecare'. Para particionar
- * (ex: por usuario logado) criar instancias adicionais com id distinto.
+ * (ex: por usuário logado) criar instancias adicionais com id distinto.
  */
 export const storage = new MMKV({ id: 'bebecare' });
 

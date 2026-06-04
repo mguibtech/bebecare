@@ -1,6 +1,6 @@
 /**
- * Toque na notificacao de despertador (type=feed-alarm) abre a tela de
- * Despertadores. Mesmo padrao do deep-link de remedio (M6/6D): onForegroundEvent
+ * Toque na notificação de despertador (type=feed-alarm) abre a tela de
+ * Despertadores. Mesmo padrao do deep-link de remédio (M6/6D): onForegroundEvent
  * (PRESS) + getInitialNotification (app aberto pelo toque no quit).
  *
  * Coexiste com o useAlarmDeepLink de medications — cada hook filtra pelo seu

@@ -2,9 +2,9 @@
  * Tipos do dominio Medications.
  *
  * 3 entidades principais:
- *  - Medication: o remedio em si (Vitamina D, 400 gotas, vence em 3 meses)
- *  - MedSchedule: cronograma de doses (horario + dias da semana via bitmask)
- *  - MedDoseLog: dose esperada num horario especifico (status PENDING/TAKEN/SKIPPED)
+ *  - Medication: o remédio em si (Vitamina D, 400 gotas, vence em 3 meses)
+ *  - MedSchedule: cronograma de doses (horário + dias da semana via bitmask)
+ *  - MedDoseLog: dose esperada num horário específico (status PENDING/TAKEN/SKIPPED)
  *
  * O backend tem um cron que cria DoseLogs diarios baseado nos schedules
  * ativos. Mobile soh consome.
@@ -52,7 +52,7 @@ export type MedSchedule = {
   time: string;
   /** Bitmask 7 bits — usar daysOfWeekFromMask pra converter. */
   daysOfWeekMask: number;
-  /** Nomes ja desabreviados pelo backend (['dom', 'seg', ...]). */
+  /** Nomes já desabreviados pelo backend (['dom', 'seg', ...]). */
   daysOfWeekNames: string[];
   /**
    * true = alarme local via notifee (mais confiavel em devices Android com

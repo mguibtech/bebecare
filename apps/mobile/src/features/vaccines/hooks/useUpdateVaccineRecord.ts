@@ -1,7 +1,7 @@
 /**
  * Atualizar dados de um registro (data, lote, local, notas).
  *
- * onSuccess invalida schedule + records — dados derivados podem mudar
+ * onSuccess inválida schedule + records — dados derivados podem mudar
  * (ex: se mudar a data, o status pode reclassificar).
  */
 

@@ -7,7 +7,7 @@
  *   POST  /babies/:babyId/doses/:id/skip  pula com motivo opcional
  *   POST  /babies/:babyId/doses/:id/reset volta pra PENDING
  *
- * Dose logs sao criados pelo cron do backend baseado nos schedules ativos.
+ * Dose logs são criados pelo cron do backend baseado nos schedules ativos.
  * Mobile NAO cria diretamente.
  */
 

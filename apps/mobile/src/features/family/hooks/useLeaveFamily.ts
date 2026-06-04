@@ -1,9 +1,9 @@
 /**
- * Sair da familia atual. Backend cria uma nova familia SOLO pro user.
+ * Sair da família atual. Backend cria uma nova família SOLO pro user.
  *
  * Falha com 400 se for o unico membro (usar exclusao de conta nesse caso).
- * Apos sucesso, invalida /auth/me (familyId mudou) e /family/me + /babies
- * (sao da familia antiga, agora vazios).
+ * Apos sucesso, inválida /auth/me (familyId mudou) e /family/me + /babies
+ * (são da família antiga, agora vazios).
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -20,7 +20,7 @@ export function useLeaveFamily() {
   return useMutation<void, Error, void>({
     mutationFn: () => familyApi.leave(),
     onSuccess: () => {
-      // Bebes da familia antiga nao sao mais visiveis — limpa selecao.
+      // Bebês da família antiga não são mais visiveis — limpa selecao.
       setSelected(null);
       // Refetch tudo dependente de familyId.
       queryClient.invalidateQueries({ queryKey: qk.auth.me() });

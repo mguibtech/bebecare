@@ -7,7 +7,7 @@
  *  3. queryClient.clear (zera todo cache do RQ)
  *  4. RootNavigator detecta status='unauthenticated' e volta pro Login
  *
- * Cuidado: nao tem volta na UX — quem chama esse hook precisa pedir
+ * Cuidado: não tem volta na UX — quem chama esse hook precisa pedir
  * confirmacao DUPLA (dialog + checkbox/segunda confirmacao) porque eh
  * destrutivo. Soft-delete eh recuperavel em 30 dias mas exige contato
  * com o suporte.
@@ -24,7 +24,7 @@ export function useDeleteAccount() {
   return useMutation<void, Error, void>({
     mutationFn: () => authApi.deleteAccount(),
     onSuccess: async () => {
-      // Limpa tudo local — backend ja invalidou a conta.
+      // Limpa tudo local — backend já invalidou a conta.
       await useAuthStore.getState().signOut();
       queryClient.clear();
     },

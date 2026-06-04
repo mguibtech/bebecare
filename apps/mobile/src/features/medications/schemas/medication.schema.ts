@@ -18,9 +18,9 @@ const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 export const medicationSchema = z
   .object({
     name: z
-      .string({ required_error: 'Nome obrigatorio' })
+      .string({ required_error: 'Nome obrigatório' })
       .trim()
-      .min(1, 'Nome obrigatorio')
+      .min(1, 'Nome obrigatório')
       .max(120, 'Nome muito longo'),
 
     /**
@@ -34,15 +34,15 @@ export const medicationSchema = z
       },
       z
         .number({
-          required_error: 'Dose obrigatoria',
-          invalid_type_error: 'Dose invalida',
+          required_error: 'Dose obrigatória',
+          invalid_type_error: 'Dose inválida',
         })
         .min(0.001, 'Dose minima 0.001')
         .max(99999.999, 'Dose muito alta'),
     ),
 
     doseUnit: z.nativeEnum(DoseUnit, {
-      errorMap: () => ({ message: 'Unidade obrigatoria' }),
+      errorMap: () => ({ message: 'Unidade obrigatória' }),
     }),
 
     instructions: z
@@ -52,12 +52,12 @@ export const medicationSchema = z
       .transform((v) => (v === '' ? undefined : v)),
 
     startDate: z
-      .string({ required_error: 'Data de inicio obrigatoria' })
-      .regex(dateRegex, 'Formato invalido (AAAA-MM-DD)'),
+      .string({ required_error: 'Data de inicio obrigatória' })
+      .regex(dateRegex, 'Formato inválido (AAAA-MM-DD)'),
 
     endDate: z
       .string()
-      .regex(dateRegex, 'Formato invalido (AAAA-MM-DD)')
+      .regex(dateRegex, 'Formato inválido (AAAA-MM-DD)')
       .optional()
       .or(z.literal(''))
       .transform((v) => (v === '' ? undefined : v)),
@@ -84,8 +84,8 @@ export type MedicationFormValues = z.infer<typeof medicationSchema>;
  */
 export const scheduleSchema = z.object({
   time: z
-    .string({ required_error: 'Horario obrigatorio' })
-    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Horario invalido (HH:mm)'),
+    .string({ required_error: 'Horário obrigatório' })
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Horário inválido (HH:mm)'),
 
   days: z
     .array(z.string())

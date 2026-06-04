@@ -79,7 +79,7 @@ export function VaccineDetailScreen({
   if (schedule.isError || !entry) {
     return (
       <View style={[styles.center, containerStyle]}>
-        <Text variant="bodyLarge">Vacina nao encontrada</Text>
+        <Text variant="bodyLarge">Vacina não encontrada</Text>
         <Text variant="bodyMedium" style={styles.muted}>
           Volte e tente abrir de novo.
         </Text>

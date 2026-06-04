@@ -1,7 +1,7 @@
 /**
  * Camada HTTP de VaccineRecords (aplicacoes registradas).
  *
- *   GET    /babies/:babyId/vaccine-records      historico do bebe
+ *   GET    /babies/:babyId/vaccine-records      histórico do bebê
  *   POST   /babies/:babyId/vaccine-records      registrar dose
  *   PATCH  /babies/:babyId/vaccine-records/:id  corrigir registro
  *   DELETE /babies/:babyId/vaccine-records/:id  apagar (engano)

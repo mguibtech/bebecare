@@ -1,5 +1,5 @@
 /**
- * API publica da feature notifications (push / FCM).
+ * API pública da feature notifications (push / FCM).
  *
  * Consumido por:
  *  - AppNavigator: useFcmTokenSync() + <NotificationPermissionGate />
