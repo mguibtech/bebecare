@@ -9,6 +9,7 @@
  */
 
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
@@ -33,37 +34,25 @@ type Slide = {
   body: string;
 };
 
-const SLIDES: Slide[] = [
-  {
-    key: 'welcome',
-    icon: 'logo',
-    title: 'Tudo do seu bebê, num lugar so',
-    body: 'Vacinas, consultas, remédios e rotina — sem papelzinho e sem esquecer nada.',
-  },
-  {
-    key: 'health',
-    icon: 'needle',
-    title: 'Saúde sempre em dia',
-    body: 'Calendário de vacinas (PNI) e consultas do pediatra, com lembretes na hora certa.',
-  },
-  {
-    key: 'routine',
-    icon: 'weather-night',
-    title: 'A rotina mais leve',
-    body: 'Despertador da mamada e o Modo Soninho, com sons que ajudam o bebê a dormir.',
-  },
-  {
-    key: 'couple',
-    icon: 'account-multiple-outline',
-    title: 'Cuidem juntos',
-    body: 'Pai e mae acompanham o mesmo bebê, cada um no seu celular, sempre sincronizado.',
-  },
+/** Metadados fixos dos slides; titulo/corpo vem do i18n em runtime. */
+const SLIDE_META: { key: string; icon: 'logo' | string }[] = [
+  { key: 'welcome', icon: 'logo' },
+  { key: 'health', icon: 'needle' },
+  { key: 'routine', icon: 'weather-night' },
+  { key: 'couple', icon: 'account-multiple-outline' },
 ];
 
 export function OnboardingScreen() {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const complete = useOnboardingStore((s) => s.complete);
+
+  const SLIDES: Slide[] = SLIDE_META.map((m) => ({
+    ...m,
+    title: t(`onboarding.${m.key}Title` as 'onboarding.welcomeTitle'),
+    body: t(`onboarding.${m.key}Body` as 'onboarding.welcomeBody'),
+  }));
 
   const scrollRef = useRef<ScrollView>(null);
   const [index, setIndex] = useState(0);
@@ -94,7 +83,7 @@ export function OnboardingScreen() {
       <View style={styles.topBar}>
         {!isLast && (
           <Button mode="text" compact onPress={complete} textColor={theme.colors.primary}>
-            Pular
+            {t('onboarding.skip')}
           </Button>
         )}
       </View>
@@ -141,7 +130,7 @@ export function OnboardingScreen() {
       {/* Acao */}
       <View style={styles.footer}>
         <Button mode="contained" onPress={next} style={styles.cta}>
-          {isLast ? 'Comecar' : 'Próximo'}
+          {isLast ? t('onboarding.start') : t('onboarding.next')}
         </Button>
       </View>
     </SafeAreaView>

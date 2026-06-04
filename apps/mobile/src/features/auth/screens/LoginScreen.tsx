@@ -12,6 +12,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Snackbar, Text, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -37,6 +38,7 @@ import {
 } from '../schemas/auth.schema';
 
 export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
+  const { t } = useTranslation();
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const theme = useTheme<AppTheme>();
 
@@ -58,9 +60,9 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
       const message =
         err instanceof ApiError
           ? err.status === 401
-            ? 'Email ou senha invalidos'
+            ? t('auth.err401')
             : err.message
-          : 'Erro inesperado. Tente novamente.';
+          : t('auth.errGeneric');
       setErrorBanner(message);
     }
   });
@@ -76,7 +78,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
           <SafeAreaView edges={['top']} style={styles.heroInner}>
             <Logo variant="full" size={56} mono="#fff" />
             <Text variant="bodyLarge" style={styles.heroTagline}>
-              Tudo do seu bebê, num lugar so
+              {t('onboarding.welcomeTitle')}
             </Text>
           </SafeAreaView>
         </BrandGradient>
@@ -84,39 +86,43 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
         {/* FORMULARIO */}
         <View style={styles.form}>
           <Text variant="titleLarge" style={styles.formTitle}>
-            Entrar
+            {t('auth.loginTitle')}
           </Text>
           <MutedText variant="bodyMedium" style={styles.formSubtitle}>
-            Bem-vindo de volta!
+            {t('auth.loginSubtitle')}
           </MutedText>
 
           <FormInput
             control={control}
             name="email"
-            label="Email"
+            label={t('common.email')}
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
             textContentType="emailAddress"
           />
-          <FormPassword control={control} name="password" label="Senha" />
+          <FormPassword
+            control={control}
+            name="password"
+            label={t('common.password')}
+          />
 
           <SubmitButton
             onPress={onSubmit}
             loading={login.isPending}
             disabled={!formState.isValid && formState.isSubmitted}
           >
-            {login.isPending ? 'Entrando...' : 'Entrar'}
+            {login.isPending ? t('auth.entering') : t('auth.signIn')}
           </SubmitButton>
 
           <View style={styles.footer}>
-            <MutedText variant="bodyMedium">Ainda não tem conta? </MutedText>
+            <MutedText variant="bodyMedium">{t('auth.noAccount')}</MutedText>
             <Text
               variant="bodyMedium"
               style={[styles.link, { color: theme.colors.primary }]}
               onPress={() => navigation.navigate('Register')}
             >
-              Cadastre-se
+              {t('auth.signUp')}
             </Text>
           </View>
         </View>
@@ -126,7 +132,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
         visible={errorBanner !== null}
         onDismiss={() => setErrorBanner(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setErrorBanner(null) }}
+        action={{ label: t('common.ok'), onPress: () => setErrorBanner(null) }}
       >
         {errorBanner ?? ''}
       </Snackbar>
