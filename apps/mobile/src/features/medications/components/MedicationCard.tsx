@@ -9,6 +9,8 @@
  * Inativos ficam translucido. Tap abre o detalhe.
  */
 
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { StyleSheet, View } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -30,30 +32,31 @@ type MedicationCardProps = {
 };
 
 /** Resumo dos schedules em texto: "08:00, 20:00 • Diário". */
-function summarize(medication: Medication): string {
+function summarize(medication: Medication, t: TFunction): string {
   const schedules = medication.schedules.filter((s) => s.isActive);
   const first = schedules[0];
-  if (!first) return 'Sem horários ativos';
+  if (!first) return t('meds.scheduleNone');
 
   const times = schedules
     .map((s) => s.time)
     .sort()
     .join(', ');
 
-  // Detecta padrao mais comum dos dias
+  // Detecta padrao mais comum dos dias. Nomes custom (daysOfWeekNames) vem do
+  // backend em pt — i18n completo deles exige localizacao no servidor.
   const firstMask = first.daysOfWeekMask;
   const allSameMask = schedules.every(
     (s) => s.daysOfWeekMask === firstMask,
   );
   const daysLabel = allSameMask
     ? firstMask === ALL_DAYS_MASK
-      ? 'Diário'
+      ? t('meds.freqDaily')
       : firstMask === WEEKDAYS_MASK
-        ? 'Dias úteis'
+        ? t('meds.freqWeekdays')
         : firstMask === WEEKEND_MASK
-          ? 'Fim de semana'
+          ? t('meds.freqWeekend')
           : `${first.daysOfWeekNames.join(', ')}`
-    : 'Dias variados';
+    : t('meds.freqVaried');
 
   return `${times} • ${daysLabel}`;
 }
@@ -63,6 +66,7 @@ export function MedicationCard({
   onPress,
 }: MedicationCardProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const dose = Number(medication.dose);
   const unitLabel = DOSE_UNIT_LABELS[medication.doseUnit];
 
@@ -76,7 +80,7 @@ export function MedicationCard({
             {medication.name}
           </Text>
           <MutedText variant="bodySmall" numberOfLines={1}>
-            {dose} {unitLabel} • {summarize(medication)}
+            {dose} {unitLabel} • {summarize(medication, t)}
           </MutedText>
         </View>
         <MaterialCommunityIcons

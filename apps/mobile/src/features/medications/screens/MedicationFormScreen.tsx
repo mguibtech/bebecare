@@ -11,6 +11,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -54,6 +55,7 @@ export function MedicationFormScreen({
   const { babyId, medicationId } = route.params;
   const isEdit = typeof medicationId === 'string';
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
 
   const editing = useMedication(babyId, medicationId);
@@ -92,9 +94,9 @@ export function MedicationFormScreen({
 
   useEffect(() => {
     navigation.setOptions({
-      title: isEdit ? 'Editar remédio' : 'Adicionar remédio',
+      title: isEdit ? t('meds.titleEdit') : t('meds.titleNew'),
     });
-  }, [navigation, isEdit]);
+  }, [navigation, isEdit, t]);
 
   const isActive = watch('isActive');
 
@@ -128,9 +130,7 @@ export function MedicationFormScreen({
       }
     } catch (err) {
       setErrorBanner(
-        err instanceof ApiError
-          ? err.message
-          : 'Erro inesperado. Tente de novo.',
+        err instanceof ApiError ? err.message : t('meds.saveError'),
       );
     }
   });
@@ -159,14 +159,14 @@ export function MedicationFormScreen({
         keyboardShouldPersistTaps="handled"
       >
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Dados do remédio
+          {t('meds.sectionData')}
         </Text>
 
         <FormInput
           control={control}
           name="name"
-          label="Nome do remédio"
-          placeholder="ex: Vitamina D"
+          label={t('meds.nameLabel')}
+          placeholder={t('meds.namePlaceholder')}
           maxLength={120}
           autoCapitalize="words"
         />
@@ -176,8 +176,8 @@ export function MedicationFormScreen({
             <FormInput
               control={control}
               name="dose"
-              label="Dose"
-              placeholder="400"
+              label={t('meds.doseLabel')}
+              placeholder={t('meds.dosePlaceholder')}
               keyboardType="decimal-pad"
             />
           </View>
@@ -189,29 +189,33 @@ export function MedicationFormScreen({
         <FormInput
           control={control}
           name="instructions"
-          label="Instruções (opcional)"
-          placeholder="ex: Junto com o leite após o banho"
+          label={t('meds.instructionsLabel')}
+          placeholder={t('meds.instructionsPlaceholder')}
           multiline
           numberOfLines={2}
         />
 
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Período
+          {t('meds.sectionPeriod')}
         </Text>
 
-        <DateField control={control} name="startDate" label="Início" />
+        <DateField
+          control={control}
+          name="startDate"
+          label={t('meds.startField')}
+        />
 
         <DateField
           control={control}
           name="endDate"
-          label="Fim (opcional — deixe em branco pra uso contínuo)"
+          label={t('meds.endLabel')}
         />
 
         <View style={styles.switchRow}>
           <View style={styles.switchText}>
-            <Text variant="bodyMedium">Em uso</Text>
+            <Text variant="bodyMedium">{t('meds.activeSwitch')}</Text>
             <MutedText variant="bodySmall">
-              Desligue se pausou temporariamente o remédio.
+              {t('meds.activeSwitchSub')}
             </MutedText>
           </View>
           <Switch
@@ -222,7 +226,7 @@ export function MedicationFormScreen({
 
         {!isEdit && (
           <MutedText variant="bodySmall" style={styles.hintAfterSave}>
-            Depois de cadastrar, você adiciona os horários na próxima tela.
+            {t('meds.hintAfterSave')}
           </MutedText>
         )}
 
@@ -232,10 +236,10 @@ export function MedicationFormScreen({
           disabled={!formState.isValid && formState.isSubmitted}
         >
           {isSaving
-            ? 'Salvando...'
+            ? t('meds.saving')
             : isEdit
-              ? 'Salvar alterações'
-              : 'Cadastrar e continuar'}
+              ? t('meds.saveChanges')
+              : t('meds.createContinue')}
         </SubmitButton>
       </ScrollView>
 
@@ -243,7 +247,7 @@ export function MedicationFormScreen({
         visible={errorBanner !== null}
         onDismiss={() => setErrorBanner(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setErrorBanner(null) }}
+        action={{ label: t('common.ok'), onPress: () => setErrorBanner(null) }}
       >
         {errorBanner ?? ''}
       </Snackbar>
