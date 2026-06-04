@@ -11,6 +11,7 @@
  * FAB pra criar medicamento. Tap em card abre detalhe.
  */
 
+import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -33,6 +34,7 @@ import { useMedications } from '../hooks/useMedications';
 
 export function MedicationsListScreen() {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const navigation =
     useNavigation<MainTabScreenProps<'Health'>['navigation']>();
   const babies = useBabies();
@@ -51,11 +53,10 @@ export function MedicationsListScreen() {
           color={theme.colors.primary}
         />
         <Text variant="headlineSmall" style={styles.emptyTitle}>
-          Cadastre um bebê primeiro
+          {t('today.noBabyTitle')}
         </Text>
         <MutedText variant="bodyMedium" style={styles.emptyBody}>
-          Medicamentos são organizados por bebê.{'\n'}
-          Cadastre na tab Início pra começar.
+          {t('meds.noBabyBody')}
         </MutedText>
       </View>
     );
@@ -71,10 +72,10 @@ export function MedicationsListScreen() {
           color={theme.colors.primary}
         />
         <Text variant="headlineSmall" style={styles.emptyTitle}>
-          Qual bebê?
+          {t('today.whichBabyTitle')}
         </Text>
         <MutedText variant="bodyMedium" style={styles.emptyBody}>
-          Selecione um bebê na tab Início pra ver os remédios dele.
+          {t('meds.whichBabyBody')}
         </MutedText>
       </View>
     );
@@ -99,8 +100,8 @@ export function MedicationsListScreen() {
           </View>
         ) : query.isError ? (
           <View style={styles.loadingBox}>
-            <Text>Erro ao carregar remédios</Text>
-            <Button onPress={() => query.refetch()}>Tentar de novo</Button>
+            <Text>{t('meds.loadError')}</Text>
+            <Button onPress={() => query.refetch()}>{t('common.retry')}</Button>
           </View>
         ) : !query.data || query.data.length === 0 ? (
           <View style={styles.emptyListBox}>
@@ -110,8 +111,7 @@ export function MedicationsListScreen() {
               color={theme.app.text.muted}
             />
             <MutedText variant="bodyMedium" style={styles.emptyListText}>
-              Nenhum remédio cadastrado.{'\n'}
-              Use o + pra adicionar o primeiro.
+              {t('meds.empty')}
             </MutedText>
           </View>
         ) : (
@@ -132,7 +132,7 @@ export function MedicationsListScreen() {
 
       <FAB
         icon="plus"
-        label="Adicionar remédio"
+        label={t('meds.fabAdd')}
         style={styles.fab}
         onPress={() =>
           navigation.navigate('MedicationForm', {

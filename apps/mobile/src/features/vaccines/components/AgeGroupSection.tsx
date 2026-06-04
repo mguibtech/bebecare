@@ -5,6 +5,7 @@
  * destaque vermelho se ha atrasadas).
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,21 +21,31 @@ type AgeGroupSectionProps = {
 
 export function AgeGroupSection({ group }: AgeGroupSectionProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
 
   const total = group.entries.length;
   const applied = group.counts[VaccineStatus.APPLIED];
   const overdue = group.counts[VaccineStatus.OVERDUE];
 
+  // Label de idade localizado a partir de ageMonths (nao usa group.ageLabel,
+  // que e' pt-fixo do util groupByAge).
+  const ageLabel =
+    group.ageMonths === 0
+      ? t('vaccines.ageGroupNewborn')
+      : group.ageMonths % 12 === 0
+        ? t('vaccines.ageYears', { count: group.ageMonths / 12 })
+        : t('home.ageMonths', { count: group.ageMonths });
+
   const allApplied = applied === total;
   const summaryText = allApplied
-    ? `Tudo em dia (${total}/${total})`
-    : `${applied} de ${total} aplicadas`;
+    ? t('vaccines.groupAllDone', { n: total })
+    : t('vaccines.summaryApplied', { applied, total });
 
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text variant="titleMedium" style={styles.title}>
-          {group.ageLabel}
+          {ageLabel}
         </Text>
         {allApplied && (
           <MaterialCommunityIcons
@@ -59,7 +70,7 @@ export function AgeGroupSection({ group }: AgeGroupSectionProps) {
               variant="bodySmall"
               style={[styles.overdueText, { color: theme.colors.error }]}
             >
-              {overdue} atrasada{overdue > 1 ? 's' : ''}
+              {t('vaccines.summaryOverdue', { count: overdue })}
             </Text>
           </View>
         )}

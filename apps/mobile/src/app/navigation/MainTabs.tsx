@@ -13,6 +13,7 @@
  */
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -48,6 +49,7 @@ function MoreIcon({ color, size }: IconProps) {
 
 export function MainTabs() {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
 
   return (
     <Tab.Navigator
@@ -69,8 +71,8 @@ export function MainTabs() {
         name="Home"
         component={HomeScreen}
         options={{
-          title: 'Início',
-          tabBarLabel: 'Início',
+          title: t('nav.home'),
+          tabBarLabel: t('nav.home'),
           tabBarIcon: HomeIcon,
         }}
       />
@@ -78,8 +80,8 @@ export function MainTabs() {
         name="Today"
         component={TodayDosesScreen}
         options={{
-          title: 'Hoje',
-          tabBarLabel: 'Hoje',
+          title: t('nav.today'),
+          tabBarLabel: t('nav.today'),
           tabBarIcon: TodayIcon,
         }}
       />
@@ -87,8 +89,8 @@ export function MainTabs() {
         name="Vaccines"
         component={VaccinesScreen}
         options={{
-          title: 'Vacinas',
-          tabBarLabel: 'Vacinas',
+          title: t('nav.vaccines'),
+          tabBarLabel: t('nav.vaccines'),
           tabBarIcon: VaccinesIcon,
         }}
       />
@@ -96,8 +98,8 @@ export function MainTabs() {
         name="Health"
         component={HealthScreen}
         options={{
-          title: 'Saúde',
-          tabBarLabel: 'Saúde',
+          title: t('nav.health'),
+          tabBarLabel: t('nav.health'),
           tabBarIcon: HealthIcon,
         }}
       />
@@ -105,8 +107,8 @@ export function MainTabs() {
         name="More"
         component={MoreScreen}
         options={{
-          title: 'Mais',
-          tabBarLabel: 'Mais',
+          title: t('nav.more'),
+          tabBarLabel: t('nav.more'),
           tabBarIcon: MoreIcon,
         }}
       />

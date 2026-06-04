@@ -12,6 +12,7 @@
  * Tap no card abre o detalhe; tap no botão "Marcar" abre o RegisterVaccineSheet.
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Button, Card, Text } from 'react-native-paper';
 
@@ -36,16 +37,19 @@ export function VaccineEntryCard({
   onPress,
   onMarkApplied,
 }: VaccineEntryCardProps) {
+  const { t } = useTranslation();
   const { vaccine, status, appliedAt, expectedAt } = entry;
   const canMark = status !== VaccineStatus.APPLIED && onMarkApplied;
 
-  // Linha de detalhes condensada: "1ª dose • Reforço? • Prevista 24/10/25"
+  // Linha de detalhes condensada: "1ª dose • Reforço? • Prevista 24/10/25".
+  // Nota: vaccine.doseLabel vem do backend em pt — i18n completo dele exige
+  // localizacao no servidor; aqui localizamos o resto (reforco + datas).
   const dateText = appliedAt
-    ? `Aplicada ${formatDate(appliedAt)}`
-    : `Prevista ${formatDate(expectedAt)}`;
+    ? t('vaccines.appliedAt', { date: formatDate(appliedAt) })
+    : t('vaccines.expectedAt', { date: formatDate(expectedAt) });
   const detailLine = [
     vaccine.doseLabel,
-    vaccine.isBooster ? 'Reforço' : null,
+    vaccine.isBooster ? t('vaccines.booster') : null,
     dateText,
   ]
     .filter(Boolean)
@@ -73,12 +77,12 @@ export function VaccineEntryCard({
               mode="contained-tonal"
               compact
               onPress={onMarkApplied}
-              accessibilityLabel="Marcar como aplicada"
+              accessibilityLabel={t('vaccines.markApplied')}
               contentStyle={styles.markButtonContent}
               labelStyle={styles.markButtonLabel}
               style={styles.markButton}
             >
-              Marcar
+              {t('vaccines.markApplied')}
             </Button>
           )}
         </View>

@@ -13,6 +13,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -40,21 +41,17 @@ import { BabyAvatar } from '../components/BabyAvatar';
 import { BabySelectorSheet } from '../components/BabySelectorSheet';
 import { useBabies } from '../hooks/useBabies';
 import { useBabySelectorStore } from '../store/baby-selector.store';
-import type { Baby } from '../types';
 
-/** Idade em formato curto pro card. */
-function ageShort(b: Baby): string {
-  if (b.ageMonths === 0) {
-    return `${b.ageDays} dia${b.ageDays !== 1 ? 's' : ''}`;
-  }
-  return `${b.ageMonths} ${b.ageMonths === 1 ? 'mês' : 'meses'}`;
-}
-
-/** Saudação conforme o horário. */
-function greeting(hour: number): string {
-  if (hour < 12) return 'Bom dia';
-  if (hour < 18) return 'Boa tarde';
-  return 'Boa noite';
+/** Chave i18n da saudação conforme o horário. */
+function greetingKey(
+  hour: number,
+):
+  | 'home.greetingMorning'
+  | 'home.greetingAfternoon'
+  | 'home.greetingEvening' {
+  if (hour < 12) return 'home.greetingMorning';
+  if (hour < 18) return 'home.greetingAfternoon';
+  return 'home.greetingEvening';
 }
 
 /** Formata ISO date-time pra "DD/MM às HH:MM". */
@@ -131,6 +128,7 @@ function QuickAction({ icon, label, onPress, theme }: QuickActionProps) {
 }
 
 export function HomeScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation<MainTabScreenProps<'Home'>['navigation']>();
   const me = useMe();
   const babies = useBabies();
@@ -184,13 +182,11 @@ export function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         {/* SAUDACAO */}
         <Text variant="titleMedium" style={styles.greeting}>
-          {greeting(new Date().getHours())}
+          {t(greetingKey(new Date().getHours()))}
           {firstName ? `, ${firstName}` : ''}!
         </Text>
         <MutedText variant="bodySmall">
-          {hasBabies
-            ? 'Aqui está o resumo do dia.'
-            : 'Vamos começar cadastrando seu bebê.'}
+          {hasBabies ? t('home.summaryToday') : t('home.summaryStart')}
         </MutedText>
 
         {/* BEBE SELECIONADO ou EMPTY STATE */}
@@ -199,13 +195,17 @@ export function HomeScreen() {
             <Card style={styles.babyCard} mode="elevated">
               <Card.Title
                 title={selectedBaby.name}
-                subtitle={ageShort(selectedBaby)}
+                subtitle={
+                  selectedBaby.ageMonths === 0
+                    ? t('home.ageDays', { count: selectedBaby.ageDays })
+                    : t('home.ageMonths', { count: selectedBaby.ageMonths })
+                }
                 // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
                 left={() => <BabyAvatar size={48} baby={selectedBaby} />}
                 // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
                 right={(props) => (
                   <Text {...props} variant="bodySmall" style={styles.tapHint}>
-                    trocar  ›
+                    {t('home.switchBaby')}  ›
                   </Text>
                 )}
               />
@@ -227,10 +227,10 @@ export function HomeScreen() {
                 />
               </View>
               <Text variant="titleMedium" style={styles.emptyTitle}>
-                Cadastre seu bebê
+                {t('home.registerBabyTitle')}
               </Text>
               <MutedText variant="bodyMedium" style={styles.emptyBody}>
-                Vacinas, consultas, marcos e mais — tudo num lugar só.
+                {t('home.registerBabyBody')}
               </MutedText>
               <Button
                 mode="contained"
@@ -238,7 +238,7 @@ export function HomeScreen() {
                 onPress={() => navigation.navigate('BabyForm', undefined)}
                 style={styles.emptyButton}
               >
-                Cadastrar bebê
+                {t('home.registerBabyCta')}
               </Button>
             </Card.Content>
           </Card>
@@ -250,7 +250,7 @@ export function HomeScreen() {
             <QuickAction
               theme={theme}
               icon="calendar-plus"
-              label="Consulta"
+              label={t('home.quickAppointment')}
               onPress={() =>
                 navigation.navigate('AppointmentForm', {
                   babyId: selectedBaby.id,
@@ -260,7 +260,7 @@ export function HomeScreen() {
             <QuickAction
               theme={theme}
               icon="pill"
-              label="Remédio"
+              label={t('home.quickMedication')}
               onPress={() =>
                 navigation.navigate('MedicationForm', {
                   babyId: selectedBaby.id,
@@ -270,13 +270,13 @@ export function HomeScreen() {
             <QuickAction
               theme={theme}
               icon="weather-night"
-              label="Soninho"
+              label={t('home.quickSleep')}
               onPress={() => navigation.navigate('Sleep')}
             />
             <QuickAction
               theme={theme}
               icon="alarm"
-              label="Despertar"
+              label={t('home.quickAlarm')}
               onPress={() => navigation.navigate('Alarms')}
             />
           </View>
@@ -285,7 +285,7 @@ export function HomeScreen() {
         {/* PROXIMAS ATIVIDADES (dados reais) */}
         {hasBabies && selectedBaby && (
           <Card style={styles.activityCard} mode="outlined">
-            <Card.Title title="Próximas atividades" />
+            <Card.Title title={t('home.upcomingActivities')} />
             <Card.Content>
               {activitiesLoading ? (
                 <ActivityIndicator style={styles.activityLoading} />
@@ -296,8 +296,8 @@ export function HomeScreen() {
                       theme={theme}
                       icon="needle"
                       tint={theme.colors.error}
-                      label={`${overdueVaccines} vacina${overdueVaccines > 1 ? 's' : ''} atrasada${overdueVaccines > 1 ? 's' : ''}`}
-                      sub="Toque pra ver o calendário"
+                      label={t('home.overdueVaccines', { count: overdueVaccines })}
+                      sub={t('home.seeCalendar')}
                       onPress={() => navigation.navigate('Vaccines')}
                     />
                   )}
@@ -307,7 +307,9 @@ export function HomeScreen() {
                       icon="stethoscope"
                       tint={theme.colors.primary}
                       label={nextAppointment.title}
-                      sub={`Consulta • ${formatWhen(nextAppointment.scheduledAt)}`}
+                      sub={t('home.appointmentSub', {
+                        when: formatWhen(nextAppointment.scheduledAt),
+                      })}
                       onPress={() =>
                         navigation.navigate('AppointmentDetail', {
                           babyId: selectedBaby.id,
@@ -321,8 +323,8 @@ export function HomeScreen() {
                       theme={theme}
                       icon="pill"
                       tint={theme.app.warning}
-                      label={`${pendingDoses} dose${pendingDoses > 1 ? 's' : ''} de remédio hoje`}
-                      sub="Toque pra ver as doses"
+                      label={t('home.pendingDoses', { count: pendingDoses })}
+                      sub={t('home.seeDoses')}
                       onPress={() => navigation.navigate('Today')}
                     />
                   )}
@@ -335,7 +337,7 @@ export function HomeScreen() {
                     color={theme.app.success}
                   />
                   <MutedText variant="bodyMedium" style={styles.allClearText}>
-                    Está tudo em dia por aqui! 🎉
+                    {t('home.allClear')}
                   </MutedText>
                 </View>
               )}

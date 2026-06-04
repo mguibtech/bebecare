@@ -11,6 +11,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -59,6 +60,7 @@ export function MedicationDetailScreen({
 }: AppScreenProps<'MedicationDetail'>) {
   const { babyId, medicationId } = route.params;
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const query = useMedication(babyId, medicationId);
   const deleteMutation = useDeleteMedication();
   const createScheduleMutation = useCreateMedSchedule();
@@ -121,7 +123,7 @@ export function MedicationDetailScreen({
           { backgroundColor: theme.colors.background },
         ]}
       >
-        <Text>Remédio não encontrado</Text>
+        <Text>{t('meds.notFound')}</Text>
       </View>
     );
   }
@@ -149,12 +151,12 @@ export function MedicationDetailScreen({
 
   const handleRemoveSchedule = (schedule: MedSchedule) => {
     Alert.alert(
-      'Remover horário',
-      `Apagar o horário das ${schedule.time}?`,
+      t('meds.removeScheduleTitle'),
+      t('meds.removeScheduleConfirm', { time: schedule.time }),
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Remover',
+          text: t('meds.remove'),
           style: 'destructive',
           onPress: () =>
             deleteScheduleMutation.mutate({
@@ -169,12 +171,12 @@ export function MedicationDetailScreen({
 
   const handleDeleteMedication = () => {
     Alert.alert(
-      'Apagar remédio',
-      `${med.name} será removido junto com todos os horários e doses não tomadas.`,
+      t('meds.deleteTitle'),
+      t('meds.deleteConfirm', { name: med.name }),
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Apagar',
+          text: t('meds.deleteAction'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -185,7 +187,7 @@ export function MedicationDetailScreen({
               navigation.goBack();
             } catch (err) {
               setSnackbar(
-                err instanceof ApiError ? err.message : 'Erro ao apagar',
+                err instanceof ApiError ? err.message : t('meds.deleteError'),
               );
             }
           },
@@ -206,7 +208,7 @@ export function MedicationDetailScreen({
           </Text>
           <Text variant="bodyMedium" style={styles.subtitle}>
             {dose} {DOSE_UNIT_LABELS[med.doseUnit]} •{' '}
-            {med.isActive ? 'Em uso' : 'Pausado'}
+            {med.isActive ? t('meds.active') : t('meds.paused')}
           </Text>
         </View>
 
@@ -214,16 +216,16 @@ export function MedicationDetailScreen({
         <Card mode="outlined" style={styles.card}>
           <Card.Content style={styles.cardContent}>
             <Text variant="bodyMedium">
-              <MutedText>Início: </MutedText>
+              <MutedText>{t('meds.startLabel')}</MutedText>
               {formatDate(med.startDate)}
             </Text>
             <Text variant="bodyMedium">
-              <MutedText>Fim: </MutedText>
-              {med.endDate ? formatDate(med.endDate) : 'Uso contínuo'}
+              <MutedText>{t('meds.endDateLabel')}</MutedText>
+              {med.endDate ? formatDate(med.endDate) : t('meds.continuous')}
             </Text>
             {med.instructions && (
               <Text variant="bodyMedium">
-                <MutedText>Instruções: </MutedText>
+                <MutedText>{t('meds.instructionsInline')}</MutedText>
                 {med.instructions}
               </Text>
             )}
@@ -233,13 +235,15 @@ export function MedicationDetailScreen({
         {/* HORÁRIOS */}
         <Card mode="outlined" style={styles.card}>
           <Card.Title
-            title="Horários"
-            subtitle={`${med.schedules.length} cronograma${med.schedules.length !== 1 ? 's' : ''}`}
+            title={t('meds.schedules')}
+            subtitle={t('meds.schedulesCount', {
+              count: med.schedules.length,
+            })}
           />
           <Card.Content style={styles.cardContentTight}>
             {med.schedules.length === 0 ? (
               <MutedText variant="bodyMedium" style={styles.noSchedules}>
-                Sem horários ainda. Toque em Adicionar horário abaixo.
+                {t('meds.noSchedules')}
               </MutedText>
             ) : (
               med.schedules.map((schedule) => (
@@ -252,9 +256,7 @@ export function MedicationDetailScreen({
                       {daysSummary(schedule)}
                     </MutedText>
                     <View style={styles.alarmRow}>
-                      <Text variant="bodySmall">
-                        Alarme local
-                      </Text>
+                      <Text variant="bodySmall">{t('meds.alarmLocal')}</Text>
                       <Switch
                         value={schedule.useAlarm}
                         onValueChange={() => handleToggleAlarm(schedule)}
@@ -262,7 +264,7 @@ export function MedicationDetailScreen({
                     </View>
                     <View style={styles.alarmRow}>
                       <Text variant="bodySmall">
-                        Ativo
+                        {t('meds.scheduleActive')}
                       </Text>
                       <Switch
                         value={schedule.isActive}
@@ -275,13 +277,13 @@ export function MedicationDetailScreen({
                   <View style={styles.scheduleActions}>
                     <IconButton
                       icon="pencil"
-                      accessibilityLabel="Editar horário"
+                      accessibilityLabel={t('meds.editSchedule')}
                       onPress={() => openEditSchedule(schedule)}
                     />
                     <IconButton
                       icon="trash-can-outline"
                       iconColor={theme.colors.error}
-                      accessibilityLabel="Remover horário"
+                      accessibilityLabel={t('meds.removeScheduleTitle')}
                       onPress={() => handleRemoveSchedule(schedule)}
                     />
                   </View>
@@ -294,7 +296,7 @@ export function MedicationDetailScreen({
               onPress={openAddSchedule}
               style={styles.addSchedule}
             >
-              Adicionar horário
+              {t('meds.addSchedule')}
             </Button>
           </Card.Content>
         </Card>
@@ -305,7 +307,7 @@ export function MedicationDetailScreen({
             variant="labelSmall"
             style={styles.dangerLabel}
           >
-            ZONA PERIGOSA
+            {t('meds.dangerZone')}
           </MutedText>
           <Button
             mode="text"
@@ -314,7 +316,7 @@ export function MedicationDetailScreen({
             onPress={handleDeleteMedication}
             loading={deleteMutation.isPending}
           >
-            Apagar remédio
+            {t('meds.deleteTitle')}
           </Button>
         </View>
       </ScrollView>
@@ -349,7 +351,7 @@ export function MedicationDetailScreen({
         visible={snackbar !== null}
         onDismiss={() => setSnackbar(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setSnackbar(null) }}
+        action={{ label: t('common.ok'), onPress: () => setSnackbar(null) }}
       >
         {snackbar ?? ''}
       </Snackbar>

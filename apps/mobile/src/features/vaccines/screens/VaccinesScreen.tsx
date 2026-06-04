@@ -15,6 +15,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -39,6 +40,7 @@ import { groupByAge } from '../utils/groupByAge';
 import { VaccineStatus, type Vaccine } from '../types';
 
 export function VaccinesScreen() {
+  const { t } = useTranslation();
   const navigation =
     useNavigation<MainTabScreenProps<'Vaccines'>['navigation']>();
   const theme = useTheme<AppTheme>();
@@ -65,14 +67,13 @@ export function VaccinesScreen() {
           color={theme.colors.primary}
         />
         <Text variant="headlineSmall" style={styles.emptyTitle}>
-          Hora de começar!
+          {t('vaccines.startTitle')}
         </Text>
         <Text
           variant="bodyMedium"
           style={[styles.emptyBody, { color: theme.app.text.muted }]}
         >
-          O calendário de vacinas é personalizado pela idade do seu bebê.{'\n'}
-          Cadastre o primeiro bebê pra ver o PNI completo aqui.
+          {t('vaccines.startBody')}
         </Text>
         <Button
           mode="contained"
@@ -80,7 +81,7 @@ export function VaccinesScreen() {
           onPress={() => navigation.navigate('BabyForm', undefined)}
           style={styles.emptyCta}
         >
-          Cadastrar bebê
+          {t('vaccines.addBaby')}
         </Button>
       </SafeAreaView>
     );
@@ -96,14 +97,13 @@ export function VaccinesScreen() {
           color={theme.colors.primary}
         />
         <Text variant="headlineSmall" style={styles.emptyTitle}>
-          Qual bebê?
+          {t('vaccines.whichBabyTitle')}
         </Text>
         <Text
           variant="bodyMedium"
           style={[styles.emptyBody, { color: theme.app.text.muted }]}
         >
-          Você tem mais de um bebê na família. Volte pra Início e escolha
-          quem você quer ver as vacinas.
+          {t('vaccines.whichBabyBody')}
         </Text>
         <Button
           mode="outlined"
@@ -111,7 +111,7 @@ export function VaccinesScreen() {
           onPress={() => navigation.navigate('Home')}
           style={styles.emptyCta}
         >
-          Ir pra Início
+          {t('vaccines.goHome')}
         </Button>
       </SafeAreaView>
     );
@@ -130,12 +130,12 @@ export function VaccinesScreen() {
   if (schedule.isError || !schedule.data) {
     return (
       <SafeAreaView edges={['top']} style={[styles.center, containerStyle]}>
-        <Text variant="bodyLarge">Erro ao carregar o calendário</Text>
+        <Text variant="bodyLarge">{t('vaccines.loadError')}</Text>
         <Text variant="bodyMedium" style={styles.errorBody}>
-          {schedule.error?.message ?? 'Tente puxar pra atualizar.'}
+          {schedule.error?.message ?? t('vaccines.pullToRefresh')}
         </Text>
         <Button mode="outlined" onPress={() => schedule.refetch()}>
-          Tentar de novo
+          {t('common.retry')}
         </Button>
       </SafeAreaView>
     );
@@ -168,8 +168,8 @@ export function VaccinesScreen() {
           </Text>
           <Text variant="bodyMedium" style={styles.muted}>
             {data.babyAgeMonths === 0
-              ? 'Recém-nascido'
-              : `${data.babyAgeMonths} ${data.babyAgeMonths === 1 ? 'mês' : 'meses'}`}
+              ? t('vaccines.newborn')
+              : t('home.ageMonths', { count: data.babyAgeMonths })}
           </Text>
 
           <View style={styles.summaryRow}>
@@ -189,7 +189,7 @@ export function VaccinesScreen() {
                   variant="bodySmall"
                   style={[styles.summaryText, { color: theme.colors.error }]}
                 >
-                  {overdueCount} atrasada{overdueCount > 1 ? 's' : ''}
+                  {t('vaccines.summaryOverdue', { count: overdueCount })}
                 </Text>
               </View>
             )}
@@ -209,7 +209,7 @@ export function VaccinesScreen() {
                   variant="bodySmall"
                   style={[styles.summaryText, { color: theme.app.warning }]}
                 >
-                  {dueCount} no prazo
+                  {t('vaccines.summaryDue', { count: dueCount })}
                 </Text>
               </View>
             )}
@@ -228,7 +228,10 @@ export function VaccinesScreen() {
                 variant="bodySmall"
                 style={[styles.summaryText, { color: theme.app.success }]}
               >
-                {appliedCount} de {totalCount} aplicadas
+                {t('vaccines.summaryApplied', {
+                  applied: appliedCount,
+                  total: totalCount,
+                })}
               </Text>
             </View>
           </View>

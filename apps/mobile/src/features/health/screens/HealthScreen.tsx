@@ -6,6 +6,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { SegmentedButtons, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +19,7 @@ type HealthTab = 'appointments' | 'medications';
 
 export function HealthScreen() {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const [tab, setTab] = useState<HealthTab>('appointments');
 
   return (
@@ -32,12 +34,12 @@ export function HealthScreen() {
           buttons={[
             {
               value: 'appointments',
-              label: 'Consultas',
+              label: t('health.appointments'),
               icon: 'stethoscope',
             },
             {
               value: 'medications',
-              label: 'Remédios',
+              label: t('health.medications'),
               icon: 'pill',
             },
           ]}

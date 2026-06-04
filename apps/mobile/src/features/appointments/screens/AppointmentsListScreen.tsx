@@ -12,6 +12,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -47,6 +48,7 @@ const SCOPE_TO_FILTER: Record<ListScope, AppointmentScope> = {
 
 export function AppointmentsListScreen() {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const navigation =
     useNavigation<MainTabScreenProps<'Health'>['navigation']>();
   const babies = useBabies();
@@ -116,9 +118,9 @@ export function AppointmentsListScreen() {
           onValueChange={(v) => setScope(v as ListScope)}
           density="small"
           buttons={[
-            { value: 'upcoming', label: 'Próximas' },
-            { value: 'past', label: 'Passadas' },
-            { value: 'canceled', label: 'Canceladas' },
+            { value: 'upcoming', label: t('appointments.scopeUpcoming') },
+            { value: 'past', label: t('appointments.scopePast') },
+            { value: 'canceled', label: t('appointments.scopeCanceled') },
           ]}
         />
       </View>
@@ -140,8 +142,8 @@ export function AppointmentsListScreen() {
           </View>
         ) : query.isError ? (
           <View style={styles.loadingBox}>
-            <Text>Erro ao carregar consultas</Text>
-            <Button onPress={() => query.refetch()}>Tentar de novo</Button>
+            <Text>{t('appointments.loadError')}</Text>
+            <Button onPress={() => query.refetch()}>{t('common.retry')}</Button>
           </View>
         ) : items.length === 0 ? (
           <View style={styles.emptyListBox}>
@@ -152,10 +154,10 @@ export function AppointmentsListScreen() {
             />
             <MutedText variant="bodyMedium" style={styles.emptyListText}>
               {scope === 'upcoming'
-                ? 'Nenhuma consulta agendada. Use o + pra marcar a primeira.'
+                ? t('appointments.emptyUpcoming')
                 : scope === 'past'
-                  ? 'Sem consultas realizadas ainda.'
-                  : 'Nenhuma consulta cancelada.'}
+                  ? t('appointments.emptyPast')
+                  : t('appointments.emptyCanceled')}
             </MutedText>
           </View>
         ) : (
@@ -176,7 +178,7 @@ export function AppointmentsListScreen() {
 
       <FAB
         icon="plus"
-        label="Marcar consulta"
+        label={t('appointments.fabAdd')}
         style={styles.fab}
         onPress={() =>
           navigation.navigate('AppointmentForm', {

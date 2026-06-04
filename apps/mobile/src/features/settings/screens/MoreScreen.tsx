@@ -15,6 +15,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -43,6 +44,7 @@ import type { AppStackParamList } from '@/app/navigation/types';
 
 export function MoreScreen() {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const me = useMe();
   const logout = useLogout();
   const deleteAccount = useDeleteAccount();
@@ -80,10 +82,10 @@ export function MoreScreen() {
     return (
       <SafeAreaView edges={['top']} style={[styles.center, containerStyle]}>
         <Text variant="bodyLarge" style={styles.errorTitle}>
-          Erro ao carregar perfil
+          {t('common.loadErrorProfile')}
         </Text>
         <Text variant="bodySmall" style={[styles.muted, styles.errorSubtitle]}>
-          Verifique sua conexão e tente de novo.
+          {t('common.checkConnection')}
         </Text>
         <Button
           mode="contained"
@@ -91,10 +93,10 @@ export function MoreScreen() {
           loading={me.isFetching}
           style={styles.retryButton}
         >
-          Tentar de novo
+          {t('common.retry')}
         </Button>
         <Button mode="text" onPress={() => logout.mutate()} loading={logout.isPending}>
-          Sair
+          {t('common.signOut')}
         </Button>
       </SafeAreaView>
     );
