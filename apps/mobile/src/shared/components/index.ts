@@ -13,3 +13,6 @@ export { DateTimeField } from './DateTimeField';
 export type { DateTimeFieldProps } from './DateTimeField';
 
 export { MutedText } from './MutedText';
+
+export { Logo, LogoMark, BRAND_BLUE, BRAND_PINK } from './Logo';
+export type { LogoProps } from './Logo';
