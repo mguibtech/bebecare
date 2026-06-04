@@ -22,11 +22,12 @@ import { Text, useTheme } from 'react-native-paper';
 import Svg, { Circle, Ellipse, G } from 'react-native-svg';
 
 import { fontFamilies } from '@/app/theme/fonts';
+import { brand } from '@/app/theme/tokens';
 import type { AppTheme } from '@/app/theme';
 
-/** Cores oficiais da marca. */
-export const BRAND_BLUE = '#5B9BD5';
-export const BRAND_PINK = '#F4A6B8';
+/** Cores oficiais da marca (re-export dos tokens — fonte unica em tokens.ts). */
+export const BRAND_BLUE = brand.blue;
+export const BRAND_PINK = brand.pink;
 
 type LogoVariant = 'mark' | 'full';
 

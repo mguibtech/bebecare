@@ -17,6 +17,26 @@
  */
 
 // ============================================================
+// MARCA (cores fixas — NAO mudam com paleta/modo)
+// ============================================================
+
+/**
+ * Cores da identidade visual (logo, gradiente, icone do app).
+ * Diferente das paletas: a marca e' sempre a mesma, independente de o
+ * usuario ter escolhido tema azul/rosa ou light/dark.
+ *
+ * Obs.: o gerador de icone (scripts/gen-icons.mjs) espelha estes hex
+ * manualmente — e' um script Node, fora do bundle RN. Manter em sincronia.
+ */
+export const brand = {
+  blue: '#5B9BD5',
+  pink: '#F4A6B8',
+} as const;
+
+/** Stops do gradiente da marca (azul -> rosa). */
+export const brandGradient = [brand.blue, brand.pink] as const;
+
+// ============================================================
 // PALETAS
 // ============================================================
 
