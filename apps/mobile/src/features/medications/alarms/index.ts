@@ -1,5 +1,5 @@
 /**
- * API publica dos alarmes locais de remedio (notifee, M6/B8).
+ * API pública dos alarmes locais de remédio (notifee, M6/B8).
  *
  * Consumido por:
  *  - useMedicationAlarmSync: reconcilia os alarmes quando a lista muda.

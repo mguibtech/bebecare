@@ -6,7 +6,7 @@
  * Vantagens:
  * - Coerencia em todo o app (mesmo "cinza" em qualquer lugar)
  * - Dark-safe (alpha aumenta automaticamente em dark pra preservar contraste)
- * - WCAG-correto: cor calculada pra atingir contraste minimo sobre surface
+ * - WCAG-correto: cor calculada pra atingir contraste mínimo sobre surface
  *
  * Exemplos:
  *   <MutedText>14/10/2025</MutedText>

@@ -16,10 +16,10 @@ import { Platform } from 'react-native';
  * Por isso TODOS os paths nas funcoes de api.ts ficam relativos
  * ('/auth/login', '/babies', etc.) sem precisar repetir '/api' manualmente.
  *
- * Usa `localhost` no Android tambem: com `adb reverse tcp:3000 tcp:3000`
+ * Usa `localhost` no Android também: com `adb reverse tcp:3000 tcp:3000`
  * o localhost:3000 do aparelho (device fisico OU emulador) e' mapeado pro
- * PC. O script `npm run adb` ja faz esse reverse. Sem isso, no device fisico
- * o `10.0.2.2` (atalho so de emulador) nao alcanca o PC.
+ * PC. O script `npm run adb` já faz esse reverse. Sem isso, no device fisico
+ * o `10.0.2.2` (atalho so de emulador) não alcanca o PC.
  *
  * - iOS simulator: localhost funciona direto
  */

@@ -2,9 +2,9 @@
  * Modo Soninho — grid de 8 sons de ruido branco + player (play/pause, volume,
  * timer com fade out). Acessada por "Mais → Modo Soninho".
  *
- * Toca com a tela apagada (foreground service do track-player). Os audios sao
- * adicionados em res/raw pelo dev (ver assets/audio/CREDITS.md) — sem eles a UI
- * funciona mas nao sai som.
+ * Toca com a tela apagada (foreground service do track-player). Os audios são
+ * adicionados em res/raw pelo dev (ver assets/áudio/CREDITS.md) — sem eles a UI
+ * funciona mas não sai som.
  */
 
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';

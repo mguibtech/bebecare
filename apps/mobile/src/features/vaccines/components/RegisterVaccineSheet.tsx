@@ -4,12 +4,12 @@
  * Aberto pelo botao "✓" no VaccineEntryCard ou pelo VaccineDetailScreen.
  *
  * Form:
- *  - Data (default hoje, nao pode ser futuro)
+ *  - Data (default hoje, não pode ser futuro)
  *  - Lote (opcional, ate 50 chars)
  *  - Local (opcional, ate 200 chars)
  *  - Notas (opcional, multiline)
  *
- * onSuccess invalida schedule + records do bebe (hook useCreateVaccineRecord).
+ * onSuccess inválida schedule + records do bebê (hook useCreateVaccineRecord).
  */
 
 import { useState } from 'react';
@@ -35,18 +35,18 @@ import type { Vaccine } from '../types';
 
 const registerSchema = z.object({
   appliedAt: z
-    .string({ required_error: 'Data obrigatoria' })
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Data invalida'),
+    .string({ required_error: 'Data obrigatória' })
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Data inválida'),
   lotNumber: z
     .string()
     .trim()
-    .max(50, 'Maximo 50 caracteres')
+    .max(50, 'Máximo 50 caracteres')
     .optional()
     .transform((v) => (v === '' ? undefined : v)),
   location: z
     .string()
     .trim()
-    .max(200, 'Maximo 200 caracteres')
+    .max(200, 'Máximo 200 caracteres')
     .optional()
     .transform((v) => (v === '' ? undefined : v)),
   notes: z
@@ -115,7 +115,7 @@ export function RegisterVaccineSheet({
       const message =
         err instanceof ApiError
           ? err.message
-          : 'Nao foi possivel registrar. Tente de novo.';
+          : 'Não foi possível registrar. Tente de novo.';
       setSnackbar(message);
     }
   });

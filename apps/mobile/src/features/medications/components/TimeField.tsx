@@ -4,7 +4,7 @@
  * Valor: string "HH:mm" (formato que o backend espera em
  * CreateMedScheduleDto.time).
  *
- * Visual: Paper TextInput readonly com icone de relogio.
+ * Visual: Paper TextInput readonly com ícone de relogio.
  */
 
 import { useState } from 'react';

@@ -6,7 +6,7 @@
  * - Facilita invalidate em cascata (`queryClient.invalidateQueries({ queryKey: qk.auth.all })`).
  * - Documenta o "namespace" de cada feature.
  *
- * Convencao: hierarquica do mais generico ao mais especifico.
+ * Convencao: hierarquica do mais generico ao mais específico.
  *   qk.auth.all        -> ['auth']
  *   qk.auth.me()       -> ['auth', 'me']
  *   qk.babies.all      -> ['babies']
@@ -30,10 +30,10 @@ export const qk = {
   vaccines: {
     all: ['vaccines'] as const,
     catalog: () => ['vaccines', 'catalog'] as const,
-    /** Schedule de um bebe especifico (com status calculado). */
+    /** Schedule de um bebê específico (com status calculado). */
     schedule: (babyId: string) =>
       ['vaccines', 'schedule', babyId] as const,
-    /** Historico de records de um bebe. */
+    /** Histórico de records de um bebê. */
     records: (babyId: string) =>
       ['vaccines', 'records', babyId] as const,
   },
@@ -58,7 +58,7 @@ export const qk = {
       ['doseLogs', 'list', babyId, scope ?? 'all'] as const,
     today: (babyId: string) => ['doseLogs', 'today', babyId] as const,
   },
-  /** Despertadores pessoais (M7) — por usuario, nao por bebe. */
+  /** Despertadores pessoais (M7) — por usuário, não por bebê. */
   alarms: {
     all: ['alarms'] as const,
     list: () => ['alarms', 'list'] as const,

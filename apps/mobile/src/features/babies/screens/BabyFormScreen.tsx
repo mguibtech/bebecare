@@ -1,5 +1,5 @@
 /**
- * Form de criar/editar bebe.
+ * Form de criar/editar bebê.
  *
  * Modo:
  *  - sem `route.params?.babyId` → modo CREATE
@@ -7,9 +7,9 @@
  *
  * Sections (top-to-bottom):
  *  1. Avatar grande + AvatarStylePicker
- *  2. Dados basicos: nome, sexo, data nascimento (todos obrigatorios)
+ *  2. Dados basicos: nome, sexo, data nascimento (todos obrigatórios)
  *  3. Medidas ao nascer (opcionais)
- *  4. Info medica (opcionais): blood type, alergias, cor dos olhos
+ *  4. Info médica (opcionais): blood type, alergias, cor dos olhos
  *  5. Notas livres
  *  6. Botao Salvar
  *  7. Se EDIT: botao "Excluir" no fim
@@ -115,7 +115,7 @@ export function BabyFormScreen({
   // Header dinamico
   useEffect(() => {
     navigation.setOptions({
-      title: isEdit ? 'Editar bebe' : 'Cadastrar bebe',
+      title: isEdit ? 'Editar bebê' : 'Cadastrar bebê',
     });
   }, [navigation, isEdit]);
 
@@ -124,7 +124,7 @@ export function BabyFormScreen({
   const avatarSeed = useWatch({ control, name: 'avatarSeed' });
 
   // Sincroniza seed default quando o nome muda em CREATE
-  // e o user nao customizou ainda.
+  // e o user não customizou ainda.
   useEffect(() => {
     if (!isEdit && (!avatarSeed || avatarSeed === '' || avatarSeed === defaultSeedFor(undefined))) {
       setValue('avatarSeed', defaultSeedFor(name), { shouldValidate: false });
@@ -134,7 +134,7 @@ export function BabyFormScreen({
   const onSubmit = handleSubmit(async (values) => {
     setErrorBanner(null);
     try {
-      // Garante seed nao-vazia.
+      // Garante seed não-vazia.
       const seed = values.avatarSeed?.trim()
         ? values.avatarSeed.trim()
         : defaultSeedFor(values.name);
@@ -213,7 +213,7 @@ export function BabyFormScreen({
             seed={avatarSeed || defaultSeedFor(name)}
           />
           <Text variant="titleMedium" style={styles.previewName}>
-            {name?.trim() || 'Bebe'}
+            {name?.trim() || 'Bebê'}
           </Text>
         </View>
 
@@ -234,7 +234,7 @@ export function BabyFormScreen({
         <FormInput
           control={control}
           name="name"
-          label="Nome do bebe"
+          label="Nome do bebê"
           autoCapitalize="words"
           autoComplete="given-name"
           maxLength={120}
@@ -255,7 +255,7 @@ export function BabyFormScreen({
         </Text>
         <Text variant="bodySmall" style={styles.sectionHint}>
           Dados da maternidade ou do cartao de vacinacao. Pode deixar em
-          branco se nao souber ou se preferir adicionar depois.
+          branco se não souber ou se preferir adicionar depois.
         </Text>
 
         <FormInput
@@ -312,7 +312,7 @@ export function BabyFormScreen({
           loading={isSaving}
           disabled={!formState.isValid && formState.isSubmitted}
         >
-          {isSaving ? 'Salvando...' : isEdit ? 'Salvar alteracoes' : 'Cadastrar bebe'}
+          {isSaving ? 'Salvando...' : isEdit ? 'Salvar alteracoes' : 'Cadastrar bebê'}
         </SubmitButton>
 
         {/* DELETE (so em edit) */}
@@ -324,7 +324,7 @@ export function BabyFormScreen({
             style={styles.deleteButton}
             icon="trash-can-outline"
           >
-            Excluir bebe
+            Excluir bebê
           </Button>
         )}
       </ScrollView>
@@ -334,7 +334,7 @@ export function BabyFormScreen({
           visible={deleteDialogOpen}
           onDismiss={() => setDeleteDialogOpen(false)}
         >
-          <Dialog.Title>Excluir bebe?</Dialog.Title>
+          <Dialog.Title>Excluir bebê?</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium">
               Esta acao pode ser desfeita em ate 30 dias entrando em contato

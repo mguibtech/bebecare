@@ -1,6 +1,6 @@
 /**
  * Ilustracao de um slide do onboarding: circulo com o gradiente da marca
- * e um motivo branco no centro (logo no slide 1, icone nos demais).
+ * e um motivo branco no centro (logo no slide 1, ícone nos demais).
  *
  * Mantem coerencia visual com o logo/splash sem precisar de assets externos.
  * (Pode evoluir pra ilustracoes SVG mais ricas na fase de polimento.)
@@ -14,7 +14,7 @@ import { BrandGradient, LogoMark } from '@/shared/components';
 type OnboardingIllustrationProps = {
   /** Diametro do circulo. */
   size?: number;
-  /** Se 'logo', mostra a marca; senao, o nome do icone MaterialCommunityIcons. */
+  /** Se 'logo', mostra a marca; senao, o nome do ícone MaterialCommunityIcons. */
   icon: 'logo' | string;
 };
 

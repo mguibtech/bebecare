@@ -1,10 +1,10 @@
 /**
- * Nucleo do agendamento de alarmes locais de remedio (notifee, M6/B8).
+ * Nucleo do agendamento de alarmes locais de remédio (notifee, M6/B8).
  *
  * Estrategia: um trigger notification por (schedule, dia-da-semana ativo), com
  * repeticao SEMANAL. Ex.: um schedule "08:00, seg/qua/sex" vira 3 alarmes
  * semanais. O notifee persiste os triggers e os re-registra sozinho apos
- * reboot (graças a RECEIVE_BOOT_COMPLETED no manifest), entao nao precisamos de
+ * reboot (graças a RECEIVE_BOOT_COMPLETED no manifest), entao não precisamos de
  * um BroadcastReceiver proprio.
  *
  * Idempotencia: syncMedicationAlarms() cancela TODOS os alarmes desta feature e
@@ -54,8 +54,8 @@ function parseTime(time: string): { hour: number; minute: number } {
 }
 
 /**
- * Proximo timestamp (ms) que cai no `weekday` no horario `hour:minute`.
- * Se for hoje mas o horario ja passou, pula pra semana seguinte — assim o
+ * Próximo timestamp (ms) que cai no `weekday` no horário `hour:minute`.
+ * Se for hoje mas o horário já passou, pula pra semana seguinte — assim o
  * primeiro disparo nunca e "imediato/atrasado".
  */
 function nextOccurrenceMs(
@@ -84,8 +84,8 @@ function doseSummary(med: Medication): string {
 
 /**
  * Agenda UM alarme (schedule + dia). `exact` controla se usa o AlarmManager
- * (preciso, fura o Doze) ou cai no agendamento inexato quando a permissao de
- * alarme exato nao foi concedida — assim nunca lanca por falta de permissao.
+ * (preciso, fura o Doze) ou cai no agendamento inexato quando a permissão de
+ * alarme exato não foi concedida — assim nunca lanca por falta de permissão.
  */
 async function scheduleOne(
   med: Medication,
@@ -136,8 +136,8 @@ async function cancelByPrefix(prefix: string): Promise<void> {
 }
 
 /**
- * Cancela TODOS os alarmes de remedio de TODOS os bebes (prefixo med-alarm:).
- * Usado no logout pra nao deixar alarmes orfaos da conta anterior.
+ * Cancela TODOS os alarmes de remédio de TODOS os bebês (prefixo med-alarm:).
+ * Usado no logout pra não deixar alarmes orfaos da conta anterior.
  */
 export async function cancelAllMedicationAlarms(): Promise<void> {
   await cancelByPrefix(ALARM_ID_PREFIX);
@@ -147,17 +147,17 @@ export type AlarmSyncResult = {
   /** Quantos alarmes (schedule x dia) ficaram agendados. */
   scheduledCount: number;
   /**
-   * true quando existem alarmes ativos mas a permissao de alarme exato esta
-   * revogada (Android 12+). O chamador decide se manda o usuario pro sistema.
+   * true quando existem alarmes ativos mas a permissão de alarme exato esta
+   * revogada (Android 12+). O chamador decide se manda o usuário pro sistema.
    */
   needsExactPermission: boolean;
 };
 
 /**
- * Reconcilia os alarmes locais de UM bebe a partir da lista de medicamentos
- * dele. Cancela os alarmes desse bebe e reagenda — idempotente e seguro de
- * chamar a cada mudanca na lista (ou no launch). Alarmes de OUTROS bebes da
- * familia ficam intactos.
+ * Reconcilia os alarmes locais de UM bebê a partir da lista de medicamentos
+ * dele. Cancela os alarmes desse bebê e reagenda — idempotente e seguro de
+ * chamar a cada mudanca na lista (ou no launch). Alarmes de OUTROS bebês da
+ * família ficam intactos.
  *
  * So agenda para schedules com `useAlarm && isActive` de medicamentos ativos.
  */
@@ -180,7 +180,7 @@ export async function syncMedicationAlarms(
           await scheduleOne(med, schedule, day, exact);
           scheduledCount += 1;
         } catch (err) {
-          // Um alarme que falha (ex.: trigger no passado por race) nao deve
+          // Um alarme que falha (ex.: trigger no passado por race) não deve
           // abortar o sync inteiro. Loga e segue.
           if (__DEV__) {
             console.warn('[med-alarm] falha ao agendar', schedule.id, day, err);

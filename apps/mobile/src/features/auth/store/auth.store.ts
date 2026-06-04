@@ -4,7 +4,7 @@ import { secureStorage, type AuthTokens } from '@/shared/storage/secureStorage';
 
 /**
  * Store de autenticacao (estado de cliente: token em memoria + flag boot).
- * Dados do usuario logado (perfil) ficam no React Query (cache do server),
+ * Dados do usuário logado (perfil) ficam no React Query (cache do server),
  * NAO aqui. Esta store cuida APENAS do que e local: tokens e status.
  */
 
@@ -21,7 +21,7 @@ type AuthState = {
   signOut: () => Promise<void>;
   /**
    * Atualiza tokens sem mudar status. Usado pelo interceptor de refresh
-   * (axios → /auth/refresh) que troca o par sem deslogar o usuario.
+   * (axios → /auth/refresh) que troca o par sem deslogar o usuário.
    */
   setTokens: (tokens: AuthTokens) => Promise<void>;
 };

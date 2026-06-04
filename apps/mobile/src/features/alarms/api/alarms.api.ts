@@ -1,5 +1,5 @@
 /**
- * Camada HTTP dos despertadores (por usuario).
+ * Camada HTTP dos despertadores (por usuário).
  *
  *   GET    /alarms
  *   POST   /alarms

@@ -1,17 +1,17 @@
 /**
  * Catalogo dos sons do Modo Soninho (B10).
  *
- * Os arquivos de audio NAO sao versionados (sao grandes e tem licenca propria).
- * Cada som referencia um recurso Android em res/raw via `rawName`. O player
+ * Os arquivos de áudio NAO são versionados (são grandes e tem licença propria).
+ * Cada som referência um recurso Android em res/raw via `rawName`. O player
  * monta a URI `android.resource://<pkg>/raw/<rawName>` em runtime — assim o app
- * COMPILA sem os arquivos; quando o usuario dropa os .ogg em res/raw, passam a
- * tocar (ver assets/audio/CREDITS.md). V1 e Android-only.
+ * COMPILA sem os arquivos; quando o usuário dropa os .ogg em res/raw, passam a
+ * tocar (ver assets/áudio/CREDITS.md). V1 e Android-only.
  */
 
 export type SleepSound = {
   key: string;
   label: string;
-  /** Icone MaterialCommunityIcons. */
+  /** Ícone MaterialCommunityIcons. */
   icon: string;
   /** Nome do recurso em android/app/src/main/res/raw/<rawName>.ogg (sem extensao). */
   rawName: string;
@@ -28,7 +28,7 @@ export const SLEEP_SOUNDS: SleepSound[] = [
   { key: 'car', label: 'Carro', icon: 'car', rawName: 'sleep_car' },
 ];
 
-/** Opcoes de timer (minutos). 0 = sem parar. */
+/** Opções de timer (minutos). 0 = sem parar. */
 export const SLEEP_TIMERS = [
   { minutes: 15, label: '15 min' },
   { minutes: 30, label: '30 min' },

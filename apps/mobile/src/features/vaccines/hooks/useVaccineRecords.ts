@@ -1,8 +1,8 @@
 /**
- * Historico de doses aplicadas do bebe.
+ * Histórico de doses aplicadas do bebê.
  *
  * Soh roda se babyId valido. Cache compartilhado com schedule via invalidate
- * em mutations (useCreateVaccineRecord etc invalida ambos).
+ * em mutations (useCreateVaccineRecord etc inválida ambos).
  */
 
 import { useQuery } from '@tanstack/react-query';

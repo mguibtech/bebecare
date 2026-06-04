@@ -1,11 +1,11 @@
 /**
- * Hook que expoe o perfil do usuario logado (GET /auth/me).
+ * Hook que expoe o perfil do usuário logado (GET /auth/me).
  *
  * - Soh roda quando status === 'authenticated' (evita request com 401 garantido
  *   durante boot/logout).
  * - staleTime longo (padrao do queryClient = 5min) — perfil quase nunca muda.
  * - Quando o auth.store derruba sessao, o RootNavigator desmonta o app stack,
- *   logo nao precisa invalidar manualmente aqui.
+ *   logo não precisa invalidar manualmente aqui.
  */
 
 import { useQuery } from '@tanstack/react-query';

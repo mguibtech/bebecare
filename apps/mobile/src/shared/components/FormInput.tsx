@@ -5,8 +5,8 @@
  * Recursos:
  * - Erro do field eh exibido em HelperText abaixo do input.
  * - Suporta todas as props do TextInput do Paper exceto value/onChange/onBlur/error,
- *   que sao gerenciados pelo Controller.
- * - `hideHelperWhenValid`: esconde a HelperText quando nao tem erro,
+ *   que são gerenciados pelo Controller.
+ * - `hideHelperWhenValid`: esconde a HelperText quando não tem erro,
  *   compactando o layout. Util em forms densos.
  *
  * Uso:
@@ -34,7 +34,7 @@ export type FormInputProps<TForm extends FieldValues> = {
   control: Control<TForm>;
   name: FieldPath<TForm>;
   label: string;
-  /** Esconde a HelperText quando nao ha erro (layout mais denso). */
+  /** Esconde a HelperText quando não ha erro (layout mais denso). */
   hideHelperWhenValid?: boolean;
 } & Omit<TextInputProps, 'value' | 'onChangeText' | 'onBlur' | 'error'>;
 

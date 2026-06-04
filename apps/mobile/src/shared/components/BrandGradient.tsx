@@ -1,7 +1,7 @@
 /**
  * Faixa com o gradiente da marca (azul -> rosa).
  *
- * Usa react-native-svg (ja nativo no projeto) — sem dependencia nova.
+ * Usa react-native-svg (já nativo no projeto) — sem dependencia nova.
  * Preenche o container; passe `style` pra definir tamanho/cantos e coloque
  * o conteudo como children (ex.: logo branco + tagline).
  *

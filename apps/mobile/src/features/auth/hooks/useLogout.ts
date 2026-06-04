@@ -4,9 +4,9 @@
  * Fluxo:
  * 1. Tenta revogar o refreshToken no backend (best-effort — se falhar, segue).
  * 2. Limpa tokens (Keychain) e estado local (auth.store).
- * 3. Limpa todo o cache do React Query — proximo login fetcha do zero.
+ * 3. Limpa todo o cache do React Query — próximo login fetcha do zero.
  *
- * Por que best-effort no backend: o usuario quer sair AGORA; rede pode estar
+ * Por que best-effort no backend: o usuário quer sair AGORA; rede pode estar
  * fora. O refresh token revogado fica como "lixo" no DB ate expirar (30 dias),
  * mas isso eh aceitavel — outro device continua valido independentemente.
  */
@@ -27,9 +27,9 @@ export function useLogout() {
 
   return useMutation<void, Error, void>({
     mutationFn: async () => {
-      // Remove o token FCM deste device do usuario atual (best-effort, ainda
+      // Remove o token FCM deste device do usuário atual (best-effort, ainda
       // autenticado). Sem isso, o backend continuaria empurrando push deste
-      // usuario pro device depois do logout. Roda antes de revogar a sessao.
+      // usuário pro device depois do logout. Roda antes de revogar a sessao.
       if (isFirebaseConfigured()) {
         try {
           await notificationsApi.putFcmToken(null);
@@ -43,12 +43,12 @@ export function useLogout() {
         try {
           await authApi.logout({ refreshToken });
         } catch {
-          // best-effort: ignora erro de rede / token ja revogado.
+          // best-effort: ignora erro de rede / token já revogado.
         }
       }
     },
     onSettled: async () => {
-      // Cancela os alarmes locais (remedio + despertadores) da conta que esta
+      // Cancela os alarmes locais (remédio + despertadores) da conta que esta
       // saindo — senao continuariam tocando no device depois do logout.
       try {
         await Promise.all([

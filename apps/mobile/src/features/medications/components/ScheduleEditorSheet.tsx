@@ -93,8 +93,8 @@ export function ScheduleEditorSheet({
         useAlarm,
       });
       onDismiss();
-      // Just-in-time: so quando o usuario ativou o alarme local. Pede
-      // notificacao/exact-alarm e orienta tela cheia. Roda apos fechar o sheet.
+      // Just-in-time: so quando o usuário ativou o alarme local. Pede
+      // notificação/exact-alarm e orienta tela cheia. Roda apos fechar o sheet.
       if (useAlarm) {
         promptAlarmPermissions();
       }

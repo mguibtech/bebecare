@@ -6,7 +6,7 @@
  * do bundle de producao.
  *
  * Plugins ativos:
- *  - useReactNative()              network, errors, log, devTools (asyncStorage off — nao usamos)
+ *  - useReactNative()              network, errors, log, devTools (asyncStorage off — não usamos)
  *  - reactotronReactQuery          inspecao do cache do React Query
  *  - Zustand subscriptions         auth + theme stores
  *  - MMKV value-changed listener   eventos de escrita no storage 'bebecare'
@@ -50,7 +50,7 @@ Reactotron.configure({
   host: resolveHost(),
 })
   .useReactNative({
-    // asyncStorage off — o app usa MMKV, nao AsyncStorage.
+    // asyncStorage off — o app usa MMKV, não AsyncStorage.
     asyncStorage: false,
   })
   .use(reactotronReactQuery(queryClientManager))
@@ -90,7 +90,7 @@ useThemeStore.subscribe((state, prevState) => {
 // ============================================================
 
 storage.addOnValueChangedListener((key) => {
-  // O listener nao entrega o valor; lemos sob demanda. Tentamos os tipos mais
+  // O listener não entrega o valor; lemos sob demanda. Tentamos os tipos mais
   // comuns na ordem string → number → boolean.
   const value =
     storage.getString(key) ??

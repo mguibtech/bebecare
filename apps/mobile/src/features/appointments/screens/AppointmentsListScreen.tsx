@@ -1,14 +1,14 @@
 /**
- * Lista de consultas do bebe selecionado, agrupada por scope.
+ * Lista de consultas do bebê selecionado, agrupada por scope.
  *
- * SegmentedButtons Proximas | Passadas | Canceladas filtra a lista
+ * SegmentedButtons Próximas | Passadas | Canceladas filtra a lista
  * via backend (scope filter).
  *
  * FAB pra criar nova consulta navega pra AppointmentForm.
  * Tap em card → AppointmentDetail.
  *
  * Esta tela eh embarcada dentro de HealthScreen quando o tab "Consultas"
- * esta ativo. Quando tem 0 bebe ou nenhum selecionado, mostra empty state.
+ * esta ativo. Quando tem 0 bebê ou nenhum selecionado, mostra empty state.
  */
 
 import { useMemo, useState } from 'react';
@@ -69,7 +69,7 @@ export function AppointmentsListScreen() {
 
   const containerStyle = { backgroundColor: theme.colors.background };
 
-  // ===== Empty state: sem bebes na familia
+  // ===== Empty state: sem bebês na família
   if (babies.data && babies.data.length === 0) {
     return (
       <View style={[styles.center, containerStyle]}>
@@ -89,7 +89,7 @@ export function AppointmentsListScreen() {
     );
   }
 
-  // ===== Empty state: sem bebe selecionado
+  // ===== Empty state: sem bebê selecionado
   if (!selectedBabyId) {
     return (
       <View style={[styles.center, containerStyle]}>

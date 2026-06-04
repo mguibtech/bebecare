@@ -13,13 +13,13 @@ import { AvatarStyle } from '@/features/auth/types';
 // Enums (espelhos do backend)
 // ============================================================
 
-/** Sexo biologico do bebe — usado em curvas OMS por sexo, iconografia. */
+/** Sexo biologico do bebê — usado em curvas OMS por sexo, iconografia. */
 export enum Sex {
   MALE = 'male',
   FEMALE = 'female',
 }
 
-/** Tipo sanguineo (ABO+Rh). Null no DB quando ainda nao se sabe. */
+/** Tipo sanguineo (ABO+Rh). Null no DB quando ainda não se sabe. */
 export enum BloodType {
   A_POSITIVE = 'A+',
   A_NEGATIVE = 'A-',
@@ -39,9 +39,9 @@ export { AvatarStyle };
 // ============================================================
 
 /**
- * Resposta publica do bebe. Inclui idade calculada (months + days)
+ * Resposta pública do bebê. Inclui idade calculada (months + days)
  * que o backend faz uma vez por response — frontend NAO recalcula
- * (evita drift e fuso horario).
+ * (evita drift e fuso horário).
  *
  * birthHeightCm vem como string (decimal Postgres "49.50") — converter
  * pra Number na hora de exibir ou comparar.
@@ -51,7 +51,7 @@ export type Baby = {
   familyId: string;
   name: string;
   sex: Sex;
-  /** Formato YYYY-MM-DD (sem horario). */
+  /** Formato YYYY-MM-DD (sem horário). */
   birthDate: string;
   /** Idade em meses inteiros (ex: 9). */
   ageMonths: number;

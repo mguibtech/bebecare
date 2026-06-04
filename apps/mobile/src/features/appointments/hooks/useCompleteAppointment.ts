@@ -2,7 +2,7 @@
  * Marcar consulta como realizada (POST /complete).
  * Body opcional: notas pos-consulta (peso, altura, prescricoes, etc).
  *
- * Status muda pra COMPLETED no backend; mobile invalida pra refletir.
+ * Status muda pra COMPLETED no backend; mobile inválida pra refletir.
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';

@@ -1,11 +1,11 @@
 /**
- * Schedule de vacinas de UM bebe especifico, com status calculado pelo backend.
+ * Schedule de vacinas de UM bebê específico, com status calculado pelo backend.
  *
- * StaleTime curto (1 min): status depende da idade do bebe e do tempo atual —
+ * StaleTime curto (1 min): status depende da idade do bebê e do tempo atual —
  * uma dose que e "DUE hoje" vira "OVERDUE amanha". Cache curto evita exibir
  * status desatualizado.
  *
- * Soh roda se babyId for valido (string nao vazia).
+ * Soh roda se babyId for valido (string não vazia).
  */
 
 import { useQuery } from '@tanstack/react-query';

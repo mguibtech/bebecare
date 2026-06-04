@@ -1,5 +1,5 @@
 /**
- * Card de um despertador na lista. Mostra horario grande, label, dias e
+ * Card de um despertador na lista. Mostra horário grande, label, dias e
  * categoria. Switch liga/desliga sem abrir o form. Tap no corpo edita.
  */
 

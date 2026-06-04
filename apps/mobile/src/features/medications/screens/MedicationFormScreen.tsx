@@ -1,9 +1,9 @@
 /**
  * Form de criar/editar medicamento (campos basicos).
  *
- * Schedules NAO sao gerenciados aqui — depois de criar, o user vai
- * pro MedicationDetailScreen e adiciona horarios via ScheduleEditorSheet.
- * Mantem o form simples e isola o fluxo "adicionar horario" num bottom sheet.
+ * Schedules NAO são gerenciados aqui — depois de criar, o user vai
+ * pro MedicationDetailScreen e adiciona horários via ScheduleEditorSheet.
+ * Mantem o form simples e isola o fluxo "adicionar horário" num bottom sheet.
  *
  * Modo:
  *  - sem `route.params?.medicationId` → CREATE
@@ -120,7 +120,7 @@ export function MedicationFormScreen({
         navigation.goBack();
       } else {
         const created = await create.mutateAsync({ babyId, body: payload });
-        // Vai pro detail pra o user adicionar horarios
+        // Vai pro detail pra o user adicionar horários
         navigation.replace('MedicationDetail', {
           babyId,
           medicationId: created.id,

@@ -1,6 +1,6 @@
 /**
  * Lista de dose logs filtrada (status / date range).
- * Usado em telas de historico ou paginas detalhadas por dia.
+ * Usado em telas de histórico ou paginas detalhadas por dia.
  */
 
 import { useQuery } from '@tanstack/react-query';
@@ -25,7 +25,7 @@ export function useDoseLogs(
   });
 }
 
-/** Variantes pra status especifico — wrapper convencional. */
+/** Variantes pra status específico — wrapper convencional. */
 export function useDoseLogsByStatus(
   babyId: string | null | undefined,
   status: DoseStatus,

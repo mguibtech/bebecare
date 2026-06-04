@@ -24,7 +24,7 @@ type SnackbarState = {
   message: string;
   variant: SnackbarVariant;
   action?: SnackbarAction;
-  /** Show com opcoes. */
+  /** Show com opções. */
   show: (
     message: string,
     opts?: { variant?: SnackbarVariant; action?: SnackbarAction },

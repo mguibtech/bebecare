@@ -21,12 +21,12 @@ export type AuthStackParamList = {
   Login: undefined;
   /**
    * Register aceita inviteCode via deep link (bebecare://invite/:code).
-   * Sem param = cadastro normal (cria familia solo).
+   * Sem param = cadastro normal (cria família solo).
    */
   Register: { inviteCode?: string } | undefined;
 };
 
-/** Tabs principais quando o usuario esta autenticado. */
+/** Tabs principais quando o usuário esta autenticado. */
 export type MainTabsParamList = {
   Home: undefined;
   Today: undefined;
@@ -39,15 +39,15 @@ export type AppStackParamList = {
   /** Container das 4 tabs. Aninhado no stack. */
   MainTabs: NavigatorScreenParams<MainTabsParamList> | undefined;
   /**
-   * Form de bebe — cria (sem babyId) ou edita (com babyId).
+   * Form de bebê — cria (sem babyId) ou edita (com babyId).
    * Mesmo screen, modo controlado por param.
    */
   BabyForm: { babyId?: string } | undefined;
-  /** Detalhe/visualizacao de um bebe especifico. */
+  /** Detalhe/visualizacao de um bebê específico. */
   BabyDetail: { babyId: string };
-  /** Tela de familia (membros + convites + sair). */
+  /** Tela de família (membros + convites + sair). */
   Family: undefined;
-  /** Detalhe de uma vacina especifica do bebe (info + historico). */
+  /** Detalhe de uma vacina específica do bebê (info + histórico). */
   VaccineDetail: { babyId: string; vaccineId: string };
   /** Form de consulta — cria (sem appointmentId) ou edita (com appointmentId). */
   AppointmentForm: { babyId: string; appointmentId?: string };
@@ -63,9 +63,9 @@ export type AppStackParamList = {
   AlarmForm: { alarmId?: string } | undefined;
   /** Modo Soninho — ruido branco (B10). */
   Sleep: undefined;
-  /** Editar perfil do usuario (nome + avatar). */
+  /** Editar perfil do usuário (nome + avatar). */
   EditProfile: undefined;
-  /** Permissoes e ajustes do sistema (alarme exato, notificacoes, bateria). */
+  /** Permissões e ajustes do sistema (alarme exato, notificações, bateria). */
   Permissions: undefined;
 };
 
@@ -88,7 +88,7 @@ export type MainTabScreenProps<T extends keyof MainTabsParamList> =
 
 /**
  * Augmenta os tipos do React Navigation para que useNavigation() infira
- * automaticamente as rotas disponiveis sem precisar passar generic toda vez.
+ * automaticamente as rotas disponíveis sem precisar passar generic toda vez.
  */
 declare global {
   namespace ReactNavigation {

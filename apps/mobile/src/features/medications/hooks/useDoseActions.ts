@@ -1,7 +1,7 @@
 /**
  * Actions em um DoseLog: take / skip / reset.
  *
- * Cada mutation invalida todas as queries de doseLogs do bebe (today + lista
+ * Cada mutation inválida todas as queries de doseLogs do bebê (today + lista
  * + filtradas) — UI reflete instantaneamente.
  *
  * Snackbar success em take/skip; show simples em reset (eh acao "voltar atras").

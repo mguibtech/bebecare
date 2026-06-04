@@ -41,8 +41,8 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
 export function AppNavigator() {
   // Push: registra/sincroniza o token FCM enquanto logado (no-op sem Firebase).
   useFcmTokenSync();
-  // Alarmes locais: reagenda os despertadores de remedio sempre que a lista do
-  // bebe selecionado muda (e no launch). No-op se o notifee ainda nao estiver
+  // Alarmes locais: reagenda os despertadores de remédio sempre que a lista do
+  // bebê selecionado muda (e no launch). No-op se o notifee ainda não estiver
   // no build nativo.
   useMedicationAlarmSync();
   // Deep-link: toque no alarme abre a aba "Hoje" (em vez da home).
@@ -67,12 +67,12 @@ export function AppNavigator() {
       <Stack.Screen
         name="BabyDetail"
         component={BabyDetailScreen}
-        options={{ title: 'Perfil do bebe' }}
+        options={{ title: 'Perfil do bebê' }}
       />
       <Stack.Screen
         name="Family"
         component={FamilyScreen}
-        options={{ title: 'Familia' }}
+        options={{ title: 'Família' }}
       />
       <Stack.Screen
         name="VaccineDetail"
@@ -125,7 +125,7 @@ export function AppNavigator() {
         options={{ title: 'Permissões' }}
       />
       </Stack.Navigator>
-      {/* Pre-prompt de permissao de push (1x no primeiro acesso logado). */}
+      {/* Pre-prompt de permissão de push (1x no primeiro acesso logado). */}
       <NotificationPermissionGate />
     </>
   );

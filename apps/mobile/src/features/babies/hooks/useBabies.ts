@@ -1,12 +1,12 @@
 /**
- * Lista de bebes da familia.
+ * Lista de bebês da família.
  *
- * Side-effect via useEffect: auto-seleciona o primeiro bebe se a familia
- * tem APENAS UM e nada esta selecionado. Familias com 2+ bebes precisam
- * o usuario escolher explicitamente (sheet abre quando ele toca no avatar).
+ * Side-effect via useEffect: auto-seleciona o primeiro bebê se a família
+ * tem APENAS UM e nada esta selecionado. Familias com 2+ bebês precisam
+ * o usuário escolher explicitamente (sheet abre quando ele toca no avatar).
  *
- * Soh roda quando autenticado (auth status). Se o usuario tem 0 bebes,
- * data === []. UI deve mostrar empty state com CTA "Cadastrar bebe".
+ * Soh roda quando autenticado (auth status). Se o usuário tem 0 bebês,
+ * data === []. UI deve mostrar empty state com CTA "Cadastrar bebê".
  */
 
 import { useEffect } from 'react';
@@ -30,8 +30,8 @@ export function useBabies() {
     enabled: status === 'authenticated',
   });
 
-  // Auto-select quando: 1 bebe na lista + nada selecionado ainda
-  // (ou selecionado nao existe mais na lista atual).
+  // Auto-select quando: 1 bebê na lista + nada selecionado ainda
+  // (ou selecionado não existe mais na lista atual).
   useEffect(() => {
     if (!query.data) {
       return;
@@ -44,7 +44,7 @@ export function useBabies() {
     if (!exists && query.data.length === 1 && first) {
       setSelected(first.id);
     } else if (!exists && selectedBabyId !== null) {
-      // Selecionado nao existe mais (foi deletado, ou usuario trocou de familia).
+      // Selecionado não existe mais (foi deletado, ou usuário trocou de família).
       setSelected(null);
     }
   }, [query.data, selectedBabyId, setSelected]);

@@ -1,13 +1,13 @@
 /**
- * Tela da familia — membros + convites + acoes.
+ * Tela da família — membros + convites + acoes.
  *
  * Acoes principais:
  *  - Renomear (Dialog com TextInput)
  *  - Gerar convite (cria + abre Share API com link bebecare://invite/CODE)
  *  - Revogar convite pendente
- *  - Sair da familia (se 2+ membros — backend bloqueia se solo)
+ *  - Sair da família (se 2+ membros — backend bloqueia se solo)
  *
- * Mostra avisos quando familia esta no limite (4 membros).
+ * Mostra avisos quando família esta no limite (4 membros).
  */
 
 import { useState } from 'react';
@@ -80,7 +80,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
   if (family.isError || !family.data) {
     return (
       <View style={[styles.center, containerStyle]}>
-        <Text variant="bodyLarge">Erro ao carregar familia</Text>
+        <Text variant="bodyLarge">Erro ao carregar família</Text>
         <Text variant="bodyMedium" style={styles.errorBody}>
           {family.error?.message ?? 'Tente voltar e abrir de novo.'}
         </Text>
@@ -102,7 +102,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
         message: inviteMessage(code),
       });
     } catch {
-      // Usuario cancelou — sem feedback necessario.
+      // Usuário cancelou — sem feedback necessario.
     }
   };
 
@@ -115,13 +115,13 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
       const message =
         err instanceof ApiError
           ? err.message
-          : 'Nao foi possivel gerar convite.';
+          : 'Não foi possível gerar convite.';
       setSnackbar(message);
     }
   };
 
   const handleRevoke = (invite: Invite) => {
-    Alert.alert('Revogar convite', `Revogar o codigo ${invite.code}?`, [
+    Alert.alert('Revogar convite', `Revogar o código ${invite.code}?`, [
       { text: 'Cancelar', style: 'cancel' },
       {
         text: 'Revogar',
@@ -157,8 +157,8 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
 
   const handleLeave = () => {
     Alert.alert(
-      'Sair da familia',
-      'Voce ira para uma nova familia solo. Bebes ficam com quem permanece. Continuar?',
+      'Sair da família',
+      'Você ira para uma nova família solo. Bebês ficam com quem permanece. Continuar?',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -182,17 +182,17 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
   return (
     <View style={[styles.root, containerStyle]}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        {/* CABECALHO da familia */}
+        {/* CABECALHO da família */}
         <Card style={styles.card} mode="outlined">
           <Card.Title
-            title={data.name ?? 'Minha familia'}
+            title={data.name ?? 'Minha família'}
             subtitle={`${data.members.length} de ${data.maxMembers} membros`}
             // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
             right={(props) => (
               <IconButton
                 {...props}
                 icon="pencil"
-                accessibilityLabel="Renomear familia"
+                accessibilityLabel="Renomear família"
                 onPress={handleOpenRename}
               />
             )}
@@ -206,7 +206,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
             {data.members.map((m, idx) => (
               <View key={m.id}>
                 <List.Item
-                  title={m.name + (m.isMe ? ' (voce)' : '')}
+                  title={m.name + (m.isMe ? ' (você)' : '')}
                   // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
                   left={() => (
                     <View style={styles.avatarWrap}>
@@ -264,7 +264,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
 
             {isAtCapacity ? (
               <Text variant="bodySmall" style={styles.atCapacity}>
-                Familia no limite de {data.maxMembers} membros. Revogue
+                Família no limite de {data.maxMembers} membros. Revogue
                 convites pendentes ou aguarde alguem sair pra convidar mais.
               </Text>
             ) : (
@@ -291,7 +291,7 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
             loading={leaveFamily.isPending}
             style={styles.leaveButton}
           >
-            Sair da familia
+            Sair da família
           </Button>
         )}
       </ScrollView>
@@ -302,13 +302,13 @@ export function FamilyScreen({ navigation }: AppScreenProps<'Family'>) {
           visible={renameDialogOpen}
           onDismiss={() => setRenameDialogOpen(false)}
         >
-          <Dialog.Title>Nome da familia</Dialog.Title>
+          <Dialog.Title>Nome da família</Dialog.Title>
           <Dialog.Content>
             <TextInput
               mode="outlined"
               value={renameValue}
               onChangeText={setRenameValue}
-              placeholder="Ex: Familia Silva"
+              placeholder="Ex: Família Silva"
               maxLength={100}
               autoFocus
             />

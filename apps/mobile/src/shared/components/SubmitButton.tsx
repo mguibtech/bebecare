@@ -2,7 +2,7 @@
  * Botao primario de submit com loading e disabled-aware.
  *
  * Encapsula o padrao: `<Button loading={isSubmitting} disabled={isSubmitting || !isValid}>`.
- * Quando loading=true, o Paper ja desabilita o press, mas ainda renderiza
+ * Quando loading=true, o Paper já desabilita o press, mas ainda renderiza
  * o label — passamos label explicito porque alguns forms querem trocar o
  * texto (ex.: "Entrando..." em vez de spinner).
  */

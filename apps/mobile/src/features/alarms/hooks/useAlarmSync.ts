@@ -1,8 +1,8 @@
 /**
  * Mantem os despertadores locais (notifee) em sincronia com a lista do backend.
  *
- * Observa a lista (invalida a cada CRUD) e reagenda. No launch tambem dispara.
- * So re-agenda (efeito de fundo) — a UX de permissao vive no save do form
+ * Observa a lista (inválida a cada CRUD) e reagenda. No launch também dispara.
+ * So re-agenda (efeito de fundo) — a UX de permissão vive no save do form
  * (promptAlarmPermissions, reusado do M6). Montado uma vez no AppNavigator.
  */
 

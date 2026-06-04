@@ -4,8 +4,8 @@
  * Le do store e renderiza o Paper Snackbar com:
  *  - Background derivado da variant (success/error/info)
  *  - Action opcional (label + handler)
- *  - Duracao padrao 3.5s (suficiente pra ler, nao chato)
- *  - Posicao bottom (default Paper) — usuario nao tampa o conteudo
+ *  - Duracao padrao 3.5s (suficiente pra ler, não chato)
+ *  - Posicao bottom (default Paper) — usuário não tampa o conteudo
  */
 
 import { StyleSheet } from 'react-native';
@@ -36,7 +36,7 @@ export function SnackbarHost() {
       ? '#FFFFFF'
       : undefined;
 
-  // Quando tem `action`, duracao maior (6s) pra dar tempo do usuario ler
+  // Quando tem `action`, duracao maior (6s) pra dar tempo do usuário ler
   // a label do botao e decidir se quer interagir. Sem action, 3.5s eh
   // suficiente pra mensagem de confirmacao simples.
   const duration = action ? 6000 : 3500;

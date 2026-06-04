@@ -3,7 +3,7 @@
  *
  * - Seleciona/troca o som (toca em loop).
  * - Play/pause, volume.
- * - Timer (15/30/60 min ou sem parar) com FADE OUT nos ultimos 30s e stop.
+ * - Timer (15/30/60 min ou sem parar) com FADE OUT nos últimos 30s e stop.
  *
  * O countdown so corre enquanto tocando (congela no pause, continua no play).
  */
@@ -61,7 +61,7 @@ export function useSleepPlayer() {
       setRemainingSeconds(Math.max(0, Math.ceil(left / 1000)));
 
       if (left <= FADE_MS) {
-        // Fade out proporcional nos ultimos 30s.
+        // Fade out proporcional nos últimos 30s.
         setPlaybackVolume(volumeRef.current * Math.max(0, left / FADE_MS));
       }
       if (left <= 0) {

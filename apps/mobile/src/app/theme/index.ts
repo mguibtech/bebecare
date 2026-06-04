@@ -44,12 +44,12 @@ export function buildTheme(palette: PaletteName, mode: ThemeMode) {
   // ----- Tokens semanticos de texto -----
   // muted = onSurface com transparencia (~70% em light, ~75% em dark) —
   // mais escuro em light pra manter contraste WCAG sobre fundo claro;
-  // mais opaco em dark pra texto cinza nao sumir em fundo escuro.
+  // mais opaco em dark pra texto cinza não sumir em fundo escuro.
   const mutedAlphaHex = mode === 'dark' ? alpha(0.75) : alpha(0.7);
   const secondaryAlphaHex = mode === 'dark' ? alpha(0.85) : alpha(0.8);
 
   const textTokens = {
-    /** Texto principal (titulos, conteudo). */
+    /** Texto principal (títulos, conteudo). */
     primary: colors.onBackground,
     /** Texto secundario (subtitulos, descricoes). */
     secondary: colors.onSurface + secondaryAlphaHex,
@@ -93,14 +93,14 @@ export function buildTheme(palette: PaletteName, mode: ThemeMode) {
       // ex.: ilustracoes/icones que mudam com paleta).
       palette,
       mode,
-      // Cores "estendidas" que o MD3 nao tem — success/warning.
+      // Cores "estendidas" que o MD3 não tem — success/warning.
       success: colors.success,
       warning: colors.warning,
       /**
        * Tokens semanticos de texto. Preferir SEMPRE a `style={{ opacity: 0.7 }}`.
        * Exemplos:
        *   <Text style={{ color: theme.app.text.muted }}>14/10/2025</Text>
-       *   <Text style={{ color: theme.app.text.error }}>Senha invalida</Text>
+       *   <Text style={{ color: theme.app.text.error }}>Senha inválida</Text>
        */
       text: textTokens,
     },

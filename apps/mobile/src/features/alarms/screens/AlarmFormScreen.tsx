@@ -1,9 +1,9 @@
 /**
  * Form de criar/editar um despertador.
  *
- * Campos: label, categoria (chips), horario, dias da semana, ativo.
+ * Campos: label, categoria (chips), horário, dias da semana, ativo.
  * Reusa TimeField/DaysOfWeekPicker do M6 e promptAlarmPermissions (pede
- * notificacao/alarme-exato ao ativar). Em modo edit, botao de excluir.
+ * notificação/alarme-exato ao ativar). Em modo edit, botao de excluir.
  */
 
 import { useEffect, useState } from 'react';
@@ -70,7 +70,7 @@ export function AlarmFormScreen({
   const [label, setLabel] = useState('');
   const [category, setCategory] = useState<AlarmCategory>(AlarmCategory.FEEDING);
   const [time, setTime] = useState('06:00');
-  // null = horario unico; numero = a cada N horas.
+  // null = horário unico; número = a cada N horas.
   const [intervalHours, setIntervalHours] = useState<number | null>(null);
   const [days, setDays] = useState<DayKey[]>(daysFromMask(ALL_DAYS_MASK));
   const [isActive, setIsActive] = useState(true);
@@ -122,7 +122,7 @@ export function AlarmFormScreen({
       } else {
         await create.mutateAsync(body);
       }
-      // Pede permissoes do alarme (notificacao/exato/tela cheia) ao salvar ativo.
+      // Pede permissões do alarme (notificação/exato/tela cheia) ao salvar ativo.
       if (isActive) {
         promptAlarmPermissions();
       }

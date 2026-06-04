@@ -1,8 +1,8 @@
 /**
  * Tela de cadastro.
  *
- * Aceita inviteCode opcional — se informado, o backend insere o usuario
- * na familia existente em vez de criar uma nova familia solo.
+ * Aceita inviteCode opcional — se informado, o backend insere o usuário
+ * na família existente em vez de criar uma nova família solo.
  *
  * Em sucesso, useRegister.onSuccess salva tokens e o RootNavigator
  * troca pra AppStack sozinho.
@@ -67,9 +67,9 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
       const message =
         err instanceof ApiError
           ? err.status === 409
-            ? 'Esse email ja esta cadastrado'
+            ? 'Esse email já esta cadastrado'
             : err.status === 400 && /convite/i.test(err.message)
-              ? 'Codigo de convite invalido ou expirado'
+              ? 'Código de convite inválido ou expirado'
               : err.message
           : 'Erro inesperado. Tente novamente.';
       setErrorBanner(message);
@@ -87,7 +87,7 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
           <SafeAreaView edges={['top']} style={styles.heroInner}>
             <Logo variant="full" size={56} mono="#fff" />
             <Text variant="bodyLarge" style={styles.heroTagline}>
-              Sua familia em um so lugar
+              Sua família em um so lugar
             </Text>
           </SafeAreaView>
         </BrandGradient>
@@ -120,13 +120,13 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
         <FormPassword
           control={control}
           name="password"
-          label="Senha (minimo 8 caracteres)"
+          label="Senha (mínimo 8 caracteres)"
           isNew
         />
         <FormInput
           control={control}
           name="inviteCode"
-          label="Codigo de convite (opcional)"
+          label="Código de convite (opcional)"
           keyboardType="number-pad"
           maxLength={6}
           autoCapitalize="none"

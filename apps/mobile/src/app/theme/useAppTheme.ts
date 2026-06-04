@@ -1,13 +1,13 @@
 /**
  * Hook que produz o tema efetivo do app, combinando:
- *   - paleta escolhida pelo usuario (Zustand store)
+ *   - paleta escolhida pelo usuário (Zustand store)
  *   - modo efetivo, derivado de `modePreference` do store + useColorScheme:
  *       - 'light' ou 'dark' explicito -> override manual
  *       - 'system' -> segue o sistema via useColorScheme do RN
  *
  * Usar APENAS no AppProviders pra injetar no PaperProvider.
  * Componentes que precisam de cores devem usar `useTheme<AppTheme>()`
- * do react-native-paper (que ja' tem o tema injetado).
+ * do react-native-paper (que já' tem o tema injetado).
  */
 
 import { useMemo } from 'react';
@@ -23,7 +23,7 @@ export function useAppTheme() {
   const systemColorScheme = useColorScheme();
 
   // Resolve o modo efetivo:
-  //  - se o usuario escolheu 'light'/'dark', forca esse
+  //  - se o usuário escolheu 'light'/'dark', forca esse
   //  - se escolheu 'system' (default), segue o RN colorScheme
   //  - fallback 'light' quando useColorScheme retorna null no boot
   const mode: ThemeMode =

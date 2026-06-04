@@ -83,7 +83,7 @@ export function Logo({ size = 96, variant = 'mark', mono }: LogoProps) {
         <Text
           style={[styles.wordmark, styles.bold, { fontSize, color: textColor }]}
         >
-          Bebe
+          Bebê
         </Text>
         Care
       </Text>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   bold: {
-    fontFamily: fontFamilies.brand, // Nunito ExtraBold ("Bebe")
+    fontFamily: fontFamilies.brand, // Nunito ExtraBold ("Bebê")
     marginLeft: 0,
   },
 });

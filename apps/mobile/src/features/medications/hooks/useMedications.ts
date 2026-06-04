@@ -1,5 +1,5 @@
 /**
- * Lista de medicamentos do bebe (com schedules embarcados).
+ * Lista de medicamentos do bebê (com schedules embarcados).
  */
 
 import { useQuery } from '@tanstack/react-query';

@@ -1,5 +1,5 @@
 /**
- * Criar consulta. onSuccess invalida listas do bebe e mostra snackbar.
+ * Criar consulta. onSuccess inválida listas do bebê e mostra snackbar.
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';

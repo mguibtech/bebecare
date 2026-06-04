@@ -1,5 +1,5 @@
 /**
- * Hook que retorna detalhes da familia atual (membros + convites).
+ * Hook que retorna detalhes da família atual (membros + convites).
  *
  * Soh roda quando autenticado. Cache compartilhado pra evitar re-fetch
  * em telas que precisam do mesmo dado (FamilyScreen, MoreScreen).

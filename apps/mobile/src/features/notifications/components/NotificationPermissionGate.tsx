@@ -1,18 +1,18 @@
 /**
- * Pre-prompt amigavel de permissao de notificacoes.
+ * Pre-prompt amigavel de permissão de notificações.
  *
  * Boas praticas de UX de push: NAO disparar o prompt nativo do SO de cara.
- * Primeiro explicamos o valor ("lembretes de remedio e consulta"); so quando o
- * usuario toca "Ativar" e que chamamos o prompt do sistema. Assim, se ele negar
+ * Primeiro explicamos o valor ("lembretes de remédio e consulta"); so quando o
+ * usuário toca "Ativar" e que chamamos o prompt do sistema. Assim, se ele negar
  * o nativo, ainda da pra reabrir depois — e o "negar" nativo e definitivo.
  *
  * Quando aparece: uma unica vez por device, no primeiro acesso logado, se:
  *  - Firebase esta configurado (tem google-services.json), E
- *  - a permissao ainda esta 'undetermined', E
- *  - ainda nao perguntamos (flag em MMKV).
+ *  - a permissão ainda esta 'undetermined', E
+ *  - ainda não perguntamos (flag em MMKV).
  *
  * Implementacao: Paper Modal portado (mesmo padrao do BabySelectorSheet, sem
- * dep nova). Renderiza null quando nao ha nada a pedir.
+ * dep nova). Renderiza null quando não ha nada a pedir.
  */
 
 import { useEffect, useState } from 'react';
@@ -27,7 +27,7 @@ import { isFirebaseConfigured } from '../lib/firebase';
 import { syncFcmToken } from '../lib/syncToken';
 import { askPermission, getPermissionStatus } from '../setup';
 
-/** Flag MMKV: ja mostramos o pre-prompt neste device. */
+/** Flag MMKV: já mostramos o pre-prompt neste device. */
 const ASKED_KEY = 'notifications.permissionAsked';
 
 export function NotificationPermissionGate() {
@@ -62,7 +62,7 @@ export function NotificationPermissionGate() {
     const status = await askPermission();
     if (status === 'granted') {
       await syncFcmToken();
-      snackbar.showSuccess('Notificacoes ativadas!');
+      snackbar.showSuccess('Notificações ativadas!');
     }
   };
 
@@ -85,8 +85,8 @@ export function NotificationPermissionGate() {
           Ativar lembretes?
         </Text>
         <Text variant="bodyMedium" style={styles.body}>
-          Receba avisos na hora certa do remedio do bebe e lembretes das
-          proximas consultas. Voce pode desativar quando quiser.
+          Receba avisos na hora certa do remédio do bebê e lembretes das
+          próximas consultas. Você pode desativar quando quiser.
         </Text>
 
         <Button
@@ -95,10 +95,10 @@ export function NotificationPermissionGate() {
           onPress={handleEnable}
           style={styles.enable}
         >
-          Ativar notificacoes
+          Ativar notificações
         </Button>
         <Button mode="text" onPress={close}>
-          Agora nao
+          Agora não
         </Button>
       </Modal>
     </Portal>

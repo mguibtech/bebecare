@@ -1,13 +1,13 @@
 /**
- * Cadastrar bebe. Em sucesso:
- *  - invalida lista pra refetch
+ * Cadastrar bebê. Em sucesso:
+ *  - inválida lista pra refetch
  *  - popula cache do detalhe (poupa request)
- *  - auto-seleciona o novo bebe (afinal o user acabou de criar)
- *  - mostra snackbar de sucesso; se o sex do bebe nao bate com a paleta
+ *  - auto-seleciona o novo bebê (afinal o user acabou de criar)
+ *  - mostra snackbar de sucesso; se o sex do bebê não bate com a paleta
  *    atual, sugere trocar via acao opt-in no snackbar (NAO automatico).
  *
- * Por que opt-in via snackbar: respeita usuarios que ja escolheram paleta
- * explicitamente OU que nao querem associacao genero=cor automatica.
+ * Por que opt-in via snackbar: respeita usuarios que já escolheram paleta
+ * explicitamente OU que não querem associacao genero=cor automatica.
  * Quem quiser, toca em "Trocar tema" e o tema muda na hora.
  */
 
@@ -22,7 +22,7 @@ import { babiesApi } from '../api/babies.api';
 import { useBabySelectorStore } from '../store/baby-selector.store';
 import { Sex, type Baby, type CreateBabyBody } from '../types';
 
-/** Paleta "esperada" pra cada sexo. Convencional, nao impositivo. */
+/** Paleta "esperada" pra cada sexo. Convencional, não impositivo. */
 function suggestedPaletteFor(sex: Sex): PaletteName {
   return sex === Sex.FEMALE ? 'rosa' : 'azul';
 }
@@ -38,10 +38,10 @@ export function useCreateBaby() {
       queryClient.setQueryData(qk.babies.detail(baby.id), baby);
       // Re-fetch lista (servidor pode ordenar diferente, mais simples invalidar).
       queryClient.invalidateQueries({ queryKey: qk.babies.list() });
-      // Auto-seleciona o novo bebe.
+      // Auto-seleciona o novo bebê.
       setSelected(baby.id);
 
-      // Sugere trocar tema SOMENTE se nao bate com a paleta atual.
+      // Sugere trocar tema SOMENTE se não bate com a paleta atual.
       const currentPalette = useThemeStore.getState().palette;
       const suggested = suggestedPaletteFor(baby.sex);
 

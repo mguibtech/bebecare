@@ -1,11 +1,11 @@
 /**
  * Tipos do dominio Despertadores (M7).
  *
- * Alarme PESSOAL (por usuario, nao por bebe): label + horario + dias da semana
- * + categoria. Modelo de despertador de celular — 1 horario por linha.
+ * Alarme PESSOAL (por usuário, não por bebê): label + horário + dias da semana
+ * + categoria. Modelo de despertador de celular — 1 horário por linha.
  *
  * Reutiliza os utilitarios de bitmask de dias da semana de medications/types
- * (genericos, ja existentes) pra nao duplicar.
+ * (genericos, já existentes) pra não duplicar.
  */
 
 export {
@@ -33,7 +33,7 @@ export const ALARM_CATEGORY_LABELS: Record<AlarmCategory, string> = {
   [AlarmCategory.CUSTOM]: 'Outro',
 };
 
-/** Icone (MaterialCommunityIcons) por categoria. */
+/** Ícone (MaterialCommunityIcons) por categoria. */
 export const ALARM_CATEGORY_ICONS: Record<AlarmCategory, string> = {
   [AlarmCategory.FEEDING]: 'baby-bottle-outline',
   [AlarmCategory.DIAPER]: 'human-baby-changing-table',
@@ -41,21 +41,21 @@ export const ALARM_CATEGORY_ICONS: Record<AlarmCategory, string> = {
   [AlarmCategory.CUSTOM]: 'bell-outline',
 };
 
-/** Opcoes de intervalo (horas) oferecidas no form. Divisores de 24. */
+/** Opções de intervalo (horas) oferecidas no form. Divisores de 24. */
 export const INTERVAL_OPTIONS = [2, 3, 4, 6] as const;
 
 export type Alarm = {
   id: string;
   userId: string;
   label: string;
-  /** HH:mm 24h. No modo intervalo, e o horario de INICIO. */
+  /** HH:mm 24h. No modo intervalo, e o horário de INICIO. */
   time: string;
   /** Bitmask 1-127. */
   daysOfWeekMask: number;
   category: AlarmCategory;
   /**
    * Modo intervalo: toca a cada N horas a partir de `time` (24h).
-   * null = horario unico (toca so em `time`).
+   * null = horário unico (toca so em `time`).
    */
   intervalHours: number | null;
   /** Chave de som interno, ou null = som padrao. */
@@ -72,7 +72,7 @@ export type CreateAlarmBody = {
   /** Bitmask 1-127. */
   daysOfWeekMask: number;
   category?: AlarmCategory;
-  /** A cada N horas (2/3/4/6); omitir = horario unico. */
+  /** A cada N horas (2/3/4/6); omitir = horário unico. */
   intervalHours?: number | null;
   soundKey?: string;
   isActive?: boolean;

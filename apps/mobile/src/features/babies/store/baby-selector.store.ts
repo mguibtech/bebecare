@@ -1,16 +1,16 @@
 /**
- * Store do "bebe selecionado" — qual bebe da familia esta no contexto atual.
+ * Store do "bebê selecionado" — qual bebê da família esta no contexto atual.
  *
- * Por que existe: features como Vacinas, Consultas, Remedios (M4-M6) operam
- * SEMPRE em cima de UM bebe especifico. O ID selecionado fica aqui pra
+ * Por que existe: features como Vacinas, Consultas, Remédios (M4-M6) operam
+ * SEMPRE em cima de UM bebê específico. O ID selecionado fica aqui pra
  * cada feature pegar via hook sem prop drilling.
  *
  * Persiste em MMKV. Hidratacao no boot junto com auth/theme.
  *
  * Regras:
- *  - Se a familia tem 1 bebe, autoselect ao buscar lista (via useBabies effect).
- *  - Se o bebe selecionado for deletado, o consumer precisa limpar (setSelected null).
- *  - Pode ser null transitorio (familia sem bebes ainda, ou depois de delete).
+ *  - Se a família tem 1 bebê, autoselect ao buscar lista (via useBabies effect).
+ *  - Se o bebê selecionado for deletado, o consumer precisa limpar (setSelected null).
+ *  - Pode ser null transitorio (família sem bebês ainda, ou depois de delete).
  */
 
 import { create } from 'zustand';

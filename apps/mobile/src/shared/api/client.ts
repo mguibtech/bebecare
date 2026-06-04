@@ -8,20 +8,21 @@ import { env } from '@/shared/config/env';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 
 import { ApiError, type ApiErrorPayload } from './types';
+import { extractErrorMessage } from './errors';
 
 /**
  * Cliente HTTP unico do app.
  *
  * Responsabilidades:
  * - Injetar JWT do auth.store em todo request.
- * - Normalizar erros em ApiError (componentes nao lidam com AxiosError raw).
+ * - Normalizar erros em ApiError (componentes não lidam com AxiosError raw).
  * - Em 401: tentar refresh transparente (Promise singleton pra evitar refresh
  *   paralelo) e retentar a request original com o novo token. Se refresh
- *   falhar, desloga o usuario.
+ *   falhar, desloga o usuário.
  *
  * Endpoints de auth (/auth/login, /auth/register, /auth/refresh, /auth/logout)
  * NAO disparam refresh em 401 — neles, 401 significa credenciais ruins / token
- * invalido e deve ser propagado direto pro chamador.
+ * inválido e deve ser propagado direto pro chamador.
  */
 export const apiClient = axios.create({
   baseURL: env.API_BASE_URL,
@@ -46,9 +47,9 @@ apiClient.interceptors.request.use(
 // ---------- Refresh strategy (Promise singleton) ----------
 
 /**
- * URLs que NAO devem disparar refresh em 401 — sao endpoints publicos ou
+ * URLs que NAO devem disparar refresh em 401 — são endpoints públicos ou
  * de auth onde 401 tem outro significado (credenciais erradas, refresh token
- * invalido). Comparacao por sufixo do path (case-sensitive).
+ * inválido). Comparação por sufixo do path (case-sensitive).
  */
 const AUTH_BYPASS_PATHS = [
   '/auth/login',
@@ -67,13 +68,13 @@ let refreshPromise: Promise<string> | null = null;
 /**
  * Executa /auth/refresh e atualiza tokens no store.
  *
- * Importante: usa axios "cru" (nao o apiClient) pra evitar loop infinito do
+ * Importante: usa axios "cru" (não o apiClient) pra evitar loop infinito do
  * proprio interceptor de refresh.
  */
 async function performRefresh(): Promise<string> {
   const currentRefreshToken = useAuthStore.getState().refreshToken;
   if (!currentRefreshToken) {
-    throw new Error('Sem refresh token disponivel');
+    throw new Error('Sem refresh token disponível');
   }
 
   // Chamada direta — sem interceptor do apiClient.
@@ -97,7 +98,7 @@ async function performRefresh(): Promise<string> {
 /**
  * Garante refresh unico mesmo com varias requests em paralelo.
  * Limpa o singleton no settle (sucesso ou falha) pra permitir nova tentativa
- * futura quando o proximo access token expirar.
+ * futura quando o próximo access token expirar.
  */
 function refreshAccessToken(): Promise<string> {
   if (!refreshPromise) {
@@ -126,7 +127,7 @@ apiClient.interceptors.response.use(
     const payload = error.response?.data;
     const originalConfig = error.config as RetriableConfig | undefined;
 
-    // 401: tentar refresh, exceto em endpoints de auth ou se ja retentamos.
+    // 401: tentar refresh, exceto em endpoints de auth ou se já retentamos.
     const shouldTryRefresh =
       status === 401 &&
       originalConfig &&
@@ -150,13 +151,11 @@ apiClient.interceptors.response.use(
         await useAuthStore.getState().signOut();
       }
     } else if (status === 401 && !isAuthBypass(originalConfig?.url)) {
-      // 401 sem caminho de refresh viavel (sem refreshToken ou ja retentou).
+      // 401 sem caminho de refresh viavel (sem refreshToken ou já retentou).
       await useAuthStore.getState().signOut();
     }
 
-    const message = Array.isArray(payload?.message)
-      ? payload.message.join(', ')
-      : payload?.message ?? error.message ?? 'Erro de conexao';
+    const message = extractErrorMessage(payload, error.message);
 
     return Promise.reject(new ApiError(message, status, payload));
   },

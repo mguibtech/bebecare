@@ -1,5 +1,5 @@
 /**
- * Revoga convite pendente. Outros membros nao podem mais usa-lo.
+ * Revoga convite pendente. Outros membros não podem mais usa-lo.
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';

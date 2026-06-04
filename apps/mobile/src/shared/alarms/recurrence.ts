@@ -32,8 +32,8 @@ export function parseHhMm(time: string): { hour: number; minute: number } {
 }
 
 /**
- * Proximo timestamp (ms) que cai no `weekday` no horario `hour:minute`. Se for
- * hoje mas o horario ja passou, pula pra semana seguinte — o primeiro disparo
+ * Próximo timestamp (ms) que cai no `weekday` no horário `hour:minute`. Se for
+ * hoje mas o horário já passou, pula pra semana seguinte — o primeiro disparo
  * nunca e imediato/atrasado.
  */
 export function nextWeeklyOccurrenceMs(

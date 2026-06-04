@@ -2,7 +2,7 @@
  * Design tokens do BebeCare.
  *
  * Suporta 2 paletas (rosa, azul) e 2 modos (light, dark) = 4 temas.
- * A paleta e' escolhida pelo usuario; o modo segue o sistema operacional
+ * A paleta e' escolhida pelo usuário; o modo segue o sistema operacional
  * (useColorScheme do RN).
  *
  * Diretrizes:
@@ -11,9 +11,9 @@
  *   para uso pontual em accents (FAB, Chip secundario, etc.) — evita tela
  *   monocromatica sem confundir a paleta escolhida.
  * - "secondaryContainer" (usado pelo SegmentedButtons selecionado, BadgeMD3,
- *   Chip background) eh variacao da PROPRIA paleta — quando o usuario escolhe
+ *   Chip background) eh variacao da PROPRIA paleta — quando o usuário escolhe
  *   "Rosa", o botao selecionado fica rosa (coerente). NAO eh a paleta oposta.
- * - spacing/radii sao iguais nos 4 temas — sao tokens de layout, nao de cor.
+ * - spacing/radii são iguais nos 4 temas — são tokens de layout, não de cor.
  */
 
 // ============================================================
@@ -21,11 +21,11 @@
 // ============================================================
 
 /**
- * Cores da identidade visual (logo, gradiente, icone do app).
+ * Cores da identidade visual (logo, gradiente, ícone do app).
  * Diferente das paletas: a marca e' sempre a mesma, independente de o
- * usuario ter escolhido tema azul/rosa ou light/dark.
+ * usuário ter escolhido tema azul/rosa ou light/dark.
  *
- * Obs.: o gerador de icone (scripts/gen-icons.mjs) espelha estes hex
+ * Obs.: o gerador de ícone (scripts/gen-icons.mjs) espelha estes hex
  * manualmente — e' um script Node, fora do bundle RN. Manter em sincronia.
  */
 export const brand = {
@@ -41,7 +41,7 @@ export const brandGradient = [brand.blue, brand.pink] as const;
 // ============================================================
 
 const azulLight = {
-  primary: '#5B9BD5', // azul bebe (atual)
+  primary: '#5B9BD5', // azul bebê (atual)
   primaryContainer: '#DBE9F8',
   secondary: '#F4A6B8', // rosa solido — accent pontual
   secondaryContainer: '#C7DCF2', // azul mais saturado pra seleao/badge
@@ -134,7 +134,7 @@ export type ThemeMode = 'light' | 'dark';
 
 /**
  * Cores de uma combinacao paleta+modo. Mesmo shape em todas.
- * Valores sao widened pra string porque cada paleta tem seus hex literais
+ * Valores são widened pra string porque cada paleta tem seus hex literais
  * (com `as const`) e o tipo precisa aceitar qualquer paleta.
  */
 export type ThemeColors = { readonly [K in keyof typeof azulLight]: string };

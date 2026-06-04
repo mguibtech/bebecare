@@ -21,10 +21,10 @@ const reminderValues = REMINDER_OPTIONS.map((o) => o.value) as [
 
 export const appointmentSchema = z.object({
   title: z
-    .string({ required_error: 'Titulo obrigatorio' })
+    .string({ required_error: 'Título obrigatório' })
     .trim()
-    .min(1, 'Titulo obrigatorio')
-    .max(120, 'Titulo muito longo'),
+    .min(1, 'Título obrigatório')
+    .max(120, 'Título muito longo'),
 
   doctorName: z
     .string()
@@ -41,8 +41,8 @@ export const appointmentSchema = z.object({
     .transform((v) => (v === '' ? undefined : v)),
 
   scheduledAt: z
-    .string({ required_error: 'Data e hora obrigatorias' })
-    .min(1, 'Data e hora obrigatorias')
+    .string({ required_error: 'Data e hora obrigatórias' })
+    .min(1, 'Data e hora obrigatórias')
     // ISO 8601 basico (validar mais a fundo seria overkill).
     .regex(
       /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/,
@@ -67,7 +67,7 @@ export const appointmentSchema = z.object({
   reminderMinutesBefore: z
     .number()
     .refine((v) => reminderValues.includes(v), {
-      message: 'Opcao de lembrete invalida',
+      message: 'Opcao de lembrete inválida',
     })
     .default(1440),
 });

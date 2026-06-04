@@ -1,5 +1,5 @@
 /**
- * Lista consultas do bebe com filtro de scope (upcoming/past/all).
+ * Lista consultas do bebê com filtro de scope (upcoming/past/all).
  *
  * staleTime curto (1min) — scope='upcoming' depende do tempo atual: uma
  * consulta que era "futura" pode virar "passada" depois de alguns minutos.

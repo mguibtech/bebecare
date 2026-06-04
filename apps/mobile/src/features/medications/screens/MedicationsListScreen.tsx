@@ -1,12 +1,12 @@
 /**
- * Lista de medicamentos do bebe selecionado.
+ * Lista de medicamentos do bebê selecionado.
  *
- * Embarcada na HealthScreen quando a sub-tab "Remedios" esta ativa.
+ * Embarcada na HealthScreen quando a sub-tab "Remédios" esta ativa.
  *
  * Empty states:
- *  - 0 bebes na familia → CTA pra cadastrar bebe
- *  - sem bebe selecionado → CTA pra Inicio
- *  - bebe sem medicamentos → CTA pra cadastrar primeiro remedio
+ *  - 0 bebês na família → CTA pra cadastrar bebê
+ *  - sem bebê selecionado → CTA pra Inicio
+ *  - bebê sem medicamentos → CTA pra cadastrar primeiro remédio
  *
  * FAB pra criar medicamento. Tap em card abre detalhe.
  */
@@ -41,7 +41,7 @@ export function MedicationsListScreen() {
 
   const containerStyle = { backgroundColor: theme.colors.background };
 
-  // ===== 0 bebes na familia
+  // ===== 0 bebês na família
   if (babies.data && babies.data.length === 0) {
     return (
       <View style={[styles.center, containerStyle]}>
@@ -61,7 +61,7 @@ export function MedicationsListScreen() {
     );
   }
 
-  // ===== sem bebe selecionado
+  // ===== sem bebê selecionado
   if (!selectedBabyId) {
     return (
       <View style={[styles.center, containerStyle]}>

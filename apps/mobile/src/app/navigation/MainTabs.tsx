@@ -52,9 +52,9 @@ export function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        // Cada tab cuida do seu proprio "header" (titulo grande na tela)
+        // Cada tab cuida do seu proprio "header" (título grande na tela)
         // dentro do conteudo — evita header duplicado e libera espaco vertical.
-        // As screens das tabs precisam de SafeAreaView no topo pra nao colar
+        // As screens das tabs precisam de SafeAreaView no topo pra não colar
         // na status bar.
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,

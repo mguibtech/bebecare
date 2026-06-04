@@ -19,13 +19,13 @@ export type FamilyMember = {
   name: string;
   avatarStyle: AvatarStyle;
   avatarSeed: string;
-  /** True se este membro eh o usuario autenticado. */
+  /** True se este membro eh o usuário autenticado. */
   isMe: boolean;
 };
 
 export type Invite = {
   id: string;
-  /** Codigo de 6 digitos para compartilhar. */
+  /** Código de 6 digitos para compartilhar. */
   code: string;
   status: FamilyInviteStatus;
   /** ISO date-time. */
@@ -38,11 +38,11 @@ export type Invite = {
 
 export type FamilyDetails = {
   id: string;
-  /** Nome da familia. Null = sem nome customizado. */
+  /** Nome da família. Null = sem nome customizado. */
   name: string | null;
-  /** Todos os membros (inclui o usuario atual com isMe=true). */
+  /** Todos os membros (inclui o usuário atual com isMe=true). */
   members: FamilyMember[];
-  /** Convites ativos e nao expirados. */
+  /** Convites ativos e não expirados. */
   pendingInvites: Invite[];
   /** Limite soft de membros (4 na V1). */
   maxMembers: number;

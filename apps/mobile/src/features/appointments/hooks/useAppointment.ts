@@ -1,5 +1,5 @@
 /**
- * Detalhe de uma consulta especifica.
+ * Detalhe de uma consulta específica.
  */
 
 import { useQuery } from '@tanstack/react-query';

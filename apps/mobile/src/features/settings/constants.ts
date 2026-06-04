@@ -1,5 +1,5 @@
 /**
- * Constantes da area de Configuracoes.
+ * Constantes da area de Configurações.
  */
 
 // Manter em sincronia com android/app/build.gradle (versionName) a cada release.

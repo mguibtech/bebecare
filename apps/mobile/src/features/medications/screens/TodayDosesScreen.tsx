@@ -1,16 +1,16 @@
 /**
- * "Hoje" — doses do dia do bebe selecionado, em ordem cronologica.
+ * "Hoje" — doses do dia do bebê selecionado, em ordem cronologica.
  *
  * Acoes por dose: Tomei (take) / Pular com motivo opcional (skip) / Desfazer
  * (reset). Mutations invalidam doseLogs e a UI reflete instantaneo (snackbar
  * vem dos proprios hooks).
  *
- * Empty states (mesma logica das outras telas de Saude):
- *  - 0 bebes na familia → orienta cadastrar bebe
- *  - sem bebe selecionado → orienta selecionar no Inicio
- *  - bebe sem doses hoje → estado "tudo certo / nada agendado"
+ * Empty states (mesma logica das outras telas de Saúde):
+ *  - 0 bebês na família → orienta cadastrar bebê
+ *  - sem bebê selecionado → orienta selecionar no Inicio
+ *  - bebê sem doses hoje → estado "tudo certo / nada agendado"
  *
- * Doses sao criadas pelo cron do backend a partir dos schedules ativos —
+ * Doses são criadas pelo cron do backend a partir dos schedules ativos —
  * esta tela so consome e atualiza status.
  */
 
@@ -100,7 +100,7 @@ export function TodayDosesScreen() {
     setSkipReason('');
   };
 
-  // ===== 0 bebes na familia
+  // ===== 0 bebês na família
   if (babies.data && babies.data.length === 0) {
     return (
       <SafeAreaView style={[styles.center, containerStyle]} edges={['top']}>
@@ -120,7 +120,7 @@ export function TodayDosesScreen() {
     );
   }
 
-  // ===== sem bebe selecionado
+  // ===== sem bebê selecionado
   if (!selectedBabyId) {
     return (
       <SafeAreaView style={[styles.center, containerStyle]} edges={['top']}>

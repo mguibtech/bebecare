@@ -1,5 +1,5 @@
 /**
- * Hook do bebe individual. Soh roda quando id eh string nao-vazia.
+ * Hook do bebê individual. Soh roda quando id eh string não-vazia.
  *
  * Cache compartilhado com useBabies — quando useBabies traz a lista,
  * o useBaby pode aproveitar via `initialData` selecionando da lista.

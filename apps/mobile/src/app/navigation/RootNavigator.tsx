@@ -23,7 +23,7 @@ import { navigationRef } from './navigationRef';
  * Decide qual stack montar baseado no status do auth.
  * Durante 'booting' mostra splash interno (hidrata do Keychain).
  *
- * Tambem deriva o tema do React Navigation a partir do tema do Paper —
+ * Também deriva o tema do React Navigation a partir do tema do Paper —
  * sem isso, header e content background ficariam sempre brancos mesmo
  * em modo escuro. A integracao garante coerencia visual.
  */
@@ -38,7 +38,7 @@ export function RootNavigator() {
   }, [hydrate]);
 
   // Tema do RN Navigation derivado do Paper.
-  // Memoiza pra nao criar objeto novo a cada render (NavigationContainer
+  // Memoiza pra não criar objeto novo a cada render (NavigationContainer
   // reage a mudanca de identidade).
   const navTheme = useMemo<NavTheme>(() => {
     const base = paperTheme.dark ? NavDarkTheme : NavDefaultTheme;

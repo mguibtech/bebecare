@@ -52,7 +52,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
     setErrorBanner(null);
     try {
       await login.mutateAsync(values);
-      // Sucesso: nao precisa navegar — RootNavigator troca pra AppStack
+      // Sucesso: não precisa navegar — RootNavigator troca pra AppStack
       // assim que o status do auth.store vira 'authenticated'.
     } catch (err) {
       const message =
@@ -76,7 +76,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
           <SafeAreaView edges={['top']} style={styles.heroInner}>
             <Logo variant="full" size={56} mono="#fff" />
             <Text variant="bodyLarge" style={styles.heroTagline}>
-              Tudo do seu bebe, num lugar so
+              Tudo do seu bebê, num lugar so
             </Text>
           </SafeAreaView>
         </BrandGradient>
@@ -110,7 +110,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
           </SubmitButton>
 
           <View style={styles.footer}>
-            <MutedText variant="bodyMedium">Ainda nao tem conta? </MutedText>
+            <MutedText variant="bodyMedium">Ainda não tem conta? </MutedText>
             <Text
               variant="bodyMedium"
               style={[styles.link, { color: theme.colors.primary }]}

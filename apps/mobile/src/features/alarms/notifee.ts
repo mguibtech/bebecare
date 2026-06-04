@@ -1,9 +1,9 @@
 /**
  * Agendamento dos despertadores (M7) via notifee — mesma estrategia do alarme
- * de remedio (M6): um trigger por (alarme x dia-da-semana), repeticao SEMANAL,
+ * de remédio (M6): um trigger por (alarme x dia-da-semana), repeticao SEMANAL,
  * canal IMPORTANCE_HIGH com full-screen. Reagendamento pos-boot e automatico.
  *
- * Canal proprio ("Despertadores") pra separar de remedio nas configs do Android.
+ * Canal proprio ("Despertadores") pra separar de remédio nas configs do Android.
  * Logica pura (sem React) — chamada pelo useAlarmSync.
  */
 
@@ -54,7 +54,7 @@ function alarmNotificationId(
 }
 
 /**
- * Horarios que um alarme dispara:
+ * Horários que um alarme dispara:
  *  - modo unico: [time]
  *  - modo intervalo (intervalHours = N): [time, time+N, time+2N, ...] cobrindo
  *    24h a partir de `time`. Ex: 06:00 a cada 3h -> 06,09,12,15,18,21,00,03.

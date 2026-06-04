@@ -1,11 +1,11 @@
 /**
  * Catalogo PNI completo.
  *
- * StaleTime longo (24h): o catalogo do PNI nao muda no ar — atualizacoes
- * sao raras e vem via deploy do backend. Mobile pode reusar o cache por
+ * StaleTime longo (24h): o catalogo do PNI não muda no ar — atualizacoes
+ * são raras e vem via deploy do backend. Mobile pode reusar o cache por
  * muito tempo sem fetch desnecessario.
  *
- * gcTime tambem longo (7 dias): mesmo que o user feche e reabra o app,
+ * gcTime também longo (7 dias): mesmo que o user feche e reabra o app,
  * o React Query persiste em memoria entre navegacoes.
  */
 

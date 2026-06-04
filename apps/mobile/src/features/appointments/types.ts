@@ -2,7 +2,7 @@
  * Tipos do dominio Appointments, espelhando DTOs do backend.
  *
  * Status (calculado/transicionado no backend):
- *  - SCHEDULED: agendada, ainda nao chegou ou recem-passou
+ *  - SCHEDULED: agendada, ainda não chegou ou recem-passou
  *  - COMPLETED: realizada (user marcou apos a consulta)
  *  - CANCELED:  cancelada manualmente
  *  - MISSED:    cron detectou >24h sem completar/cancelar
@@ -32,7 +32,7 @@ export const APPOINTMENT_STATUS_LABELS: Record<AppointmentStatus, string> = {
 };
 
 /**
- * Opcoes de "minutos antes" do lembrete. Backend aceita qualquer inteiro,
+ * Opções de "minutos antes" do lembrete. Backend aceita qualquer inteiro,
  * mas o mobile soh oferece essas (alinhado com REMINDER_OPTIONS do backend).
  */
 export const REMINDER_OPTIONS = [
@@ -96,7 +96,7 @@ export type CreateAppointmentBody = {
 export type UpdateAppointmentBody = Partial<CreateAppointmentBody>;
 
 export type CompleteAppointmentBody = {
-  /** Anotacoes pos-consulta: peso, altura, prescricoes, proxima visita... */
+  /** Anotacoes pos-consulta: peso, altura, prescricoes, próxima visita... */
   notes?: string;
 };
 
