@@ -20,8 +20,10 @@ import notifee, {
   type TimestampTrigger,
 } from '@notifee/react-native';
 
+import i18n from '@/shared/i18n';
+
 import {
-  DOSE_UNIT_LABELS,
+  DOSE_UNIT_KEYS,
   daysFromMask,
   type DayKey,
   type MedSchedule,
@@ -75,7 +77,7 @@ function nextOccurrenceMs(
 }
 
 function doseSummary(med: Medication): string {
-  const unit = DOSE_UNIT_LABELS[med.doseUnit] ?? '';
+  const unit = i18n.t(DOSE_UNIT_KEYS[med.doseUnit]);
   // med.dose vem como decimal string do backend ("20.000"). No pt-BR o ponto e
   // separador de milhar, entao "20.000 ml" parece 20 mil — Number() normaliza
   // pra "20" (mesmo padrao de MedicationCard/DoseCard/Detail).
@@ -106,7 +108,7 @@ async function scheduleOne(
   await notifee.createTriggerNotification(
     {
       id: alarmNotificationId(med.babyId, schedule.id, day),
-      title: 'Hora do remédio 💊',
+      title: i18n.t('meds.alarmTitle'),
       body: doseSummary(med),
       android: {
         channelId: ALARM_CHANNEL_ID,

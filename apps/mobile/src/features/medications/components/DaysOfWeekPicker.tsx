@@ -10,6 +10,7 @@
  *  - Botao "Fim de semana" (65, dom+sab)
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Button, Chip, Text, useTheme } from 'react-native-paper';
 
@@ -19,7 +20,7 @@ import { MutedText } from '@/shared/components';
 import {
   ALL_DAYS_MASK,
   DAY_BITMASKS,
-  DAY_LABELS,
+  DAY_KEYS,
   WEEKDAYS_MASK,
   WEEKEND_MASK,
   type DayKey,
@@ -40,6 +41,7 @@ export function DaysOfWeekPicker({
   error,
 }: DaysOfWeekPickerProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
 
   const toggle = (day: DayKey) => {
     if (value.includes(day)) {
@@ -60,7 +62,7 @@ export function DaysOfWeekPicker({
   return (
     <View style={styles.container}>
       <Text variant="labelMedium" style={styles.label}>
-        Dias da semana
+        {t('daysPicker.label')}
       </Text>
 
       <View style={styles.shortcuts}>
@@ -69,21 +71,21 @@ export function DaysOfWeekPicker({
           mode="text"
           onPress={() => setMask(ALL_DAYS_MASK)}
         >
-          Todos
+          {t('daysPicker.all')}
         </Button>
         <Button
           compact
           mode="text"
           onPress={() => setMask(WEEKDAYS_MASK)}
         >
-          Dias úteis
+          {t('daysPicker.weekdays')}
         </Button>
         <Button
           compact
           mode="text"
           onPress={() => setMask(WEEKEND_MASK)}
         >
-          Fim de semana
+          {t('daysPicker.weekend')}
         </Button>
       </View>
 
@@ -98,7 +100,7 @@ export function DaysOfWeekPicker({
               compact
               style={styles.chip}
             >
-              {DAY_LABELS[key]}
+              {t(DAY_KEYS[key])}
             </Chip>
           );
         })}
@@ -113,7 +115,7 @@ export function DaysOfWeekPicker({
         </Text>
       ) : (
         <MutedText variant="bodySmall" style={styles.helperText}>
-          Selecione pelo menos um dia.
+          {t('daysPicker.helper')}
         </MutedText>
       )}
     </View>

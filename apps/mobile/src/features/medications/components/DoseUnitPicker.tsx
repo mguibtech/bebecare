@@ -3,6 +3,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Menu, TextInput } from 'react-native-paper';
 import {
@@ -12,7 +13,7 @@ import {
   type FieldValues,
 } from 'react-hook-form';
 
-import { DoseUnit, DOSE_UNIT_LABELS } from '../types';
+import { DoseUnit, DOSE_UNIT_KEYS } from '../types';
 
 type DoseUnitPickerProps<TForm extends FieldValues> = {
   control: Control<TForm>;
@@ -25,8 +26,9 @@ const ALL_UNITS = Object.values(DoseUnit);
 export function DoseUnitPicker<TForm extends FieldValues>({
   control,
   name,
-  label = 'Unidade',
+  label,
 }: DoseUnitPickerProps<TForm>) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   return (
@@ -35,7 +37,7 @@ export function DoseUnitPicker<TForm extends FieldValues>({
       name={name}
       render={({ field: { value, onChange } }) => {
         const display = value
-          ? DOSE_UNIT_LABELS[value as DoseUnit]
+          ? t(DOSE_UNIT_KEYS[value as DoseUnit])
           : '';
 
         return (
@@ -48,10 +50,10 @@ export function DoseUnitPicker<TForm extends FieldValues>({
                   <View pointerEvents="box-only">
                     <TextInput
                       mode="outlined"
-                      label={label}
+                      label={label ?? t('meds.unitLabel')}
                       value={display}
                       editable={false}
-                      placeholder="Escolher"
+                      placeholder={t('meds.unitChoose')}
                       right={
                         <TextInput.Icon
                           icon="menu-down"
@@ -71,7 +73,7 @@ export function DoseUnitPicker<TForm extends FieldValues>({
                     onChange(unit);
                     setVisible(false);
                   }}
-                  title={DOSE_UNIT_LABELS[unit]}
+                  title={t(DOSE_UNIT_KEYS[unit])}
                 />
               ))}
             </Menu>

@@ -28,19 +28,14 @@ export enum DoseUnit {
   SACHET = 'sachet',
 }
 
-export const DOSE_STATUS_LABELS: Record<DoseStatus, string> = {
-  [DoseStatus.PENDING]: 'Pendente',
-  [DoseStatus.TAKEN]: 'Tomada',
-  [DoseStatus.SKIPPED]: 'Pulada',
-};
-
-export const DOSE_UNIT_LABELS: Record<DoseUnit, string> = {
-  [DoseUnit.DROP]: 'gota(s)',
-  [DoseUnit.ML]: 'ml',
-  [DoseUnit.MG]: 'mg',
-  [DoseUnit.TABLET]: 'comprimido(s)',
-  [DoseUnit.SACHET]: 'sachê(s)',
-};
+/** Unidade de dose -> chave i18n do label (resolver com t() / i18n.t()). */
+export const DOSE_UNIT_KEYS = {
+  [DoseUnit.DROP]: 'meds.unitDrop',
+  [DoseUnit.ML]: 'meds.unitMl',
+  [DoseUnit.MG]: 'meds.unitMg',
+  [DoseUnit.TABLET]: 'meds.unitTablet',
+  [DoseUnit.SACHET]: 'meds.unitSachet',
+} as const;
 
 // ============================================================
 // MedSchedule
@@ -171,15 +166,16 @@ export const DAY_BITMASKS = {
 
 export type DayKey = keyof typeof DAY_BITMASKS;
 
-export const DAY_LABELS: Record<DayKey, string> = {
-  sun: 'Dom',
-  mon: 'Seg',
-  tue: 'Ter',
-  wed: 'Qua',
-  thu: 'Qui',
-  fri: 'Sex',
-  sat: 'Sáb',
-};
+/** DayKey -> chave i18n da abreviação (resolver com t()). */
+export const DAY_KEYS = {
+  sun: 'days.sun',
+  mon: 'days.mon',
+  tue: 'days.tue',
+  wed: 'days.wed',
+  thu: 'days.thu',
+  fri: 'days.fri',
+  sat: 'days.sat',
+} as const;
 
 export const ALL_DAYS_MASK = 127;
 export const WEEKDAYS_MASK = 62; // seg a sex

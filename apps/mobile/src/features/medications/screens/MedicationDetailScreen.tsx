@@ -39,7 +39,7 @@ import { useDeleteMedication } from '../hooks/useDeleteMedication';
 import { useMedication } from '../hooks/useMedication';
 import { ScheduleEditorSheet } from '../components/ScheduleEditorSheet';
 import {
-  DOSE_UNIT_LABELS,
+  DOSE_UNIT_KEYS,
   type MedSchedule,
 } from '../types';
 
@@ -207,7 +207,7 @@ export function MedicationDetailScreen({
             {med.name}
           </Text>
           <Text variant="bodyMedium" style={styles.subtitle}>
-            {dose} {DOSE_UNIT_LABELS[med.doseUnit]} •{' '}
+            {dose} {t(DOSE_UNIT_KEYS[med.doseUnit])} •{' '}
             {med.isActive ? t('meds.active') : t('meds.paused')}
           </Text>
         </View>

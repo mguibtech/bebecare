@@ -16,7 +16,7 @@ import {
   ALARM_CATEGORY_ICONS,
   AlarmCategory,
   ALL_DAYS_MASK,
-  DAY_LABELS,
+  DAY_KEYS,
   WEEKDAYS_MASK,
   WEEKEND_MASK,
   daysFromMask,
@@ -35,9 +35,8 @@ export function formatDays(mask: number, t: TFunction): string {
   if (mask === ALL_DAYS_MASK) return t('alarms.daysAll');
   if (mask === WEEKDAYS_MASK) return t('alarms.daysWeekdays');
   if (mask === WEEKEND_MASK) return t('alarms.daysWeekend');
-  // DAY_LABELS (abreviacoes pt) ainda nao localizadas — fatia de dominio.
   return daysFromMask(mask)
-    .map((d) => DAY_LABELS[d])
+    .map((d) => t(DAY_KEYS[d]))
     .join(', ');
 }
 
