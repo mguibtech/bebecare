@@ -1,12 +1,11 @@
 name: Mobile CI
 
-# Lint + type-check + testes do app mobile. Roda em pushes para main que toquem
-# o mobile e em PRs que toquem o mobile.
+# Lint + type-check + testes do app mobile.
 #
-# Obs.: o trigger de PR é filtrado por path (apps/mobile/**) pra não gastar
-# minutos em PRs que só mexem na API. Se um dia este check virar REQUIRED no
-# ruleset, remova o filtro de paths do `pull_request` (igual ao api-ci.yml) —
-# senão o GitHub fica esperando um status que não é reportado em PRs api-only.
+# O `pull_request` NÃO é filtrado por path (igual ao api-ci.yml): assim o check
+# é reportado em TODO PR e pode ser marcado como required no ruleset sem deadlock
+# (um check required que não dispara deixa o GitHub esperando pra sempre). O
+# custo é rodar o job em PRs api-only — aceitável, e o `push` fica path-filtrado.
 on:
   push:
     branches: [main]
@@ -15,9 +14,6 @@ on:
       - '.github/workflows/mobile-ci.yml'
   pull_request:
     branches: [main]
-    paths:
-      - 'apps/mobile/**'
-      - '.github/workflows/mobile-ci.yml'
 
 concurrency:
   group: mobile-ci-${{ github.ref }}

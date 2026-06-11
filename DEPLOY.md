@@ -47,6 +47,10 @@ Runbook pra colocar o BebeCare no ar. O **código já está pronto pra produçã
    - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`
 3. SSL é obrigatório no Neon — o código liga automaticamente quando
    `NODE_ENV=production` (ou `POSTGRES_SSL=true`). Nada a fazer aqui.
+   > Nota de segurança: a conexão usa `ssl: { rejectUnauthorized: false }` —
+   > criptografa o tráfego (TLS) mas não valida o certificado/hostname do
+   > servidor. Aceitável entre Render↔Neon (rede gerenciada). Hardening futuro:
+   > passar o CA bundle do Neon com `rejectUnauthorized: true`.
 
 ## Passo 2 — API (Render)
 
@@ -101,8 +105,11 @@ POSTGRES_SSL=true POSTGRES_HOST=... POSTGRES_USER=... POSTGRES_PASSWORD=... \
 POSTGRES_DB=... npm run migration:run
 ```
 
-- No Render, dá pra usar um **Pre-Deploy Command**: `npm run migration:run`
-  (precisa das devDependencies presentes — o pre-deploy roda antes do prune).
+- No Render, dá pra usar um **Pre-Deploy Command**: `npm run migration:run`.
+  ⚠️ `migration:run` roda via **ts-node** (está em `devDependencies`), então
+  precisa que as devDeps estejam presentes — o Pre-Deploy do Render roda **antes**
+  do prune de devDeps, então funciona. Se der `ts-node not found`, é porque
+  rodou após o prune: rode as migrations num passo que ainda tenha as devDeps.
 - `migration:run` usa `src/database/data-source.ts` (já com SSL condicional).
 
 ## Passo 5 — 🔐 Segurança (fazer agora)
@@ -134,6 +141,14 @@ POSTGRES_DB=... npm run migration:run
 > Isto depende de um **keystore** que só você gera (segredo). O código de build
 > nativo **não foi alterado** neste PR — aplique os blocos abaixo quando for
 > gerar o keystore, e teste `npm run android` localmente depois.
+
+### 0. Apontar o app pra API de produção ⚠️
+
+O `apps/mobile/src/shared/config/env.ts` agora escolhe a URL por build:
+release (`__DEV__ === false`) usa `API_BASE_URL_PROD`; dev usa `localhost`.
+**Antes do release**, troque o placeholder `API_BASE_URL_PROD` pela URL real do
+Render (ex.: `https://bebecare-api.onrender.com/api`). Sem isso o app de
+produção aponta pro placeholder e não conecta.
 
 ### 1. Gerar o upload keystore (uma vez)
 
@@ -214,6 +229,11 @@ Secrets necessários: `ANDROID_KEYSTORE_BASE64` (`base64 -w0 bebecare-upload.key
 `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`,
 `GOOGLE_SERVICES_JSON`.
 
+> Sobre os nomes: os **secrets do GitHub** usam prefixo `ANDROID_*`; as
+> **propriedades do Gradle** (que o `build.gradle` lê) usam `BEBECARE_UPLOAD_*`.
+> O workflow faz a ponte (mapeia um no outro nos `env:` do step de build). São
+> dois espaços de nome distintos de propósito — não precisam coincidir.
+
 ### 4. versionCode dinâmico
 
 Hoje `versionCode 1` está fixo em `build.gradle`. Pro CI, leia de env:
@@ -237,6 +257,6 @@ pra fechada → produção. URL de privacidade:
 - [ ] `migration:run` rodado contra o Neon (tabelas + seed PNI)
 - [ ] Firebase service account de prod nas env vars
 - [ ] 🔐 Chave do Firebase antiga rotacionada
-- [ ] `API_BASE_URL` do mobile apontando pra URL do Render
+- [ ] `API_BASE_URL_PROD` (em `env.ts`) trocado pela URL do Render (release usa via `__DEV__`)
 - [ ] Keystore gerado + signing de release aplicado + secrets no GitHub
 - [ ] AAB assinado subido na faixa interna da Play

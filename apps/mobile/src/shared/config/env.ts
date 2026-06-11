@@ -29,8 +29,15 @@ const API_BASE_URL_DEV = Platform.select({
   default: 'http://localhost:3000/api',
 });
 
+/**
+ * URL pública da API em produção (Render). TROCAR pela URL real antes do
+ * release build. Builds de release (`__DEV__ === false`) usam esta
+ * automaticamente; dev usa localhost. Inclui o prefixo '/api'. Ver DEPLOY.md.
+ */
+const API_BASE_URL_PROD = 'https://bebecare-api.onrender.com/api';
+
 export const env = {
-  API_BASE_URL: API_BASE_URL_DEV,
+  API_BASE_URL: __DEV__ ? API_BASE_URL_DEV : API_BASE_URL_PROD,
   APP_NAME: 'BebeCare',
   // Tempo em ms apos o qual um cache do React Query e considerado stale.
   QUERY_STALE_TIME: 1000 * 60 * 5, // 5 min
