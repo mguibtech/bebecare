@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, ServiceUnavailableException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { ApiTags } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
@@ -23,12 +23,19 @@ export class HealthController {
       dbStatus = 'down';
     }
 
-    return {
+    const body = {
       status: dbStatus === 'up' ? 'ok' : 'degraded',
       service: 'bebecare-api',
       version: '0.0.1',
       timestamp: new Date().toISOString(),
       db: dbStatus,
     };
+
+    // Banco fora → 503 pra readiness probes (Render/K8s) tratarem como unhealthy.
+    // O corpo JSON é preservado (HttpException com objeto serializa o objeto).
+    if (dbStatus === 'down') {
+      throw new ServiceUnavailableException(body);
+    }
+    return body;
   }
 }

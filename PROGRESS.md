@@ -133,12 +133,18 @@ App 100% bilíngue (pt/en, segue o idioma do sistema). Histórico:
 
 Nada pendente na i18n. Próxima fatia transversal (se um dia precisar): localizar texto de **push/FCM** e e-mails — hoje não há e-mail e o push usa conteúdo do servidor.
 
-### Fase C — Infra de produção (NÃO iniciada) — *gate pra publicar*
-1. Postgres gerenciado (**Neon**) + rodar migrations em produção.
-2. Hospedar a API (**Render**) + env vars de produção.
-3. Firebase: service account de produção (e **rotacionar a chave** exposta — ver Housekeeping).
-4. Cron de healthcheck (`/api/health`) + limpeza de convites.
-5. CI/CD do mobile (build APK/AAB).
+### Fase C — Infra de produção — *gate pra publicar* (prep FEITA; falta provisionar contas)
+**Runbook completo em [DEPLOY.md](DEPLOY.md).** A prep de código (branch `chore/prod-infra-prep`) já cobriu o que dava sem as contas:
+- ✅ **prod-readiness:** `main.ts` lê `process.env.PORT` + bind `0.0.0.0` (Render); SSL condicional no Postgres em prod (`database.config.ts` + `data-source.ts`, p/ Neon); `/api/health` retorna **503** quando o banco cai (readiness probe).
+- ✅ **Crons já existiam:** limpeza de convites (diário 3h) + lembrete de consulta (5 min).
+- ✅ **CI do mobile** (`mobile-ci.yml`): lint + tsc + jest — antes o mobile só rodava local (gap fechado). *(Se quiser torná-lo required no ruleset, tirar o filtro de paths do `pull_request` — ver comentário no arquivo.)*
+- ✅ `.env.example` ganhou `POSTGRES_SSL`.
+
+**Falta (suas ações nos painéis — passo a passo no DEPLOY.md):**
+1. **Neon** (Postgres) + rodar `migration:run` apontando pro Neon.
+2. **Render** (Web Service): build `npm ci && npm run build`, start `npm run start:prod`, health `/api/health`, env vars de prod.
+3. **Firebase** service account de prod (3 env vars) + **rotacionar a chave exposta**.
+4. **Mobile release:** gerar keystore + aplicar o `signingConfigs.release` no `build.gradle` + workflow `mobile-release.yml` + secrets (tudo documentado no DEPLOY.md — não comitado porque depende do keystore).
 
 ### Fase D — Play Store
 1. Conta Google Play Developer (US$ 25).
@@ -150,4 +156,4 @@ Nada pendente na i18n. Próxima fatia transversal (se um dia precisar): localiza
 - **8 áudios do Modo Soninho** (`.ogg` CC0) — ver `apps/mobile/assets/audio/CREDITS.md`.
 - Polimento de UX/identidade apontado no `DESIGN_REVIEW.md` (densidade da Home, IA Início×Hoje, avatar off-brand).
 
-> **Recomendação:** fechar a **Fase E (i18n fatia 3)** rápido enquanto o contexto está fresco, depois atacar a **Fase C (infra)** que é o gate real pra publicar. Áudios e conta Play podem correr em paralelo.
+> **Estado (11 jun):** i18n 100% (Fase E) ✅ e prep de infra (Fase C) ✅ feitos. O que resta pra publicar é **operacional/suas contas**: seguir o [DEPLOY.md](DEPLOY.md) (Neon → Render → Firebase prod → keystore/Play). Áudios do Soninho e conta Play podem correr em paralelo.

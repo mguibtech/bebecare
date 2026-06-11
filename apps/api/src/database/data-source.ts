@@ -11,6 +11,11 @@ loadEnv();
 //
 // IMPORTANTE: o CLI exige UM ÚNICO export de DataSource neste arquivo.
 // Por isso só temos `export default` — não criar `export const` adicional.
+//
+// SSL liga em prod ou via POSTGRES_SSL=true — necessário pra rodar as
+// migrations contra um Postgres gerenciado (Neon/Render).
+const sslEnabled = process.env.POSTGRES_SSL === 'true' || process.env.NODE_ENV === 'production';
+
 export default new DataSource({
   type: 'postgres',
   host: process.env.POSTGRES_HOST ?? 'localhost',
@@ -23,4 +28,5 @@ export default new DataSource({
   migrations: [__dirname + '/migrations/*.{ts,js}'],
   synchronize: false,
   logging: process.env.NODE_ENV !== 'production',
+  ssl: sslEnabled ? { rejectUnauthorized: false } : false,
 });

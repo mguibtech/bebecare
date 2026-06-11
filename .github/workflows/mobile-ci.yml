@@ -1,0 +1,54 @@
+name: Mobile CI
+
+# Lint + type-check + testes do app mobile.
+#
+# O `pull_request` NÃO é filtrado por path (igual ao api-ci.yml): assim o check
+# é reportado em TODO PR e pode ser marcado como required no ruleset sem deadlock
+# (um check required que não dispara deixa o GitHub esperando pra sempre). O
+# custo é rodar o job em PRs api-only — aceitável, e o `push` fica path-filtrado.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/mobile/**'
+      - '.github/workflows/mobile-ci.yml'
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: mobile-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test:
+    name: Lint + Types + Tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: apps/mobile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # engines.node = ">= 22.11.0" (RN 0.85). Mantém alinhado com o local.
+      - name: Setup Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/mobile/package-lock.json
+
+      # postinstall roda patch-package (patches do track-player p/ New Arch).
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test -- --ci --reporters=default
