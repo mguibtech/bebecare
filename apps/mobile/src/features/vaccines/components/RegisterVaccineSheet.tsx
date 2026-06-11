@@ -13,6 +13,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import {
   Button,
@@ -81,6 +82,7 @@ export function RegisterVaccineSheet({
   vaccine,
 }: RegisterVaccineSheetProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const createRecord = useCreateVaccineRecord();
   const [snackbar, setSnackbar] = useState<string | null>(null);
 
@@ -113,9 +115,7 @@ export function RegisterVaccineSheet({
       onDismiss();
     } catch (err) {
       const message =
-        err instanceof ApiError
-          ? err.message
-          : 'Não foi possível registrar. Tente de novo.';
+        err instanceof ApiError ? err.message : t('vaccines.registerError');
       setSnackbar(message);
     }
   });
@@ -135,7 +135,7 @@ export function RegisterVaccineSheet({
       >
         <View style={styles.handle} />
         <Text variant="titleMedium" style={styles.title}>
-          Registrar aplicação
+          {t('vaccines.registerTitle')}
         </Text>
         {vaccine && (
           <Text variant="bodyMedium" style={styles.subtitle}>
@@ -147,15 +147,15 @@ export function RegisterVaccineSheet({
           <DateField
             control={control}
             name="appliedAt"
-            label="Data da aplicação"
+            label={t('vaccines.registerDateLabel')}
             maximumDate={new Date()}
           />
 
           <FormInput
             control={control}
             name="lotNumber"
-            label="Lote (opcional)"
-            placeholder="ex: ABC1234"
+            label={t('vaccines.registerLotLabel')}
+            placeholder={t('vaccines.registerLotPlaceholder')}
             autoCapitalize="characters"
             maxLength={50}
           />
@@ -163,29 +163,29 @@ export function RegisterVaccineSheet({
           <FormInput
             control={control}
             name="location"
-            label="Local (opcional)"
-            placeholder="ex: UBS Centro"
+            label={t('vaccines.registerLocationLabel')}
+            placeholder={t('vaccines.registerLocationPlaceholder')}
             maxLength={200}
           />
 
           <FormInput
             control={control}
             name="notes"
-            label="Observacoes (opcional)"
+            label={t('vaccines.registerNotesLabel')}
             multiline
             numberOfLines={2}
           />
         </View>
 
         <View style={styles.actions}>
-          <Button onPress={onDismiss}>Cancelar</Button>
+          <Button onPress={onDismiss}>{t('common.cancel')}</Button>
           <Button
             mode="contained"
             onPress={onSubmit}
             loading={createRecord.isPending}
             disabled={!formState.isValid && formState.isSubmitted}
           >
-            Confirmar aplicação
+            {t('vaccines.registerConfirm')}
           </Button>
         </View>
       </Modal>
@@ -194,7 +194,7 @@ export function RegisterVaccineSheet({
         visible={snackbar !== null}
         onDismiss={() => setSnackbar(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setSnackbar(null) }}
+        action={{ label: t('common.ok'), onPress: () => setSnackbar(null) }}
       >
         {snackbar ?? ''}
       </Snackbar>
