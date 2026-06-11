@@ -162,11 +162,4 @@ export const radii = {
 export type Spacing = typeof spacing;
 export type Radii = typeof radii;
 
-// ============================================================
-// LABELS DE UI (para chips de troca, settings, etc.)
-// ============================================================
-
-export const PALETTE_LABELS: Record<PaletteName, string> = {
-  azul: 'Azul',
-  rosa: 'Rosa',
-};
+// Labels de paleta (Azul/Rosa) agora vêm da i18n: t('appearance.palette*').

@@ -15,8 +15,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 import { useThemeStore } from '@/app/theme/store';
-import { PALETTE_LABELS, type PaletteName } from '@/app/theme/tokens';
+import { type PaletteName } from '@/app/theme/tokens';
 
 import { babiesApi } from '../api/babies.api';
 import { useBabySelectorStore } from '../store/baby-selector.store';
@@ -45,18 +46,22 @@ export function useCreateBaby() {
       const currentPalette = useThemeStore.getState().palette;
       const suggested = suggestedPaletteFor(baby.sex);
 
+      const created = i18n.t('feedback.babyCreated', { name: baby.name });
       if (currentPalette !== suggested) {
-        snackbar.showSuccess(
-          `${baby.name} foi cadastrado!`,
-          {
-            label: `Trocar pra ${PALETTE_LABELS[suggested]}`,
-            onPress: () => {
-              useThemeStore.getState().setPalette(suggested);
-            },
+        snackbar.showSuccess(created, {
+          label: i18n.t('feedback.switchPalette', {
+            palette: i18n.t(
+              suggested === 'rosa'
+                ? 'appearance.paletteRosa'
+                : 'appearance.paletteAzul',
+            ),
+          }),
+          onPress: () => {
+            useThemeStore.getState().setPalette(suggested);
           },
-        );
+        });
       } else {
-        snackbar.showSuccess(`${baby.name} foi cadastrado!`);
+        snackbar.showSuccess(created);
       }
     },
   });

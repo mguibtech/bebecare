@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { appointmentsApi } from '../api/appointments.api';
 import type { Appointment, UpdateAppointmentBody } from '../types';
@@ -28,7 +29,7 @@ export function useUpdateAppointment() {
         data,
       );
       queryClient.invalidateQueries({ queryKey: qk.appointments.all });
-      snackbar.showSuccess('Consulta atualizada');
+      snackbar.showSuccess(i18n.t('feedback.appointmentUpdated'));
     },
   });
 }

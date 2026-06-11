@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { familyApi } from '../api/family.api';
 
@@ -16,7 +17,7 @@ export function useRevokeInvite() {
     mutationFn: (id) => familyApi.revokeInvite(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: qk.family.me() });
-      snackbar.show('Convite revogado');
+      snackbar.show(i18n.t('feedback.inviteRevoked'));
     },
   });
 }

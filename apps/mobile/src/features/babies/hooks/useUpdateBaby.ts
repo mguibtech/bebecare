@@ -14,8 +14,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 import { useThemeStore } from '@/app/theme/store';
-import { PALETTE_LABELS, type PaletteName } from '@/app/theme/tokens';
+import { type PaletteName } from '@/app/theme/tokens';
 
 import { babiesApi } from '../api/babies.api';
 import { Sex, type Baby, type UpdateBabyBody } from '../types';
@@ -44,15 +45,22 @@ export function useUpdateBaby() {
       const currentPalette = useThemeStore.getState().palette;
       const suggested = suggestedPaletteFor(baby.sex);
 
+      const saved = i18n.t('feedback.babyUpdated');
       if (sexChanged && currentPalette !== suggested) {
-        snackbar.showSuccess('Alterações salvas', {
-          label: `Trocar pra ${PALETTE_LABELS[suggested]}`,
+        snackbar.showSuccess(saved, {
+          label: i18n.t('feedback.switchPalette', {
+            palette: i18n.t(
+              suggested === 'rosa'
+                ? 'appearance.paletteRosa'
+                : 'appearance.paletteAzul',
+            ),
+          }),
           onPress: () => {
             useThemeStore.getState().setPalette(suggested);
           },
         });
       } else {
-        snackbar.showSuccess('Alterações salvas');
+        snackbar.showSuccess(saved);
       }
     },
   });

@@ -20,6 +20,7 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Modal, Portal, Text, useTheme } from 'react-native-paper';
 
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 import { kv } from '@/shared/storage/mmkv';
 import type { AppTheme } from '@/app/theme';
 
@@ -62,7 +63,7 @@ export function NotificationPermissionGate() {
     const status = await askPermission();
     if (status === 'granted') {
       await syncFcmToken();
-      snackbar.showSuccess('Notificações ativadas!');
+      snackbar.showSuccess(i18n.t('feedback.notificationsEnabled'));
     }
   };
 

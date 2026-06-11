@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { familyApi } from '../api/family.api';
 import type { Invite } from '../types';
@@ -20,7 +21,7 @@ export function useCreateInvite() {
     mutationFn: () => familyApi.createInvite(),
     onSuccess: (invite) => {
       queryClient.invalidateQueries({ queryKey: qk.family.me() });
-      snackbar.showSuccess(`Convite ${invite.code} gerado`);
+      snackbar.showSuccess(i18n.t('feedback.inviteCreated', { code: invite.code }));
     },
   });
 }

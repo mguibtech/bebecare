@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { appointmentsApi } from '../api/appointments.api';
 import type { Appointment, CancelAppointmentBody } from '../types';
@@ -28,7 +29,7 @@ export function useCancelAppointment() {
         data,
       );
       queryClient.invalidateQueries({ queryKey: qk.appointments.all });
-      snackbar.show('Consulta cancelada');
+      snackbar.show(i18n.t('feedback.appointmentCanceled'));
     },
   });
 }
