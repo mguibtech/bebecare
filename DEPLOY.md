@@ -145,9 +145,10 @@ POSTGRES_DB=... npm run migration:run
 
 ## Mobile — release Android assinado
 
-> Isto depende de um **keystore** que só você gera (segredo). O código de build
-> nativo **não foi alterado** neste PR — aplique os blocos abaixo quando for
-> gerar o keystore, e teste `npm run android` localmente depois.
+> O `build.gradle` **já está pronto** pra release assinado (signing + versionCode
+> dinâmico, com fallback pro debug). Falta só **você gerar o keystore** e prover
+> as credenciais (props do Gradle / secrets do CI). Teste `npm run android`
+> (debug) localmente depois de pegar o repo — deve seguir funcionando sem keystore.
 
 ### 0. Apontar o app pra API de produção ⚠️
 
@@ -166,32 +167,19 @@ keytool -genkeypair -v -keystore bebecare-upload.keystore \
 Guarde o arquivo + as senhas num cofre. **Perder o keystore = não conseguir
 atualizar o app na Play.**
 
-### 2. Adicionar o signing de release em `apps/mobile/android/app/build.gradle`
+### 2. Signing de release no `build.gradle` — ✅ JÁ APLICADO
 
-Hoje o release usa o `signingConfigs.debug` (linha ~104). Troque por uma config
-que lê de `gradle.properties`/env, com fallback pro debug (mantém `npm run
-android` funcionando localmente sem o keystore):
+O `apps/mobile/android/app/build.gradle` já tem o `signingConfigs.release` lendo
+as props `BEBECARE_UPLOAD_*`, com **fallback pro debug** quando elas não existem
+(dev/CI sem keystore continuam compilando). Você só precisa **fornecer as props**
+de duas formas:
 
-```groovy
-signingConfigs {
-    debug { /* ...como está... */ }
-    release {
-        if (project.hasProperty('BEBECARE_UPLOAD_STORE_FILE')) {
-            storeFile file(BEBECARE_UPLOAD_STORE_FILE)
-            storePassword BEBECARE_UPLOAD_STORE_PASSWORD
-            keyAlias BEBECARE_UPLOAD_KEY_ALIAS
-            keyPassword BEBECARE_UPLOAD_KEY_PASSWORD
-        }
-    }
-}
-buildTypes {
-    release {
-        signingConfig project.hasProperty('BEBECARE_UPLOAD_STORE_FILE')
-            ? signingConfigs.release : signingConfigs.debug
-        // ...resto como está...
-    }
-}
-```
+- **Local:** num `gradle.properties` (gitignored) ou via `-PBEBECARE_UPLOAD_STORE_FILE=... -PBEBECARE_UPLOAD_STORE_PASSWORD=...` etc.
+- **CI:** como env vars com o prefixo `ORG_GRADLE_PROJECT_` (o Gradle as mapeia
+  pra propriedades) — ver o workflow abaixo.
+
+Props necessárias: `BEBECARE_UPLOAD_STORE_FILE`, `BEBECARE_UPLOAD_STORE_PASSWORD`,
+`BEBECARE_UPLOAD_KEY_ALIAS`, `BEBECARE_UPLOAD_KEY_PASSWORD`.
 
 ### 3. Workflow de build (`.github/workflows/mobile-release.yml`)
 
@@ -222,12 +210,14 @@ jobs:
         env: { GOOGLE_SERVICES_JSON: '${{ secrets.GOOGLE_SERVICES_JSON }}' }
       - run: ./gradlew bundleRelease
         working-directory: apps/mobile/android
+        # Prefixo ORG_GRADLE_PROJECT_ → o Gradle expõe cada um como project
+        # property (ex.: BEBECARE_UPLOAD_STORE_FILE). É isso que o build.gradle lê.
         env:
-          BEBECARE_UPLOAD_STORE_FILE: bebecare-upload.keystore
-          BEBECARE_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          BEBECARE_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          BEBECARE_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          ORG_GRADLE_PROJECT_VERSION_CODE: ${{ github.run_number }}
+          ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_STORE_FILE: bebecare-upload.keystore
+          ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ORG_GRADLE_PROJECT_BEBECARE_VERSION_CODE: ${{ github.run_number }}
       - uses: actions/upload-artifact@v4
         with: { name: bebecare-aab, path: apps/mobile/android/app/build/outputs/bundle/release/*.aab }
 ```
@@ -236,16 +226,16 @@ Secrets necessários: `ANDROID_KEYSTORE_BASE64` (`base64 -w0 bebecare-upload.key
 `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`,
 `GOOGLE_SERVICES_JSON`.
 
-> Sobre os nomes: os **secrets do GitHub** usam prefixo `ANDROID_*`; as
-> **propriedades do Gradle** (que o `build.gradle` lê) usam `BEBECARE_UPLOAD_*`.
-> O workflow faz a ponte (mapeia um no outro nos `env:` do step de build). São
-> dois espaços de nome distintos de propósito — não precisam coincidir.
+> Sobre os nomes: **secrets do GitHub** = `ANDROID_*`; **props do Gradle** que o
+> `build.gradle` lê = `BEBECARE_UPLOAD_*`. O workflow faz a ponte: injeta como
+> env `ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_*` (esse prefixo é o que vira property
+> no Gradle). São espaços de nome distintos de propósito — não precisam coincidir.
 
-### 4. versionCode dinâmico
+### 4. versionCode dinâmico — ✅ JÁ APLICADO
 
-Hoje `versionCode 1` está fixo em `build.gradle`. Pro CI, leia de env:
-`versionCode (project.hasProperty('VERSION_CODE') ? VERSION_CODE.toInteger() : 1)`
-e passe `-PVERSION_CODE=${{ github.run_number }}` (ou via `ORG_GRADLE_PROJECT_*`).
+O `build.gradle` já lê `versionCode` da prop `BEBECARE_VERSION_CODE` (fallback 1).
+O workflow acima passa `ORG_GRADLE_PROJECT_BEBECARE_VERSION_CODE=${{ github.run_number }}`,
+então cada build de release tem um `versionCode` crescente (a Play exige).
 
 ### 5. Play Store
 
