@@ -8,7 +8,7 @@
 **As 11 features de produto da V1 estão TODAS implementadas e mergeadas na `main`.** 🎉
 O que falta pra publicar **não é mais código de feature** — é infra de produção, conta/ficha da Play Store, alguns assets e housekeeping.
 
-A sessão de **11 jun** terminou a **i18n da fatia 3 no mobile**: toda a superfície visível do app agora segue o idioma do sistema (pt/en). Falta só a **i18n do backend** (cluster 4 — decisão de arquitetura pendente) e duas fatias deixadas de fora de propósito (mensagens zod dos forms e snackbars dos mutation hooks). Detalhes abaixo.
+A sessão de **11 jun** **fechou a i18n por completo**: mobile (fatia 3 + closeout E1/E2/E3) **e** backend (cluster 4 — catálogo de vacinas via `Accept-Language`). O app está 100% bilíngue (pt/en, seguindo o idioma do sistema). Detalhes abaixo.
 
 ---
 
@@ -24,7 +24,7 @@ Branch **`feat/mobile-i18n-fatia3`** (a partir da `main`, com a fatia2/#61 já m
 
 **Padrão adotado** (igual fatia2): mapa **enum→chave i18n** local (`const X_KEY = {...} as const` → `t(X_KEY[v])`); formatadores compartilhados recebem `t`/usam `i18n.t`; catálogos `pt`/`en` tipados (chave faltando = erro de build).
 
-**Fechado no closeout (`feat/mobile-i18n-closeout`, mesmo dia):** dias da semana derivados no cliente (E1), mensagens zod via schema-factory (E2) e snackbars dos hooks via `i18n.t` (E3). Único pendente da i18n: **backend** (cluster 4) — ver "Falta na i18n" abaixo.
+**Fechado no closeout (`feat/mobile-i18n-closeout`):** dias da semana derivados no cliente (E1), mensagens zod via schema-factory (E2) e snackbars dos hooks via `i18n.t` (E3). E o **backend** (cluster 4, `feat/api-i18n-vaccines`) fechou a última ponta — ver "i18n" abaixo.
 
 ---
 
@@ -46,12 +46,9 @@ Tudo validado (`tsc` + `eslint` + 22 testes verdes em cada commit) e verificado 
 - Migrado e seguindo o idioma: **abas, Início, Hoje, Vacinas, Saúde/Consultas, Remédios, Família, Alarmes, Onboarding, Login/Cadastro.** (PR #60 + **PR `feat/mobile-i18n-fatia2`** — Consultas/Remédios/Família/Alarmes/Onboarding/Auth).
 - Verificado no device (per-app locale `en-US`): a superfície migrada vira inglês com plural e datas corretos; revertido pro sistema depois.
 
-**Falta na i18n (depois do closeout — 11 jun):** só o **backend** (cluster 4). O mobile inteiro (incl. zod dos forms e snackbars dos hooks) está migrado.
+**i18n: ✅ 100% completa (mobile + backend).** Nada pendente.
 
-**i18n no backend (cluster 4) — decisão de arquitetura pendente:**
-- `daysOfWeekNames`: o mobile já tem `DAY_KEYS` — dá pra **derivar do `daysOfWeekMask` no cliente** e dispensar o campo do servidor (sem `Accept-Language`). *Recomendado.*
-- `doseLabel`: variantes ricas (`'Dose inicial'`, `'2ª dose (com varicela)'`, `'1º/2º reforço'`) vêm do **seed do banco** (migration PNI) — não dá pra derivar só de `doseNumber`/`isBooster`.
-- **Nomes + descrições das vacinas**: ~30 entradas seedadas em pt. Localizar exige **tabela de traduções** OU **catálogo no código** (com inglês médico preciso) + `Accept-Language` no servidor e header enviado pelo mobile.
+**Backend (cluster 4) — FEITO (11 jun, branch `feat/api-i18n-vaccines`):** `@Lang()` lê `Accept-Language` → `pt|en` (sem dependência nova); catálogo de traduções `en` das 26 vacinas PNI por `code` (nome/descrição/doseLabel, fallback pt); `VaccinesService` (catálogo + schedule) e `VaccineRecordsController` localizam o conteúdo. Mobile envia `Accept-Language = systemLanguage()` em todo request. `daysOfWeekNames` saiu de cena no E1 (derivado no cliente).
 
 **Achado documentado:** o **lembrete de consulta JÁ funciona** — cron no backend (`AppointmentsReminderJob`, a cada 5 min) envia push FCM no offset configurado (default **24h antes**), idempotente via coluna `notified_at`. Depende de backend no ar + token FCM + permissão.
 
@@ -129,13 +126,12 @@ Público-alvo **18+** (não é app "para crianças" → fora do programa Familie
 
 ## ▶️ Próximas fases (ordem sugerida)
 
-### Fase E — i18n: ✅ mobile 100% (fatia3 #61 + closeout `feat/mobile-i18n-closeout`)
-O mobile inteiro segue o idioma do sistema. O closeout (11 jun) fechou as 3 pontas que faltavam:
-- **E1** — dias da semana derivados no cliente (`daysOfWeekMask` + `DAY_KEYS`); `daysOfWeekNames` do backend ficou `@deprecated` (some no cluster 4).
-- **E2** — mensagens zod dos forms via schema-factory `makeXSchema(t)` (namespace `validation.*`).
-- **E3** — snackbars dos mutation hooks via `i18n.t` standalone (namespace `feedback.*`).
+### Fase E — i18n: ✅ COMPLETA (mobile + backend)
+App 100% bilíngue (pt/en, segue o idioma do sistema). Histórico:
+- **fatia3 #61 + closeout** (`feat/mobile-i18n-closeout`): toda a UI do mobile, incl. E1 (dias derivados no cliente), E2 (zod via schema-factory `validation.*`), E3 (snackbars via `i18n.t`, `feedback.*`).
+- **cluster 4** (`feat/api-i18n-vaccines`): backend localiza o catálogo de vacinas via `Accept-Language` (`@Lang()` + catálogo `en` por `code`); mobile envia o header.
 
-**Resta só o backend (cluster 4)** — decisão de arquitetura pendente (ver "i18n no backend" acima). Como `daysOfWeekNames` já é derivado no cliente, sobra `doseLabel` + nomes/descrições das vacinas (seed em pt): decidir **tabela-de-traduções vs catálogo-no-código** + `Accept-Language`. **PR próprio** (mexe no contrato da API).
+Nada pendente na i18n. Próxima fatia transversal (se um dia precisar): localizar texto de **push/FCM** e e-mails — hoje não há e-mail e o push usa conteúdo do servidor.
 
 ### Fase C — Infra de produção (NÃO iniciada) — *gate pra publicar*
 1. Postgres gerenciado (**Neon**) + rodar migrations em produção.
