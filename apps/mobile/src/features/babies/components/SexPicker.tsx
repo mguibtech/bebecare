@@ -6,6 +6,7 @@
  * e o submit valida via zod.
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { HelperText, SegmentedButtons, Text } from 'react-native-paper';
 import {
@@ -15,7 +16,7 @@ import {
   type FieldValues,
 } from 'react-hook-form';
 
-import { Sex, SEX_LABELS } from '../types';
+import { Sex } from '../types';
 
 type SexPickerProps<TForm extends FieldValues> = {
   control: Control<TForm>;
@@ -26,6 +27,7 @@ export function SexPicker<TForm extends FieldValues>({
   control,
   name,
 }: SexPickerProps<TForm>) {
+  const { t } = useTranslation();
   return (
     <Controller
       control={control}
@@ -35,7 +37,7 @@ export function SexPicker<TForm extends FieldValues>({
         return (
           <View style={styles.wrapper}>
             <Text variant="labelMedium" style={styles.label}>
-              Sexo
+              {t('babies.sexLabel')}
             </Text>
             <SegmentedButtons
               value={value ?? ''}
@@ -43,12 +45,12 @@ export function SexPicker<TForm extends FieldValues>({
               buttons={[
                 {
                   value: Sex.MALE,
-                  label: SEX_LABELS[Sex.MALE],
+                  label: t('babies.sexMale'),
                   icon: 'gender-male',
                 },
                 {
                   value: Sex.FEMALE,
-                  label: SEX_LABELS[Sex.FEMALE],
+                  label: t('babies.sexFemale'),
                   icon: 'gender-female',
                 },
               ]}

@@ -20,7 +20,7 @@ import type { AppTheme } from '@/app/theme';
 
 import {
   ALL_DAYS_MASK,
-  DOSE_UNIT_LABELS,
+  DOSE_UNIT_KEYS,
   WEEKDAYS_MASK,
   WEEKEND_MASK,
   type Medication,
@@ -68,7 +68,7 @@ export function MedicationCard({
   const theme = useTheme<AppTheme>();
   const { t } = useTranslation();
   const dose = Number(medication.dose);
-  const unitLabel = DOSE_UNIT_LABELS[medication.doseUnit];
+  const unitLabel = t(DOSE_UNIT_KEYS[medication.doseUnit]);
 
   const opacity = medication.isActive ? 1 : 0.6;
 

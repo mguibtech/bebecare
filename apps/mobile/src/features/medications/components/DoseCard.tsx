@@ -19,7 +19,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { MutedText } from '@/shared/components';
 import type { AppTheme } from '@/app/theme';
 
-import { DOSE_UNIT_LABELS, DoseStatus, type MedDoseLog } from '../types';
+import { DOSE_UNIT_KEYS, DoseStatus, type MedDoseLog } from '../types';
 
 export type DoseCardProps = {
   dose: MedDoseLog;
@@ -100,7 +100,7 @@ export function DoseCard({
             {med.name}
           </Text>
           <MutedText variant="bodySmall">
-            {Number(med.dose)} {DOSE_UNIT_LABELS[med.doseUnit]}
+            {Number(med.dose)} {t(DOSE_UNIT_KEYS[med.doseUnit])}
           </MutedText>
 
           {isOverdue && (

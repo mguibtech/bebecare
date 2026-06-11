@@ -10,6 +10,7 @@
  * AppProviders escuta o store via useAppTheme() (memoizado).
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { SegmentedButtons } from 'react-native-paper';
 
@@ -18,13 +19,8 @@ import {
   type ModePreference,
 } from '@/app/theme/store';
 
-const MODE_LABELS: Record<ModePreference, string> = {
-  light: 'Claro',
-  dark: 'Escuro',
-  system: 'Sistema',
-};
-
 export function ModePicker() {
+  const { t } = useTranslation();
   const modePreference = useThemeStore((s) => s.modePreference);
   const setModePreference = useThemeStore((s) => s.setModePreference);
 
@@ -36,17 +32,17 @@ export function ModePicker() {
         buttons={[
           {
             value: 'light' satisfies ModePreference,
-            label: MODE_LABELS.light,
+            label: t('appearance.modeLight'),
             icon: 'weather-sunny',
           },
           {
             value: 'dark' satisfies ModePreference,
-            label: MODE_LABELS.dark,
+            label: t('appearance.modeDark'),
             icon: 'weather-night',
           },
           {
             value: 'system' satisfies ModePreference,
-            label: MODE_LABELS.system,
+            label: t('appearance.modeSystem'),
             icon: 'cellphone-cog',
           },
         ]}

@@ -11,6 +11,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import {
   Button,
@@ -56,6 +57,7 @@ export function ScheduleEditorSheet({
   loading,
 }: ScheduleEditorSheetProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const isEdit = Boolean(schedule);
 
   const [time, setTime] = useState(schedule?.time ?? '08:00');
@@ -82,7 +84,7 @@ export function ScheduleEditorSheet({
 
   const handleConfirm = async () => {
     if (days.length === 0) {
-      setError('Selecione pelo menos um dia');
+      setError(t('daysPicker.errorNoDay'));
       return;
     }
     setError(null);
@@ -99,7 +101,7 @@ export function ScheduleEditorSheet({
         promptAlarmPermissions();
       }
     } catch (err) {
-      setSnack(err instanceof Error ? err.message : 'Erro ao salvar');
+      setSnack(err instanceof Error ? err.message : t('common.unexpectedError'));
     }
   };
 
@@ -115,7 +117,7 @@ export function ScheduleEditorSheet({
       >
         <View style={styles.handle} />
         <Text variant="titleMedium" style={styles.title}>
-          {isEdit ? 'Editar horário' : 'Adicionar horário'}
+          {isEdit ? t('meds.editSchedule') : t('meds.addSchedule')}
         </Text>
 
         <View style={styles.field}>
@@ -130,22 +132,22 @@ export function ScheduleEditorSheet({
 
         <View style={styles.alarmRow}>
           <View style={styles.alarmText}>
-            <Text variant="bodyMedium">Alarme local</Text>
+            <Text variant="bodyMedium">{t('meds.alarmLocal')}</Text>
             <Text variant="bodySmall" style={styles.alarmHint}>
-              Notificação sonora confiável (recomendado pra remédios).
+              {t('meds.alarmLocalHint')}
             </Text>
           </View>
           <Switch value={useAlarm} onValueChange={setUseAlarm} />
         </View>
 
         <View style={styles.actions}>
-          <Button onPress={onDismiss}>Cancelar</Button>
+          <Button onPress={onDismiss}>{t('common.cancel')}</Button>
           <Button
             mode="contained"
             onPress={handleConfirm}
             loading={loading}
           >
-            {isEdit ? 'Salvar' : 'Adicionar'}
+            {isEdit ? t('common.save') : t('meds.add')}
           </Button>
         </View>
       </Modal>

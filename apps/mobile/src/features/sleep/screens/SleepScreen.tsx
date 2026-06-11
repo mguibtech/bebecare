@@ -7,6 +7,7 @@
  * funciona mas não sai som.
  */
 
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import {
   Card,
@@ -32,6 +33,7 @@ function formatCountdown(totalSeconds: number): string {
 
 export function SleepScreen() {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const player = useSleepPlayer();
 
   const containerStyle = { backgroundColor: theme.colors.background };
@@ -41,11 +43,9 @@ export function SleepScreen() {
     <SafeAreaView edges={['top']} style={[styles.root, containerStyle]}>
       <View style={styles.header}>
         <Text variant="headlineMedium" style={styles.title}>
-          Modo Soninho
+          {t('sleep.title')}
         </Text>
-        <MutedText variant="bodyMedium">
-          Sons que ajudam o bebê a dormir. Tocam com a tela apagada.
-        </MutedText>
+        <MutedText variant="bodyMedium">{t('sleep.subtitle')}</MutedText>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -72,7 +72,7 @@ export function SleepScreen() {
                       color={active ? theme.colors.primary : theme.app.text.muted}
                     />
                     <Text variant="labelLarge" style={styles.soundLabel}>
-                      {sound.label}
+                      {t(sound.labelKey)}
                     </Text>
                   </Card.Content>
                 </Card>
@@ -88,11 +88,13 @@ export function SleepScreen() {
           <View style={styles.playerTop}>
             <View style={styles.playerInfo}>
               <Text variant="titleSmall" numberOfLines={1}>
-                {current.label}
+                {t(current.labelKey)}
               </Text>
               {player.remainingSeconds !== null && (
                 <MutedText variant="bodySmall">
-                  Para em {formatCountdown(player.remainingSeconds)}
+                  {t('sleep.stopsIn', {
+                    time: formatCountdown(player.remainingSeconds),
+                  })}
                 </MutedText>
               )}
             </View>
@@ -133,16 +135,16 @@ export function SleepScreen() {
 
           {/* TIMER */}
           <View style={styles.timerRow}>
-            {SLEEP_TIMERS.map((t) => (
+            {SLEEP_TIMERS.map((timer) => (
               <Chip
-                key={t.minutes}
+                key={timer.minutes}
                 compact
-                selected={player.timerMinutes === t.minutes}
+                selected={player.timerMinutes === timer.minutes}
                 showSelectedCheck={false}
-                onPress={() => player.changeTimer(t.minutes)}
+                onPress={() => player.changeTimer(timer.minutes)}
                 style={styles.timerChip}
               >
-                {t.label}
+                {t(timer.labelKey)}
               </Chip>
             ))}
           </View>

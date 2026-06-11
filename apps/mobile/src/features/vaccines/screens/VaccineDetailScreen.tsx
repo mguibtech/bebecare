@@ -10,6 +10,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -43,6 +44,13 @@ export function VaccineDetailScreen({
 }: AppScreenProps<'VaccineDetail'>) {
   const { babyId, vaccineId } = route.params;
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
+
+  /** "ao nascer" quando 0 mês, senão "{n} mês(es)". */
+  const ageLabel = (months: number) =>
+    months === 0
+      ? t('vaccines.atBirth')
+      : t('home.ageMonths', { count: months });
 
   const schedule = useBabyVaccineSchedule(babyId);
   const records = useVaccineRecords(babyId);
@@ -79,9 +87,9 @@ export function VaccineDetailScreen({
   if (schedule.isError || !entry) {
     return (
       <View style={[styles.center, containerStyle]}>
-        <Text variant="bodyLarge">Vacina não encontrada</Text>
+        <Text variant="bodyLarge">{t('vaccines.detailNotFound')}</Text>
         <Text variant="bodyMedium" style={styles.muted}>
-          Volte e tente abrir de novo.
+          {t('vaccines.detailNotFoundHint')}
         </Text>
       </View>
     );
@@ -92,12 +100,12 @@ export function VaccineDetailScreen({
   const handleDelete = () => {
     if (!record) return;
     Alert.alert(
-      'Apagar registro',
-      'Isso vai remover o histórico dessa aplicação. Vai aparecer como pendente de novo.',
+      t('vaccines.deleteRecordTitle'),
+      t('vaccines.deleteRecordBody'),
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Apagar',
+          text: t('vaccines.deleteAction'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -105,7 +113,9 @@ export function VaccineDetailScreen({
               navigation.goBack();
             } catch (err) {
               setSnackbar(
-                err instanceof ApiError ? err.message : 'Erro ao apagar.',
+                err instanceof ApiError
+                  ? err.message
+                  : t('vaccines.deleteRecordError'),
               );
             }
           },
@@ -124,7 +134,7 @@ export function VaccineDetailScreen({
           </Text>
           <Text variant="bodyMedium" style={styles.muted}>
             {vaccine.doseLabel}
-            {vaccine.isBooster ? ' • Reforço' : ''}
+            {vaccine.isBooster ? ` • ${t('vaccines.booster')}` : ''}
           </Text>
           <View style={styles.chipRow}>
             <StatusChip status={status} />
@@ -133,7 +143,7 @@ export function VaccineDetailScreen({
 
         {/* INFO */}
         <Card style={styles.card} mode="outlined">
-          <Card.Title title="Sobre a vacina" />
+          <Card.Title title={t('vaccines.aboutTitle')} />
           <Card.Content style={styles.cardContent}>
             {vaccine.description && (
               <Text variant="bodyMedium" style={styles.bodyText}>
@@ -141,18 +151,18 @@ export function VaccineDetailScreen({
               </Text>
             )}
             <Text variant="bodyMedium" style={styles.bodyText}>
-              Idade recomendada: {vaccine.recommendedAgeMonths === 0
-                ? 'ao nascer'
-                : `${vaccine.recommendedAgeMonths} ${vaccine.recommendedAgeMonths === 1 ? 'mês' : 'meses'}`}
+              {t('vaccines.recommendedAge', {
+                age: ageLabel(vaccine.recommendedAgeMonths),
+              })}
             </Text>
             <Text variant="bodyMedium" style={styles.bodyText}>
-              Idade mínima: {vaccine.minAgeMonths === 0
-                ? 'ao nascer'
-                : `${vaccine.minAgeMonths} meses`}
+              {t('vaccines.minAge', { age: ageLabel(vaccine.minAgeMonths) })}
             </Text>
             {vaccine.maxAgeMonths !== null && (
               <Text variant="bodyMedium" style={styles.bodyText}>
-                Idade máxima: {vaccine.maxAgeMonths} meses
+                {t('vaccines.maxAge', {
+                  age: t('home.ageMonths', { count: vaccine.maxAgeMonths }),
+                })}
               </Text>
             )}
           </Card.Content>
@@ -161,24 +171,24 @@ export function VaccineDetailScreen({
         {/* APLICACAO REGISTRADA (se houver) */}
         {status === VaccineStatus.APPLIED && record && (
           <Card style={styles.card} mode="outlined">
-            <Card.Title title="Aplicação registrada" />
+            <Card.Title title={t('vaccines.recordTitle')} />
             <Card.Content style={styles.cardContent}>
               <Text variant="bodyMedium" style={styles.bodyText}>
-                Data: {formatDate(record.appliedAt)}
+                {t('vaccines.recordDate', { date: formatDate(record.appliedAt) })}
               </Text>
               {record.lotNumber && (
                 <Text variant="bodyMedium" style={styles.bodyText}>
-                  Lote: {record.lotNumber}
+                  {t('vaccines.recordLot', { value: record.lotNumber })}
                 </Text>
               )}
               {record.location && (
                 <Text variant="bodyMedium" style={styles.bodyText}>
-                  Local: {record.location}
+                  {t('vaccines.recordLocation', { value: record.location })}
                 </Text>
               )}
               {record.notes && (
                 <Text variant="bodyMedium" style={styles.bodyText}>
-                  Notas: {record.notes}
+                  {t('vaccines.recordNotes', { value: record.notes })}
                 </Text>
               )}
             </Card.Content>
@@ -195,7 +205,7 @@ export function VaccineDetailScreen({
             loading={deleteRecord.isPending}
             style={styles.action}
           >
-            Apagar registro
+            {t('vaccines.deleteRecordBtn')}
           </Button>
         ) : (
           <Button
@@ -204,7 +214,7 @@ export function VaccineDetailScreen({
             onPress={() => setSheetOpen(true)}
             style={styles.action}
           >
-            Marcar como aplicada
+            {t('vaccines.markAppliedFull')}
           </Button>
         )}
       </ScrollView>
@@ -220,7 +230,7 @@ export function VaccineDetailScreen({
         visible={snackbar !== null}
         onDismiss={() => setSnackbar(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setSnackbar(null) }}
+        action={{ label: t('common.ok'), onPress: () => setSnackbar(null) }}
       >
         {snackbar ?? ''}
       </Snackbar>

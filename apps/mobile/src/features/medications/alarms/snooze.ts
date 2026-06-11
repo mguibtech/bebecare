@@ -14,7 +14,9 @@ import notifee, {
   type TimestampTrigger,
 } from '@notifee/react-native';
 
-import { DOSE_UNIT_LABELS, type MedDoseLog } from '../types';
+import i18n from '@/shared/i18n';
+
+import { DOSE_UNIT_KEYS, type MedDoseLog } from '../types';
 import { ensureAlarmChannelOnce } from './channel';
 import {
   ALARM_CHANNEL_ID,
@@ -35,7 +37,7 @@ export async function snoozeDose(
   await ensureAlarmChannelOnce();
 
   const med = dose.medication;
-  const unit = DOSE_UNIT_LABELS[med.doseUnit] ?? '';
+  const unit = i18n.t(DOSE_UNIT_KEYS[med.doseUnit]);
   const timestamp = Date.now() + minutes * 60_000;
 
   const trigger: TimestampTrigger = {
@@ -47,7 +49,7 @@ export async function snoozeDose(
   await notifee.createTriggerNotification(
     {
       id: `${SNOOZE_ID_PREFIX}${dose.id}`,
-      title: 'Hora do remédio 💊 (soneca)',
+      title: i18n.t('meds.alarmTitleSnooze'),
       body: `${med.name} — ${Number(med.dose)} ${unit}`.trim(),
       android: {
         channelId: ALARM_CHANNEL_ID,

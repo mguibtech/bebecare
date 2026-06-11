@@ -97,14 +97,13 @@ export type CreateBabyBody = {
 export type UpdateBabyBody = Partial<CreateBabyBody>;
 
 // ============================================================
-// Labels de UI (PT-BR)
+// Labels de UI
 // ============================================================
 
-export const SEX_LABELS: Record<Sex, string> = {
-  [Sex.MALE]: 'Menino',
-  [Sex.FEMALE]: 'Menina',
-};
-
+/**
+ * Tipo sanguíneo é universal (A+, O-…) — não localiza. Sexo, estilos de avatar
+ * e demais textos são localizados via i18n nos componentes (t('babies.*')).
+ */
 export const BLOOD_TYPE_LABELS: Record<BloodType, string> = {
   [BloodType.A_POSITIVE]: 'A+',
   [BloodType.A_NEGATIVE]: 'A-',
@@ -114,15 +113,4 @@ export const BLOOD_TYPE_LABELS: Record<BloodType, string> = {
   [BloodType.AB_NEGATIVE]: 'AB-',
   [BloodType.O_POSITIVE]: 'O+',
   [BloodType.O_NEGATIVE]: 'O-',
-};
-
-export const AVATAR_STYLE_LABELS: Record<AvatarStyle, string> = {
-  [AvatarStyle.ADVENTURER]: 'Aventureiro',
-  [AvatarStyle.LORELEI]: 'Lorelei',
-  [AvatarStyle.MICAH]: 'Micah',
-  [AvatarStyle.PERSONAS]: 'Personas',
-  [AvatarStyle.NOTIONISTS]: 'Notionists',
-  [AvatarStyle.AVATAAARS]: 'Avataaars',
-  [AvatarStyle.BOTTTS]: 'Botts',
-  [AvatarStyle.CROODLES]: 'Croodles',
 };

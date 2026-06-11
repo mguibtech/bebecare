@@ -14,6 +14,8 @@ import TrackPlayer, {
   RepeatMode,
 } from 'react-native-track-player';
 
+import i18n from '@/shared/i18n';
+
 import type { SleepSound } from './sounds';
 
 const PACKAGE = 'com.bebecare';
@@ -59,8 +61,8 @@ export async function playSound(
   await TrackPlayer.add({
     id: sound.key,
     url: soundUri(sound),
-    title: sound.label,
-    artist: 'Modo Soninho',
+    title: i18n.t(sound.labelKey),
+    artist: i18n.t('sleep.title'),
   });
   await TrackPlayer.setVolume(volume);
   await TrackPlayer.play();
