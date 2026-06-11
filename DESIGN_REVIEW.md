@@ -141,13 +141,11 @@ Tem ferramenta automatizada — vale criar um teste unitário que itera as palet
 `contrast.test.ts` — itera as 4 paletas×modos e valida WCAG AA (4.5:1 corpo,
 3:1 acento/UI), achatando os tokens translúcidos (muted/secondary) sobre o fundo.
 
-**🔎 Achado (decisão de design pendente):** o **único** par abaixo do limiar é
-`onPrimary / primary` no **azul-light** = **2.96:1** (texto branco sobre o
-azul-bebê de marca `#5B9BD5`) — abaixo até de 3:1. Afeta os botões `contained`
-do tema padrão. Está documentado como exceção no teste (com guard de regressão).
-Pra resolver: **escurecer o `primary` do azul-light** (ex.: rumo a `#3D7FB0`
-pra ~4.5:1) — mas muda a cara da identidade, então fica pra sua call. Todos os
-outros 39 pares passam.
+**✅ Resolvido (11 jun):** o único par abaixo do limiar era `onPrimary / primary`
+no **azul-light** = 2.96:1 (branco sobre `#5B9BD5`). O `primary` do azul-light
+foi aprofundado pra **`#3A7AAC`** → **4.61:1** (passa AA pra texto normal). O
+`brand.blue #5B9BD5` segue intacto pra logo/ícone/gradiente. **Os 40 pares passam**
+sem exceções; o guard-rail segue ativo contra regressão.
 
 ---
 

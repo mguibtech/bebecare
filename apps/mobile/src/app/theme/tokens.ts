@@ -41,7 +41,9 @@ export const brandGradient = [brand.blue, brand.pink] as const;
 // ============================================================
 
 const azulLight = {
-  primary: '#5B9BD5', // azul bebê (atual)
+  // Azul-bebê aprofundado pra texto branco passar WCAG AA (4.61:1 vs 2.96 do
+  // brand.blue #5B9BD5). brand.blue segue intacto pra logo/ícone/gradiente.
+  primary: '#3A7AAC',
   primaryContainer: '#DBE9F8',
   secondary: '#F4A6B8', // rosa solido — accent pontual
   secondaryContainer: '#C7DCF2', // azul mais saturado pra seleao/badge

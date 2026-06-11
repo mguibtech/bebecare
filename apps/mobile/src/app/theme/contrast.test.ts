@@ -53,18 +53,12 @@ const ACCENT: Pair[] = [
 ];
 
 /**
- * Pares de marca abaixo do limiar hoje. Chave: `${palette}-${mode} | ${pair}`.
- * `current` = razão medida; o teste só garante que NÃO piore (regressão).
+ * Pares de marca abaixo do limiar (exceções documentadas). Chave:
+ * `${palette}-${mode} | ${pair}`. `current` = razão medida; o teste só garante
+ * que NÃO piore (guard de regressão). Vazio agora — todos os pares passam o
+ * limiar da sua categoria. Manter o mecanismo pra futuras exceções de marca.
  */
-const KNOWN_BELOW: Record<string, { current: number; note: string }> = {
-  'azul-light | onPrimary / primary': {
-    current: 2.96,
-    // Texto branco sobre o azul-bebê #5B9BD5 (cor de marca). Chegar a 3:1/4.5:1
-    // exigiria escurecer o primary (decisão de identidade). Botão contained do
-    // tema azul (padrão). Pendente: escurecer primary OU usar só em ícone/grande.
-    note: 'branco sobre #5B9BD5 (marca) — escurecer primary p/ AA é decisão de design',
-  },
-};
+const KNOWN_BELOW: Record<string, { current: number; note: string }> = {};
 
 const THEMES: Array<[PaletteName, ThemeMode]> = [
   ['azul', 'light'],
