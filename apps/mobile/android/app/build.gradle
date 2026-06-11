@@ -83,7 +83,9 @@ android {
         applicationId "com.bebecare"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        // CI passa -PBEBECARE_VERSION_CODE=<github.run_number>; local cai no 1.
+        // A Play exige versionCode crescente a cada envio.
+        versionCode (project.hasProperty('BEBECARE_VERSION_CODE') ? BEBECARE_VERSION_CODE.toInteger() : 1)
         versionName "1.0"
     }
     signingConfigs {
@@ -93,15 +95,30 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            // Lê as credenciais do upload keystore de propriedades do Gradle
+            // (gradle.properties local OU -PBEBECARE_UPLOAD_* no CI). Se as props
+            // não existirem (dev sem keystore), este config fica "vazio" e NÃO é
+            // usado — o buildType release abaixo cai no debug. Ver DEPLOY.md.
+            if (project.hasProperty('BEBECARE_UPLOAD_STORE_FILE')) {
+                storeFile file(BEBECARE_UPLOAD_STORE_FILE)
+                storePassword BEBECARE_UPLOAD_STORE_PASSWORD
+                keyAlias BEBECARE_UPLOAD_KEY_ALIAS
+                keyPassword BEBECARE_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // Com o upload keystore disponível (release real, CI), assina com ele;
+            // sem ele, cai no debug pra dev/CI conseguir compilar release localmente
+            // sem o segredo. ⚠️ Um AAB de PRODUÇÃO precisa do keystore de upload.
+            signingConfig project.hasProperty('BEBECARE_UPLOAD_STORE_FILE')
+                ? signingConfigs.release
+                : signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
