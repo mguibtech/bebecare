@@ -11,7 +11,7 @@
  * /auth/login (AUTH_BYPASS_PATHS).
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Snackbar, Text, useTheme } from 'react-native-paper';
@@ -33,7 +33,7 @@ import type { AppTheme } from '@/app/theme';
 
 import { useLogin } from '../hooks/useLogin';
 import {
-  loginSchema,
+  makeLoginSchema,
   type LoginFormValues,
 } from '../schemas/auth.schema';
 
@@ -42,6 +42,7 @@ export function LoginScreen({ navigation }: AuthScreenProps<'Login'>) {
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const theme = useTheme<AppTheme>();
 
+  const loginSchema = useMemo(() => makeLoginSchema(t), [t]);
   const { control, handleSubmit, formState } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',

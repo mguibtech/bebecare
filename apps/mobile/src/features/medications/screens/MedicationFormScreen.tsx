@@ -10,7 +10,7 @@
  *  - com medicationId → EDIT
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
@@ -38,7 +38,7 @@ import { useCreateMedication } from '../hooks/useCreateMedication';
 import { useMedication } from '../hooks/useMedication';
 import { useUpdateMedication } from '../hooks/useUpdateMedication';
 import {
-  medicationSchema,
+  makeMedicationSchema,
   type MedicationFormValues,
 } from '../schemas/medication.schema';
 import { DoseUnit, type CreateMedicationBody } from '../types';
@@ -62,6 +62,7 @@ export function MedicationFormScreen({
   const create = useCreateMedication();
   const update = useUpdateMedication();
 
+  const medicationSchema = useMemo(() => makeMedicationSchema(t), [t]);
   const { control, handleSubmit, formState, reset, setValue, watch } =
     useForm<MedicationFormValues>({
       resolver: zodResolver(medicationSchema),

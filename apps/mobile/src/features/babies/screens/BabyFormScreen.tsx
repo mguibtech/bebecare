@@ -15,7 +15,7 @@
  *  7. Se EDIT: botao "Excluir" no fim
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
@@ -51,7 +51,7 @@ import { useCreateBaby } from '../hooks/useCreateBaby';
 import { useUpdateBaby } from '../hooks/useUpdateBaby';
 import { useDeleteBaby } from '../hooks/useDeleteBaby';
 import {
-  createBabySchema,
+  makeBabySchema,
   type CreateBabyFormValues,
 } from '../schemas/baby.schema';
 import { AvatarStyle, type CreateBabyBody, type Sex } from '../types';
@@ -79,9 +79,10 @@ export function BabyFormScreen({
   const update = useUpdateBaby();
   const remove = useDeleteBaby();
 
+  const babySchema = useMemo(() => makeBabySchema(t), [t]);
   const { control, handleSubmit, formState, reset, setValue } =
     useForm<CreateBabyFormValues>({
-      resolver: zodResolver(createBabySchema),
+      resolver: zodResolver(babySchema),
       mode: 'onBlur',
       defaultValues: {
         name: '',

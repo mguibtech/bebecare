@@ -12,8 +12,9 @@
  * onSuccess inválida schedule + records do bebê (hook useCreateVaccineRecord).
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { StyleSheet, View } from 'react-native';
 import {
   Button,
@@ -34,30 +35,32 @@ import type { AppTheme } from '@/app/theme';
 import { useCreateVaccineRecord } from '../hooks/useCreateVaccineRecord';
 import type { Vaccine } from '../types';
 
-const registerSchema = z.object({
-  appliedAt: z
-    .string({ required_error: 'Data obrigatória' })
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Data inválida'),
-  lotNumber: z
-    .string()
-    .trim()
-    .max(50, 'Máximo 50 caracteres')
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
-  location: z
-    .string()
-    .trim()
-    .max(200, 'Máximo 200 caracteres')
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
-  notes: z
-    .string()
-    .trim()
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
-});
+function makeRegisterSchema(t: TFunction) {
+  return z.object({
+    appliedAt: z
+      .string({ required_error: t('validation.dateRequired') })
+      .regex(/^\d{4}-\d{2}-\d{2}$/, t('validation.dateInvalid')),
+    lotNumber: z
+      .string()
+      .trim()
+      .max(50, t('validation.max50'))
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
+    location: z
+      .string()
+      .trim()
+      .max(200, t('validation.max200'))
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
+    notes: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
+  });
+}
 
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type RegisterFormValues = z.infer<ReturnType<typeof makeRegisterSchema>>;
 
 type RegisterVaccineSheetProps = {
   visible: boolean;
@@ -86,6 +89,7 @@ export function RegisterVaccineSheet({
   const createRecord = useCreateVaccineRecord();
   const [snackbar, setSnackbar] = useState<string | null>(null);
 
+  const registerSchema = useMemo(() => makeRegisterSchema(t), [t]);
   const { control, handleSubmit, formState, reset } =
     useForm<RegisterFormValues>({
       resolver: zodResolver(registerSchema),

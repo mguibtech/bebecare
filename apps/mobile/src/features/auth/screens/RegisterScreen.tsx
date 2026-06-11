@@ -8,7 +8,7 @@
  * troca pra AppStack sozinho.
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Snackbar, Text, useTheme } from 'react-native-paper';
@@ -30,7 +30,7 @@ import type { AppTheme } from '@/app/theme';
 
 import { useRegister } from '../hooks/useRegister';
 import {
-  registerSchema,
+  makeRegisterSchema,
   type RegisterFormValues,
 } from '../schemas/auth.schema';
 
@@ -42,6 +42,7 @@ export function RegisterScreen({ navigation, route }: AuthScreenProps<'Register'
   // Vem de deep link `bebecare://invite/:code` → pre-preenche o campo.
   const incomingInviteCode = route.params?.inviteCode ?? '';
 
+  const registerSchema = useMemo(() => makeRegisterSchema(t), [t]);
   const { control, handleSubmit, formState } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     mode: 'onBlur',
