@@ -1,0 +1,53 @@
+# Render Blueprint — sobe a API do BebeCare quase sem cliques.
+#
+# Como usar: Render Dashboard → New → Blueprint → conecte este repo. O Render lê
+# este arquivo, cria o Web Service e pede só os segredos marcados `sync: false`.
+#
+# O Postgres é externo (Neon — ver DEPLOY.md). Aqui só declaramos o serviço web.
+# Confira contra a doc atual do Render (o schema de blueprint evolui):
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: bebecare-api
+    runtime: node
+    rootDir: apps/api
+    plan: free # troque pra 'starter' se não quiser o serviço dormindo por inatividade
+    region: oregon # ajuste pra perto do Neon (ex.: 'virginia')
+    autoDeploy: true # deploy a cada push na main
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    # Roda as migrations (idempotente) antes de cada deploy ir ao ar — devDeps
+    # ainda presentes nessa fase, então o ts-node do migration:run funciona.
+    preDeployCommand: npm run migration:run
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # JWT — o Render gera um segredo forte automaticamente.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 30d
+      # Postgres (Neon) — preencher no setup do blueprint (não versionar segredos).
+      - key: POSTGRES_HOST
+        sync: false
+      - key: POSTGRES_PORT
+        value: '5432'
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
+      - key: POSTGRES_DB
+        sync: false
+      # NODE_ENV=production já liga o SSL; deixe explícito se quiser.
+      - key: POSTGRES_SSL
+        value: 'true'
+      # Firebase Admin (push). Opcional: sem isso, a API sobe com push desativado.
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false

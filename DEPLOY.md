@@ -54,7 +54,12 @@ Runbook pra colocar o BebeCare no ar. O **código já está pronto pra produçã
 
 ## Passo 2 — API (Render)
 
-Crie um **Web Service** apontando pro repo, root `apps/api`:
+> ⚡ **Atalho:** o repo tem um **`render.yaml`** (blueprint) na raiz. No Render:
+> **New → Blueprint → conecte o repo**. Ele já cria o Web Service com
+> build/start/health/migrations e pede só os segredos (`POSTGRES_*`, `FIREBASE_*`).
+> Aí pode pular os detalhes manuais abaixo (que ficam como referência).
+
+Configuração manual (equivalente ao blueprint) — **Web Service**, root `apps/api`:
 
 - **Build Command:** `npm ci && npm run build`
 - **Start Command:** `npm run start:prod`  ⚠️ **não** use `npm start` (tem
@@ -105,7 +110,9 @@ POSTGRES_SSL=true POSTGRES_HOST=... POSTGRES_USER=... POSTGRES_PASSWORD=... \
 POSTGRES_DB=... npm run migration:run
 ```
 
-- No Render, dá pra usar um **Pre-Deploy Command**: `npm run migration:run`.
+- No Render, já vem no `render.yaml` como **`preDeployCommand`** (roda sozinho
+  antes de cada deploy ir ao ar). Se configurar manual, use o **Pre-Deploy
+  Command**: `npm run migration:run`.
   ⚠️ `migration:run` roda via **ts-node** (está em `devDependencies`), então
   precisa que as devDeps estejam presentes — o Pre-Deploy do Render roda **antes**
   do prune de devDeps, então funciona. Se der `ts-node not found`, é porque
