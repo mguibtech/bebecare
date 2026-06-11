@@ -7,6 +7,8 @@
  */
 
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -24,17 +26,18 @@ import { BabyAvatar } from '../components/BabyAvatar';
 import { useBaby } from '../hooks/useBaby';
 import {
   BLOOD_TYPE_LABELS,
-  SEX_LABELS,
   type Baby,
 } from '../types';
 
 /** Formata idade legivel: "9 meses (274 dias)". */
-function formatAge(baby: Baby): string {
+function formatAge(baby: Baby, t: TFunction): string {
   const { ageMonths, ageDays } = baby;
   if (ageMonths === 0) {
-    return `${ageDays} dia${ageDays !== 1 ? 's' : ''}`;
+    return t('home.ageDays', { count: ageDays });
   }
-  return `${ageMonths} ${ageMonths === 1 ? 'mês' : 'meses'} (${ageDays} dias)`;
+  return `${t('home.ageMonths', { count: ageMonths })} (${t('home.ageDays', {
+    count: ageDays,
+  })})`;
 }
 
 /** Formata YYYY-MM-DD pra DD/MM/AAAA. */
@@ -50,6 +53,7 @@ export function BabyDetailScreen({
 }: AppScreenProps<'BabyDetail'>) {
   const { babyId } = route.params;
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const baby = useBaby(babyId);
 
   // Botao Editar no header
@@ -59,12 +63,12 @@ export function BabyDetailScreen({
       headerRight: () => (
         <Appbar.Action
           icon="pencil"
-          accessibilityLabel="Editar"
+          accessibilityLabel={t('common.edit')}
           onPress={() => navigation.navigate('BabyForm', { babyId })}
         />
       ),
     });
-  }, [navigation, babyId]);
+  }, [navigation, babyId, t]);
 
   if (baby.isPending) {
     return (
@@ -81,9 +85,9 @@ export function BabyDetailScreen({
       <View
         style={[styles.center, { backgroundColor: theme.colors.background }]}
       >
-        <Text variant="bodyLarge">Bebê não encontrado</Text>
+        <Text variant="bodyLarge">{t('babies.notFound')}</Text>
         <Text variant="bodyMedium" style={styles.errorMessage}>
-          {baby.error?.message ?? 'Tente voltar e abrir de novo.'}
+          {baby.error?.message ?? t('family.loadErrorHint')}
         </Text>
       </View>
     );
@@ -105,11 +109,11 @@ export function BabyDetailScreen({
           {b.name}
         </Text>
         <Text variant="bodyMedium" style={styles.muted}>
-          {formatAge(b)}
+          {formatAge(b, t)}
         </Text>
         <View style={styles.chipsRow}>
           <Chip icon={b.sex === 'male' ? 'gender-male' : 'gender-female'} compact>
-            {SEX_LABELS[b.sex]}
+            {t(b.sex === 'male' ? 'babies.sexMale' : 'babies.sexFemale')}
           </Chip>
           <Chip icon="cake-variant" compact>
             {formatDate(b.birthDate)}
@@ -120,16 +124,16 @@ export function BabyDetailScreen({
       {/* MEDIDAS AO NASCER */}
       {hasMeasurements && (
         <Card style={styles.card} mode="outlined">
-          <Card.Title title="Ao nascer" />
+          <Card.Title title={t('babies.atBirth')} />
           <Card.Content>
             {b.birthWeightGrams !== null && (
               <Text variant="bodyMedium" style={styles.row}>
-                Peso: {b.birthWeightGrams}g
+                {t('babies.weightRow', { grams: b.birthWeightGrams })}
               </Text>
             )}
             {b.birthHeightCm !== null && (
               <Text variant="bodyMedium" style={styles.row}>
-                Altura: {b.birthHeightCm}cm
+                {t('babies.heightRow', { cm: b.birthHeightCm })}
               </Text>
             )}
           </Card.Content>
@@ -139,21 +143,23 @@ export function BabyDetailScreen({
       {/* INFO MEDICAS */}
       {hasMedical && (
         <Card style={styles.card} mode="outlined">
-          <Card.Title title="Informacoes medicas" />
+          <Card.Title title={t('babies.medicalInfo')} />
           <Card.Content>
             {b.bloodType && (
               <Text variant="bodyMedium" style={styles.row}>
-                Tipo sanguineo: {BLOOD_TYPE_LABELS[b.bloodType]}
+                {t('babies.bloodTypeRow', {
+                  value: BLOOD_TYPE_LABELS[b.bloodType],
+                })}
               </Text>
             )}
             {b.eyeColor && (
               <Text variant="bodyMedium" style={styles.row}>
-                Cor dos olhos: {b.eyeColor}
+                {t('babies.eyeColorRow', { value: b.eyeColor })}
               </Text>
             )}
             {b.allergies && (
               <Text variant="bodyMedium" style={styles.row}>
-                Alergias: {b.allergies}
+                {t('babies.allergiesRow', { value: b.allergies })}
               </Text>
             )}
           </Card.Content>
@@ -163,7 +169,7 @@ export function BabyDetailScreen({
       {/* NOTAS */}
       {b.notes && (
         <Card style={styles.card} mode="outlined">
-          <Card.Title title="Observacoes" />
+          <Card.Title title={t('babies.notesTitle')} />
           <Card.Content>
             <Text variant="bodyMedium">{b.notes}</Text>
           </Card.Content>
@@ -172,7 +178,7 @@ export function BabyDetailScreen({
 
       {!hasMeasurements && !hasMedical && !b.notes && (
         <Text variant="bodySmall" style={styles.placeholder}>
-          Toque em Editar pra adicionar mais informações.
+          {t('babies.emptyDetail')}
         </Text>
       )}
     </ScrollView>

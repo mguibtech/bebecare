@@ -8,6 +8,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Menu, TextInput } from 'react-native-paper';
 import {
@@ -30,8 +31,9 @@ const ALL_BLOOD_TYPES = Object.values(BloodType);
 export function BloodTypePicker<TForm extends FieldValues>({
   control,
   name,
-  label = 'Tipo sanguineo (opcional)',
+  label,
 }: BloodTypePickerProps<TForm>) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   return (
@@ -42,7 +44,7 @@ export function BloodTypePicker<TForm extends FieldValues>({
         const display =
           value && BLOOD_TYPE_LABELS[value as BloodType]
             ? BLOOD_TYPE_LABELS[value as BloodType]
-            : 'Não informado';
+            : t('babies.bloodTypeNotSet');
 
         return (
           <View style={styles.wrapper}>
@@ -54,7 +56,7 @@ export function BloodTypePicker<TForm extends FieldValues>({
                   <View pointerEvents="none">
                     <TextInput
                       mode="outlined"
-                      label={label}
+                      label={label ?? t('babies.bloodTypeLabel')}
                       value={display}
                       editable={false}
                       right={<TextInput.Icon icon="menu-down" />}
@@ -68,7 +70,7 @@ export function BloodTypePicker<TForm extends FieldValues>({
                   onChange(undefined);
                   setVisible(false);
                 }}
-                title="Não informado"
+                title={t('babies.bloodTypeNotSet')}
               />
               {ALL_BLOOD_TYPES.map((bt) => (
                 <Menu.Item

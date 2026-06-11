@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -68,6 +69,7 @@ export function BabyFormScreen({
   const babyId = route.params?.babyId;
   const isEdit = typeof babyId === 'string';
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
 
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -115,9 +117,9 @@ export function BabyFormScreen({
   // Header dinamico
   useEffect(() => {
     navigation.setOptions({
-      title: isEdit ? 'Editar bebê' : 'Cadastrar bebê',
+      title: isEdit ? t('babies.editTitle') : t('babies.newTitle'),
     });
-  }, [navigation, isEdit]);
+  }, [navigation, isEdit, t]);
 
   const name = useWatch({ control, name: 'name' });
   const avatarStyle = useWatch({ control, name: 'avatarStyle' });
@@ -161,9 +163,7 @@ export function BabyFormScreen({
       navigation.goBack();
     } catch (err) {
       const message =
-        err instanceof ApiError
-          ? err.message
-          : 'Erro inesperado. Tente novamente.';
+        err instanceof ApiError ? err.message : t('common.unexpectedError');
       setErrorBanner(message);
     }
   });
@@ -176,7 +176,7 @@ export function BabyFormScreen({
       navigation.popToTop();
     } catch (err) {
       const message =
-        err instanceof ApiError ? err.message : 'Erro ao excluir';
+        err instanceof ApiError ? err.message : t('babies.deleteError');
       setErrorBanner(message);
     }
   };
@@ -213,7 +213,7 @@ export function BabyFormScreen({
             seed={avatarSeed || defaultSeedFor(name)}
           />
           <Text variant="titleMedium" style={styles.previewName}>
-            {name?.trim() || 'Bebê'}
+            {name?.trim() || t('babies.previewName')}
           </Text>
         </View>
 
@@ -228,13 +228,13 @@ export function BabyFormScreen({
 
         {/* SECTION: Dados basicos */}
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Dados basicos
+          {t('babies.sectionBasics')}
         </Text>
 
         <FormInput
           control={control}
           name="name"
-          label="Nome do bebê"
+          label={t('babies.nameLabel')}
           autoCapitalize="words"
           autoComplete="given-name"
           maxLength={120}
@@ -245,38 +245,37 @@ export function BabyFormScreen({
         <DateField
           control={control}
           name="birthDate"
-          label="Data de nascimento"
+          label={t('babies.birthDateLabel')}
           maximumDate={new Date()}
         />
 
         {/* SECTION: Medidas ao nascer */}
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Medidas ao nascer (opcional)
+          {t('babies.sectionMeasures')}
         </Text>
         <Text variant="bodySmall" style={styles.sectionHint}>
-          Dados da maternidade ou do cartao de vacinacao. Pode deixar em
-          branco se não souber ou se preferir adicionar depois.
+          {t('babies.measuresHint')}
         </Text>
 
         <FormInput
           control={control}
           name="birthWeightGrams"
-          label="Peso ao nascer (em gramas)"
-          placeholder="ex: 3450"
+          label={t('babies.weightLabel')}
+          placeholder={t('babies.weightPlaceholder')}
           keyboardType="numeric"
         />
 
         <FormInput
           control={control}
           name="birthHeightCm"
-          label="Altura ao nascer (em cm)"
-          placeholder="ex: 49"
+          label={t('babies.heightLabel')}
+          placeholder={t('babies.heightPlaceholder')}
           keyboardType="numeric"
         />
 
         {/* SECTION: Informacoes medicas */}
         <Text variant="titleSmall" style={styles.sectionTitle}>
-          Informacoes medicas (opcional)
+          {t('babies.sectionMedical')}
         </Text>
 
         <BloodTypePicker control={control} name="bloodType" />
@@ -284,7 +283,7 @@ export function BabyFormScreen({
         <FormInput
           control={control}
           name="eyeColor"
-          label="Cor dos olhos"
+          label={t('babies.eyeColorLabel')}
           autoCapitalize="none"
           maxLength={30}
         />
@@ -292,7 +291,7 @@ export function BabyFormScreen({
         <FormInput
           control={control}
           name="allergies"
-          label="Alergias"
+          label={t('babies.allergiesLabel')}
           multiline
           numberOfLines={2}
           maxLength={500}
@@ -301,7 +300,7 @@ export function BabyFormScreen({
         <FormInput
           control={control}
           name="notes"
-          label="Observacoes"
+          label={t('babies.notesLabel')}
           multiline
           numberOfLines={3}
         />
@@ -312,7 +311,11 @@ export function BabyFormScreen({
           loading={isSaving}
           disabled={!formState.isValid && formState.isSubmitted}
         >
-          {isSaving ? 'Salvando...' : isEdit ? 'Salvar alteracoes' : 'Cadastrar bebê'}
+          {isSaving
+            ? t('common.saving')
+            : isEdit
+              ? t('common.saveChanges')
+              : t('babies.create')}
         </SubmitButton>
 
         {/* DELETE (so em edit) */}
@@ -324,7 +327,7 @@ export function BabyFormScreen({
             style={styles.deleteButton}
             icon="trash-can-outline"
           >
-            Excluir bebê
+            {t('babies.deleteBtn')}
           </Button>
         )}
       </ScrollView>
@@ -334,22 +337,20 @@ export function BabyFormScreen({
           visible={deleteDialogOpen}
           onDismiss={() => setDeleteDialogOpen(false)}
         >
-          <Dialog.Title>Excluir bebê?</Dialog.Title>
+          <Dialog.Title>{t('babies.deleteTitle')}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">
-              Esta acao pode ser desfeita em ate 30 dias entrando em contato
-              com o suporte. Apos isso, todos os dados (vacinas, consultas,
-              etc.) serao apagados permanentemente.
-            </Text>
+            <Text variant="bodyMedium">{t('babies.deleteBody')}</Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setDeleteDialogOpen(false)}>Cancelar</Button>
+            <Button onPress={() => setDeleteDialogOpen(false)}>
+              {t('common.cancel')}
+            </Button>
             <Button
               onPress={onDelete}
               textColor={theme.colors.error}
               loading={remove.isPending}
             >
-              Excluir
+              {t('common.delete')}
             </Button>
           </Dialog.Actions>
         </Dialog>
@@ -359,7 +360,7 @@ export function BabyFormScreen({
         visible={errorBanner !== null}
         onDismiss={() => setErrorBanner(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setErrorBanner(null) }}
+        action={{ label: t('common.ok'), onPress: () => setErrorBanner(null) }}
       >
         {errorBanner ?? ''}
       </Snackbar>

@@ -9,14 +9,27 @@
  */
 
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Avatar, Button, Text, useTheme } from 'react-native-paper';
 
 import type { AppTheme } from '@/app/theme';
 
-import { AvatarStyle, AVATAR_STYLE_LABELS } from '../types';
+import { AvatarStyle } from '../types';
 
 const ALL_STYLES = Object.values(AvatarStyle);
+
+/** Estilo do avatar -> chave i18n do label. */
+const STYLE_KEY = {
+  [AvatarStyle.ADVENTURER]: 'babies.avatarAdventurer',
+  [AvatarStyle.LORELEI]: 'babies.avatarLorelei',
+  [AvatarStyle.MICAH]: 'babies.avatarMicah',
+  [AvatarStyle.PERSONAS]: 'babies.avatarPersonas',
+  [AvatarStyle.NOTIONISTS]: 'babies.avatarNotionists',
+  [AvatarStyle.AVATAAARS]: 'babies.avatarAvataaars',
+  [AvatarStyle.BOTTTS]: 'babies.avatarBotts',
+  [AvatarStyle.CROODLES]: 'babies.avatarCroodles',
+} as const;
 
 type AvatarStylePickerProps = {
   value: AvatarStyle;
@@ -41,21 +54,22 @@ export function AvatarStylePicker({
   onRegenerateSeed,
 }: AvatarStylePickerProps) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
 
   const items = useMemo(
     () =>
       ALL_STYLES.map((s) => ({
         style: s,
         uri: urlFor(s, seed),
-        label: AVATAR_STYLE_LABELS[s],
+        label: t(STYLE_KEY[s]),
       })),
-    [seed],
+    [seed, t],
   );
 
   return (
     <View style={styles.container}>
       <Text variant="labelMedium" style={styles.label}>
-        Estilo do avatar
+        {t('babies.avatarStyleLabel')}
       </Text>
 
       <View style={styles.grid}>
@@ -89,7 +103,7 @@ export function AvatarStylePicker({
         icon="dice-multiple"
         style={styles.regenerate}
       >
-        Trocar aparência (regenerar)
+        {t('babies.avatarRegenerate')}
       </Button>
     </View>
   );

@@ -11,6 +11,8 @@
  * de gestos de swipe-to-dismiss, migrar pra @gorhom/bottom-sheet.
  */
 
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   Button,
@@ -39,11 +41,11 @@ type BabySelectorSheetProps = {
 };
 
 /** Idade resumida pro sheet ("9 meses" ou "23 dias"). */
-function formatAgeShort(b: Baby): string {
+function formatAgeShort(b: Baby, t: TFunction): string {
   if (b.ageMonths === 0) {
-    return `${b.ageDays} dia${b.ageDays !== 1 ? 's' : ''}`;
+    return t('home.ageDays', { count: b.ageDays });
   }
-  return `${b.ageMonths} ${b.ageMonths === 1 ? 'mês' : 'meses'}`;
+  return t('home.ageMonths', { count: b.ageMonths });
 }
 
 export function BabySelectorSheet({
@@ -53,6 +55,7 @@ export function BabySelectorSheet({
   const navigation =
     useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
 
   const babies = useBabies();
   const selectedId = useBabySelectorStore((s) => s.selectedBabyId);
@@ -90,7 +93,7 @@ export function BabySelectorSheet({
       >
         <View style={styles.handle} />
         <Text variant="titleMedium" style={styles.title}>
-          Bebês da família
+          {t('babies.selectorTitle')}
         </Text>
 
         <ScrollView style={styles.scroll}>
@@ -101,7 +104,7 @@ export function BabySelectorSheet({
                 <View key={b.id}>
                   <List.Item
                     title={b.name}
-                    description={formatAgeShort(b)}
+                    description={formatAgeShort(b, t)}
                     onPress={() => handleSelect(b.id)}
                     // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper precisa de closure no item do map
                     left={() => (
@@ -117,13 +120,13 @@ export function BabySelectorSheet({
                             <IconButton
                               icon="account-details"
                               size={20}
-                              accessibilityLabel="Ver perfil"
+                              accessibilityLabel={t('babies.viewProfileA11y')}
                               onPress={() => handleDetail(b.id)}
                             />
                             <IconButton
                               icon="pencil"
                               size={20}
-                              accessibilityLabel="Editar"
+                              accessibilityLabel={t('common.edit')}
                               onPress={() => handleEdit(b.id)}
                             />
                           </>
@@ -142,7 +145,7 @@ export function BabySelectorSheet({
             })
           ) : (
             <Text variant="bodyMedium" style={styles.empty}>
-              Nenhum bebê cadastrado ainda.
+              {t('babies.selectorEmpty')}
             </Text>
           )}
         </ScrollView>
@@ -153,7 +156,7 @@ export function BabySelectorSheet({
           onPress={handleCreate}
           style={styles.addButton}
         >
-          Cadastrar bebê
+          {t('babies.create')}
         </Button>
       </Modal>
     </Portal>
