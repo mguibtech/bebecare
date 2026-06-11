@@ -5,6 +5,7 @@ import axios, {
 } from 'axios';
 
 import { env } from '@/shared/config/env';
+import { systemLanguage } from '@/shared/i18n';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 
 import { ApiError, type ApiErrorPayload } from './types';
@@ -32,13 +33,15 @@ export const apiClient = axios.create({
   },
 });
 
-// ---------- Request: injeta JWT ----------
+// ---------- Request: injeta JWT + idioma ----------
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = useAuthStore.getState().accessToken;
     if (token) {
       config.headers.set('Authorization', `Bearer ${token}`);
     }
+    // Idioma do sistema → backend localiza o conteúdo (ex.: catálogo de vacinas).
+    config.headers.set('Accept-Language', systemLanguage());
     return config;
   },
   (error: AxiosError) => Promise.reject(error),

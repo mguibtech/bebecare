@@ -2,10 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { VaccineStatus } from '../../common/enums/vaccine-status.enum';
+import type { Lang } from '../../common/i18n/lang';
 import { Baby } from '../babies/entities/baby.entity';
 import { differenceInMonths, parseISO } from '../babies/utils/age.util';
 import { BabyVaccineScheduleDto, ScheduleEntryDto } from './dto/baby-vaccine-schedule.dto';
 import { VaccineCatalogItemDto } from './dto/vaccine-catalog-item.dto';
+import { translateVaccine } from './i18n/vaccine-translations';
 import { VaccineRecord } from './entities/vaccine-record.entity';
 import { Vaccine } from './entities/vaccine.entity';
 
@@ -25,18 +27,22 @@ export class VaccinesService {
   // -------------------------------------------------------------------
   // CATÁLOGO
   // -------------------------------------------------------------------
-  async getCatalog(): Promise<VaccineCatalogItemDto[]> {
+  async getCatalog(lang: Lang = 'pt'): Promise<VaccineCatalogItemDto[]> {
     const all = await this.vaccines.find({
       where: { isActive: true },
       order: { displayOrder: 'ASC' },
     });
-    return all.map((v) => this.toCatalogItem(v));
+    return all.map((v) => this.toCatalogItem(v, lang));
   }
 
   // -------------------------------------------------------------------
   // SCHEDULE POR BEBÊ
   // -------------------------------------------------------------------
-  async buildScheduleForBaby(babyId: string, familyId: string): Promise<BabyVaccineScheduleDto> {
+  async buildScheduleForBaby(
+    babyId: string,
+    familyId: string,
+    lang: Lang = 'pt',
+  ): Promise<BabyVaccineScheduleDto> {
     const baby = await this.babies.findOne({ where: { id: babyId } });
     if (!baby || baby.familyId !== familyId) {
       throw new NotFoundException('Bebê não encontrado nesta família');
@@ -64,7 +70,7 @@ export class VaccinesService {
       const expectedAt = this.computeExpectedDate(baby.birthDate, vaccine.recommendedAgeMonths);
 
       return {
-        vaccine: this.toCatalogItem(vaccine),
+        vaccine: this.toCatalogItem(vaccine, lang),
         status,
         appliedAt: record?.appliedAt ?? null,
         recordId: record?.id ?? null,
@@ -140,13 +146,14 @@ export class VaccinesService {
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  private toCatalogItem(v: Vaccine): VaccineCatalogItemDto {
+  private toCatalogItem(v: Vaccine, lang: Lang = 'pt'): VaccineCatalogItemDto {
+    const text = translateVaccine(v, lang);
     return {
       id: v.id,
       code: v.code,
-      name: v.name,
-      description: v.description,
-      doseLabel: v.doseLabel,
+      name: text.name,
+      description: text.description,
+      doseLabel: text.doseLabel,
       doseNumber: v.doseNumber,
       isBooster: v.isBooster,
       recommendedAgeMonths: v.recommendedAgeMonths,
