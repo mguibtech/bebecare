@@ -332,6 +332,73 @@ export const pt = {
     sectionNotes: 'Anotações (opcional)',
     notesHint: 'Sintomas, perguntas a fazer, observações…',
   },
+  headers: {
+    babyDetail: 'Perfil do bebê',
+    family: 'Família',
+    vaccineDetail: 'Vacina',
+    appointmentDetail: 'Consulta',
+    medicationDetail: 'Remédio',
+    alarms: 'Despertadores',
+    editProfile: 'Editar perfil',
+    permissions: 'Permissões',
+  },
+  appearance: {
+    modeLight: 'Claro',
+    modeDark: 'Escuro',
+    modeSystem: 'Sistema',
+    paletteAzul: 'Azul',
+    paletteRosa: 'Rosa',
+  },
+  more: {
+    familySubtitle_one: '{{count}} membro • Gerenciar',
+    familySubtitle_other: '{{count}} membros • Gerenciar',
+    alarmsTitle: 'Despertadores',
+    alarmsSubtitle: 'Mamada, troca, soneca — toca com o app fechado',
+    sleepTitle: 'Modo Soninho',
+    sleepSubtitle: 'Ruído branco pra ninar — toca com a tela apagada',
+    appearanceTitle: 'Aparência',
+    appearanceTheme: 'Tema',
+    appearanceMode: 'Modo',
+    permissionsTitle: 'Permissões',
+    permissionsSubtitle: 'Alarme exato, notificações, bateria',
+    comingSoon: 'Em breve: diário, receitas médicas, lista de compras.',
+    dangerZone: 'Zona perigosa',
+    deleteAccount: 'Excluir minha conta',
+    appVersion: 'BebeCare v{{version}}',
+    privacy: 'Privacidade',
+    terms: 'Termos de uso',
+    deleteError: 'Não foi possível excluir a conta. Tente de novo.',
+    deleteDialogTitle: 'Excluir conta',
+    deleteDialogIntro: 'Você vai sair do BebeCare e perder acesso a:',
+    deleteBullet1: 'Bebês cadastrados (se for o único membro da família)',
+    deleteBullet2: 'Vacinas, consultas e lembretes',
+    deleteBullet3: 'Convites pendentes',
+    deleteDialogRecovery:
+      'Você pode recuperar a conta em até 30 dias entrando em contato com o suporte. Depois disso, todos os dados serão apagados.',
+  },
+  editProfile: {
+    nameLabel: 'Nome',
+    nameTooShort: 'Nome muito curto',
+    saveError: 'Não foi possível salvar. Tente de novo.',
+    avatarHint:
+      'O avatar é gerado pelo DiceBear a partir do estilo e de uma “semente”. Sem foto, sem upload.',
+  },
+  permissions: {
+    intro:
+      'Pra os alarmes e o Modo Soninho funcionarem de verdade, o Android pede algumas permissões. Toque em cada item pra abrir o ajuste do sistema.',
+    notificationsTitle: 'Notificações',
+    notificationsDesc: 'Sem isso, alarmes e lembretes não aparecem.',
+    exactAlarmTitle: 'Alarmes e lembretes (alarme exato)',
+    exactAlarmDesc: 'Garante que o alarme toque na hora certa, sem atraso.',
+    fullScreenTitle: 'Notificações em tela cheia',
+    fullScreenDesc:
+      'Faz o alarme abrir por cima da tela bloqueada, tipo despertador.',
+    batteryTitle: 'Otimização de bateria',
+    batteryDesc:
+      'Em Xiaomi/Samsung/Huawei, desative a otimização pro BebeCare — senão o sistema pode segurar o alarme.',
+    footer:
+      'O BebeCare nunca pede mais do que precisa pros lembretes do seu bebê.',
+  },
 };
 
 export type TranslationCatalog = typeof pt;

@@ -9,11 +9,12 @@
  * ganha um segundo grupo de botoes.
  */
 
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { SegmentedButtons } from 'react-native-paper';
 
 import { useThemeStore } from '@/app/theme/store';
-import { PALETTE_LABELS, type PaletteName } from '@/app/theme/tokens';
+import { type PaletteName } from '@/app/theme/tokens';
 
 type PalettePickerProps = {
   /** Densidade compacta (header). Default false. */
@@ -21,6 +22,7 @@ type PalettePickerProps = {
 };
 
 export function PalettePicker({ compact }: PalettePickerProps) {
+  const { t } = useTranslation();
   const palette = useThemeStore((s) => s.palette);
   const setPalette = useThemeStore((s) => s.setPalette);
 
@@ -32,12 +34,12 @@ export function PalettePicker({ compact }: PalettePickerProps) {
         buttons={[
           {
             value: 'azul' satisfies PaletteName,
-            label: PALETTE_LABELS.azul,
+            label: t('appearance.paletteAzul'),
             icon: 'water',
           },
           {
             value: 'rosa' satisfies PaletteName,
-            label: PALETTE_LABELS.rosa,
+            label: t('appearance.paletteRosa'),
             icon: 'heart',
           },
         ]}

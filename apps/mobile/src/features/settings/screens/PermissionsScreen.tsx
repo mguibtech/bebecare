@@ -5,6 +5,7 @@
  * explicados, não como toggles.
  */
 
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Card, List, Text, useTheme } from 'react-native-paper';
 
@@ -24,55 +25,54 @@ type Item = {
   onPress: () => void;
 };
 
-const ITEMS: Item[] = [
-  {
-    icon: 'bell-ring-outline',
-    title: 'Notificações',
-    description: 'Sem isso, alarmes e lembretes não aparecem.',
-    onPress: () => {
-      openNotificationSettings();
-    },
-  },
-  {
-    icon: 'alarm-check',
-    title: 'Alarmes e lembretes (alarme exato)',
-    description: 'Garante que o alarme toque na hora certa, sem atraso.',
-    onPress: () => {
-      openExactAlarmSettings();
-    },
-  },
-  {
-    icon: 'fullscreen',
-    title: 'Notificações em tela cheia',
-    description: 'Faz o alarme abrir por cima da tela bloqueada, tipo despertador.',
-    onPress: () => {
-      openFullScreenIntentSettings();
-    },
-  },
-  {
-    icon: 'battery-alert-variant-outline',
-    title: 'Otimização de bateria',
-    description:
-      'Em Xiaomi/Samsung/Huawei, desative a otimização pro BebeCare — senão o sistema pode segurar o alarme.',
-    onPress: () => {
-      openBatteryOptimizationSettings();
-    },
-  },
-];
-
 export function PermissionsScreen() {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
+
+  const items: Item[] = [
+    {
+      icon: 'bell-ring-outline',
+      title: t('permissions.notificationsTitle'),
+      description: t('permissions.notificationsDesc'),
+      onPress: () => {
+        openNotificationSettings();
+      },
+    },
+    {
+      icon: 'alarm-check',
+      title: t('permissions.exactAlarmTitle'),
+      description: t('permissions.exactAlarmDesc'),
+      onPress: () => {
+        openExactAlarmSettings();
+      },
+    },
+    {
+      icon: 'fullscreen',
+      title: t('permissions.fullScreenTitle'),
+      description: t('permissions.fullScreenDesc'),
+      onPress: () => {
+        openFullScreenIntentSettings();
+      },
+    },
+    {
+      icon: 'battery-alert-variant-outline',
+      title: t('permissions.batteryTitle'),
+      description: t('permissions.batteryDesc'),
+      onPress: () => {
+        openBatteryOptimizationSettings();
+      },
+    },
+  ];
 
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <MutedText variant="bodyMedium" style={styles.intro}>
-          Pra os alarmes e o Modo Soninho funcionarem de verdade, o Android pede
-          algumas permissões. Toque em cada item pra abrir o ajuste do sistema.
+          {t('permissions.intro')}
         </MutedText>
 
         <Card mode="outlined">
-          {ITEMS.map((item, i) => (
+          {items.map((item, i) => (
             <View key={item.title}>
               {i > 0 && <View style={styles.divider} />}
               <List.Item
@@ -90,7 +90,7 @@ export function PermissionsScreen() {
         </Card>
 
         <Text variant="labelSmall" style={[styles.footer, { color: theme.app.text.muted }]}>
-          O BebeCare nunca pede mais do que precisa pros lembretes do seu bebê.
+          {t('permissions.footer')}
         </Text>
       </ScrollView>
     </View>

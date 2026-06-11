@@ -63,9 +63,7 @@ export function MoreScreen() {
       // RootNavigator detecta signOut e troca pra AuthStack sozinho.
     } catch (err) {
       const message =
-        err instanceof ApiError
-          ? err.message
-          : 'Não foi possível excluir a conta. Tente de novo.';
+        err instanceof ApiError ? err.message : t('more.deleteError');
       setSnackbar(message);
     }
   };
@@ -131,8 +129,10 @@ export function MoreScreen() {
       <Pressable onPress={() => navigation.navigate('Family')}>
         <Card style={styles.card} mode="outlined">
           <Card.Title
-            title={family.name ?? 'Minha família'}
-            subtitle={`${family.members.length + 1} membro${family.members.length + 1 > 1 ? 's' : ''} • Gerenciar`}
+            title={family.name ?? t('family.defaultName')}
+            subtitle={t('more.familySubtitle', {
+              count: family.members.length + 1,
+            })}
             // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
             left={() => (
               <Avatar.Icon
@@ -155,8 +155,8 @@ export function MoreScreen() {
       <Pressable onPress={() => navigation.navigate('Alarms')}>
         <Card style={styles.card} mode="outlined">
           <Card.Title
-            title="Despertadores"
-            subtitle="Mamada, troca, soneca — toca com o app fechado"
+            title={t('more.alarmsTitle')}
+            subtitle={t('more.alarmsSubtitle')}
             // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
             left={() => (
               <Avatar.Icon
@@ -179,8 +179,8 @@ export function MoreScreen() {
       <Pressable onPress={() => navigation.navigate('Sleep')}>
         <Card style={styles.card} mode="outlined">
           <Card.Title
-            title="Modo Soninho"
-            subtitle="Ruído branco pra ninar — toca com a tela apagada"
+            title={t('more.sleepTitle')}
+            subtitle={t('more.sleepSubtitle')}
             // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
             left={() => (
               <Avatar.Icon
@@ -201,17 +201,17 @@ export function MoreScreen() {
 
       {/* APARENCIA */}
       <Card style={styles.card} mode="outlined">
-        <Card.Title title="Aparência" />
+        <Card.Title title={t('more.appearanceTitle')} />
         <Card.Content>
           <Text variant="labelMedium" style={styles.settingsLabel}>
-            Tema
+            {t('more.appearanceTheme')}
           </Text>
           <PalettePicker compact />
 
           <View style={styles.spacer} />
 
           <Text variant="labelMedium" style={styles.settingsLabel}>
-            Modo
+            {t('more.appearanceMode')}
           </Text>
           <ModePicker />
         </Card.Content>
@@ -221,8 +221,8 @@ export function MoreScreen() {
       <Pressable onPress={() => navigation.navigate('Permissions')}>
         <Card style={styles.card} mode="outlined">
           <Card.Title
-            title="Permissões"
-            subtitle="Alarme exato, notificações, bateria"
+            title={t('more.permissionsTitle')}
+            subtitle={t('more.permissionsSubtitle')}
             // eslint-disable-next-line react/no-unstable-nested-components -- render-prop pattern do Paper
             left={() => (
               <Avatar.Icon
@@ -242,7 +242,7 @@ export function MoreScreen() {
       </Pressable>
 
       <Text variant="bodySmall" style={styles.placeholder}>
-        Em breve: diário, receitas medicas, lista de compras.
+        {t('more.comingSoon')}
       </Text>
 
       <Button
@@ -252,13 +252,13 @@ export function MoreScreen() {
         icon="logout"
         style={styles.signOut}
       >
-        Sair
+        {t('common.signOut')}
       </Button>
 
       {/* EXCLUIR CONTA — destrutivo, fica visualmente apartado */}
       <View style={styles.dangerZone}>
         <Text variant="labelSmall" style={styles.dangerLabel}>
-          Zona perigosa
+          {t('more.dangerZone')}
         </Text>
         <Button
           mode="text"
@@ -266,14 +266,14 @@ export function MoreScreen() {
           textColor={theme.colors.error}
           icon="trash-can-outline"
         >
-          Excluir minha conta
+          {t('more.deleteAccount')}
         </Button>
       </View>
 
       {/* SOBRE */}
       <View style={styles.about}>
         <Text variant="labelSmall" style={styles.muted}>
-          BebeCare v{APP_VERSION}
+          {t('more.appVersion', { version: APP_VERSION })}
         </Text>
         <View style={styles.aboutLinks}>
           <Button
@@ -283,7 +283,7 @@ export function MoreScreen() {
               Linking.openURL(PRIVACY_URL);
             }}
           >
-            Privacidade
+            {t('more.privacy')}
           </Button>
           <Button
             mode="text"
@@ -292,7 +292,7 @@ export function MoreScreen() {
               Linking.openURL(TERMS_URL);
             }}
           >
-            Termos de uso
+            {t('more.terms')}
           </Button>
         </View>
       </View>
@@ -304,33 +304,39 @@ export function MoreScreen() {
           onDismiss={() => setDeleteDialogOpen(false)}
         >
           <Dialog.Icon icon="alert-circle-outline" color={theme.colors.error} />
-          <Dialog.Title style={styles.dialogTitle}>Excluir conta</Dialog.Title>
+          <Dialog.Title style={styles.dialogTitle}>
+            {t('more.deleteDialogTitle')}
+          </Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium" style={styles.dialogText}>
-              Você vai sair do BebeCare e perder acesso a:
+              {t('more.deleteDialogIntro')}
             </Text>
             <Text variant="bodyMedium" style={styles.dialogBullet}>
-              {'•'} Bebês cadastrados (se for o unico membro da família)
+              {'• '}
+              {t('more.deleteBullet1')}
             </Text>
             <Text variant="bodyMedium" style={styles.dialogBullet}>
-              {'•'} Vacinas, consultas e lembretes
+              {'• '}
+              {t('more.deleteBullet2')}
             </Text>
             <Text variant="bodyMedium" style={styles.dialogBullet}>
-              {'•'} Convites pendentes
+              {'• '}
+              {t('more.deleteBullet3')}
             </Text>
             <Text variant="bodyMedium" style={styles.dialogText}>
-              Você pode recuperar a conta em ate 30 dias entrando em contato com
-              o suporte. Depois disso, todos os dados serao apagados.
+              {t('more.deleteDialogRecovery')}
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setDeleteDialogOpen(false)}>Cancelar</Button>
+            <Button onPress={() => setDeleteDialogOpen(false)}>
+              {t('common.cancel')}
+            </Button>
             <Button
               onPress={handleDeleteAccount}
               textColor={theme.colors.error}
               loading={deleteAccount.isPending}
             >
-              Excluir conta
+              {t('more.deleteDialogTitle')}
             </Button>
           </Dialog.Actions>
         </Dialog>
@@ -340,7 +346,7 @@ export function MoreScreen() {
         visible={snackbar !== null}
         onDismiss={() => setSnackbar(null)}
         duration={4000}
-        action={{ label: 'OK', onPress: () => setSnackbar(null) }}
+        action={{ label: t('common.ok'), onPress: () => setSnackbar(null) }}
       >
         {snackbar ?? ''}
       </Snackbar>

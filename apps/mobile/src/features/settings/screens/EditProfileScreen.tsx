@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -32,6 +33,7 @@ import type { AppScreenProps } from '@/app/navigation/types';
 
 export function EditProfileScreen({ navigation }: AppScreenProps<'EditProfile'>) {
   const theme = useTheme<AppTheme>();
+  const { t } = useTranslation();
   const me = useMe();
   const update = useUpdateProfile();
 
@@ -50,7 +52,7 @@ export function EditProfileScreen({ navigation }: AppScreenProps<'EditProfile'>)
 
   const onSave = async () => {
     if (name.trim().length < 2) {
-      setError('Nome muito curto');
+      setError(t('editProfile.nameTooShort'));
       return;
     }
     setError(null);
@@ -62,7 +64,7 @@ export function EditProfileScreen({ navigation }: AppScreenProps<'EditProfile'>)
       });
       navigation.goBack();
     } catch {
-      setError('Não foi possível salvar. Tente de novo.');
+      setError(t('editProfile.saveError'));
     }
   };
 
@@ -86,7 +88,7 @@ export function EditProfileScreen({ navigation }: AppScreenProps<'EditProfile'>)
 
         <TextInput
           mode="outlined"
-          label="Nome"
+          label={t('editProfile.nameLabel')}
           value={name}
           onChangeText={setName}
           maxLength={120}
@@ -110,8 +112,7 @@ export function EditProfileScreen({ navigation }: AppScreenProps<'EditProfile'>)
         )}
 
         <MutedText variant="bodySmall" style={styles.hint}>
-          O avatar é gerado pelo DiceBear a partir do estilo e de uma “semente”.
-          Sem foto, sem upload.
+          {t('editProfile.avatarHint')}
         </MutedText>
 
         <Button
@@ -121,7 +122,7 @@ export function EditProfileScreen({ navigation }: AppScreenProps<'EditProfile'>)
           disabled={update.isPending}
           style={styles.saveBtn}
         >
-          Salvar
+          {t('common.save')}
         </Button>
       </ScrollView>
     </View>

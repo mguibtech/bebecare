@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { BabyFormScreen } from '@/features/babies/screens/BabyFormScreen';
@@ -39,6 +40,7 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
  * Stack interno dentro da tab correspondente (ex.: VaccinesStack).
  */
 export function AppNavigator() {
+  const { t } = useTranslation();
   // Push: registra/sincroniza o token FCM enquanto logado (no-op sem Firebase).
   useFcmTokenSync();
   // Alarmes locais: reagenda os despertadores de remédio sempre que a lista do
@@ -67,17 +69,17 @@ export function AppNavigator() {
       <Stack.Screen
         name="BabyDetail"
         component={BabyDetailScreen}
-        options={{ title: 'Perfil do bebê' }}
+        options={{ title: t('headers.babyDetail') }}
       />
       <Stack.Screen
         name="Family"
         component={FamilyScreen}
-        options={{ title: 'Família' }}
+        options={{ title: t('headers.family') }}
       />
       <Stack.Screen
         name="VaccineDetail"
         component={VaccineDetailScreen}
-        options={{ title: 'Vacina' }}
+        options={{ title: t('headers.vaccineDetail') }}
       />
       <Stack.Screen
         name="AppointmentForm"
@@ -87,7 +89,7 @@ export function AppNavigator() {
       <Stack.Screen
         name="AppointmentDetail"
         component={AppointmentDetailScreen}
-        options={{ title: 'Consulta' }}
+        options={{ title: t('headers.appointmentDetail') }}
       />
       <Stack.Screen
         name="MedicationForm"
@@ -97,12 +99,12 @@ export function AppNavigator() {
       <Stack.Screen
         name="MedicationDetail"
         component={MedicationDetailScreen}
-        options={{ title: 'Remédio' }}
+        options={{ title: t('headers.medicationDetail') }}
       />
       <Stack.Screen
         name="Alarms"
         component={AlarmsListScreen}
-        options={{ title: 'Despertadores' }}
+        options={{ title: t('headers.alarms') }}
       />
       <Stack.Screen
         name="AlarmForm"
@@ -117,12 +119,12 @@ export function AppNavigator() {
       <Stack.Screen
         name="EditProfile"
         component={EditProfileScreen}
-        options={{ title: 'Editar perfil' }}
+        options={{ title: t('headers.editProfile') }}
       />
       <Stack.Screen
         name="Permissions"
         component={PermissionsScreen}
-        options={{ title: 'Permissões' }}
+        options={{ title: t('headers.permissions') }}
       />
       </Stack.Navigator>
       {/* Pre-prompt de permissão de push (1x no primeiro acesso logado). */}
