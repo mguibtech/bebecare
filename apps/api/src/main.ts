@@ -39,10 +39,12 @@ async function bootstrap() {
     SwaggerModule.setup('api/docs', app, document);
   }
 
-  const port = Number(process.env.API_PORT ?? 3000);
-  await app.listen(port);
+  // Render/managed hosts injetam PORT — respeitar antes do API_PORT do .env.
+  const port = Number(process.env.PORT ?? process.env.API_PORT ?? 3000);
+  // 0.0.0.0 pra aceitar conexões externas no container de produção.
+  await app.listen(port, '0.0.0.0');
 
-  Logger.log(`🍼 BebeCare API rodando em http://localhost:${port}/api`, 'Bootstrap');
+  Logger.log(`🍼 BebeCare API rodando na porta ${port} (prefixo /api)`, 'Bootstrap');
 }
 
 void bootstrap();

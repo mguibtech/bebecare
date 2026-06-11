@@ -1,0 +1,58 @@
+name: Mobile CI
+
+# Lint + type-check + testes do app mobile. Roda em pushes para main que toquem
+# o mobile e em PRs que toquem o mobile.
+#
+# Obs.: o trigger de PR é filtrado por path (apps/mobile/**) pra não gastar
+# minutos em PRs que só mexem na API. Se um dia este check virar REQUIRED no
+# ruleset, remova o filtro de paths do `pull_request` (igual ao api-ci.yml) —
+# senão o GitHub fica esperando um status que não é reportado em PRs api-only.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/mobile/**'
+      - '.github/workflows/mobile-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/mobile/**'
+      - '.github/workflows/mobile-ci.yml'
+
+concurrency:
+  group: mobile-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test:
+    name: Lint + Types + Tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: apps/mobile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # engines.node = ">= 22.11.0" (RN 0.85). Mantém alinhado com o local.
+      - name: Setup Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/mobile/package-lock.json
+
+      # postinstall roda patch-package (patches do track-player p/ New Arch).
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test -- --ci --reporters=default
