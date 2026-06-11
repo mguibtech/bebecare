@@ -45,9 +45,13 @@ export type MedSchedule = {
   id: string;
   /** HH:mm formato 24h. */
   time: string;
-  /** Bitmask 7 bits — usar daysOfWeekFromMask pra converter. */
+  /** Bitmask 7 bits — usar daysFromMask pra converter. */
   daysOfWeekMask: number;
-  /** Nomes já desabreviados pelo backend (['dom', 'seg', ...]). */
+  /**
+   * @deprecated Vem do backend em pt fixo. O mobile agora deriva os dias da
+   * `daysOfWeekMask` e localiza no cliente (DAY_KEYS) — não consumir. Remover
+   * quando o backend parar de enviar (cluster 4 de i18n).
+   */
   daysOfWeekNames: string[];
   /**
    * true = alarme local via notifee (mais confiavel em devices Android com
