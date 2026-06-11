@@ -1,6 +1,6 @@
 # 📌 Onde paramos — BebeCare V1
 
-> Snapshot de progresso. Última sessão: **4 de junho de 2026**.
+> Snapshot de progresso. Última sessão: **11 de junho de 2026**.
 > (Documento de trabalho interno — fica na raiz, fora de `/docs` que é público via GitHub Pages.)
 
 ## TL;DR
@@ -8,7 +8,26 @@
 **As 11 features de produto da V1 estão TODAS implementadas e mergeadas na `main`.** 🎉
 O que falta pra publicar **não é mais código de feature** — é infra de produção, conta/ficha da Play Store, alguns assets e housekeeping.
 
-A sessão de **4 jun** foi de **qualidade/robustez + internacionalização** (sem features novas): resolveu o crash do track-player na New Architecture, endureceu a resiliência de rede, corrigiu acentos, adicionou os primeiros testes e fez o app **seguir o idioma do sistema (pt/en)**. Detalhes na seção abaixo.
+A sessão de **11 jun** terminou a **i18n da fatia 3 no mobile**: toda a superfície visível do app agora segue o idioma do sistema (pt/en). Falta só a **i18n do backend** (cluster 4 — decisão de arquitetura pendente) e duas fatias deixadas de fora de propósito (mensagens zod dos forms e snackbars dos mutation hooks). Detalhes abaixo.
+
+---
+
+## 🆕 Sessão 11 jun 2026 — i18n fatia 3 (mobile completo)
+
+Branch **`feat/mobile-i18n-fatia3`** (a partir da `main`, com a fatia2/#61 já mergeada). Tudo validado (`tsc` + `eslint` + 22 testes verdes a cada commit). 6 commits:
+
+1. **Aba Mais + EditProfile + Permissions + headers de nav** — MoreScreen, ModePicker/PalettePicker (claro/escuro/sistema, azul/rosa), PermissionsScreen; e os títulos de header do `AppNavigator` (que estavam fixos em pt mesmo pra telas já migradas na fatia2: Família, Consulta, Remédio…).
+2. **Babies** — BabyForm/Detail/Selector + SexPicker/BloodTypePicker/AvatarStylePicker. `SEX_LABELS`/`AVATAR_STYLE_LABELS` viraram i18n (mapa enum→chave local); `BLOOD_TYPE_LABELS` ficou (universal A+/O-).
+3. **Modo Soninho** — SleepScreen + sons/timers; `player.ts` usa `i18n.t()` standalone pro título da notificação do track-player (1º uso de `i18n.t` fora do React).
+4. **Mapas de domínio** — `DOSE_UNIT_LABELS`→`DOSE_UNIT_KEYS`, `DAY_LABELS`→`DAY_KEYS`; consumidores React (cards, detalhe, pickers, AlarmCard) via `t()` e notifee (scheduler/snooze) via `i18n.t()`. Novos namespaces `days`/`daysPicker`.
+5. **Sheets** — ScheduleEditor, RegisterVaccine, VaccineDetail.
+
+**Padrão adotado** (igual fatia2): mapa **enum→chave i18n** local (`const X_KEY = {...} as const` → `t(X_KEY[v])`); formatadores compartilhados recebem `t`/usam `i18n.t`; catálogos `pt`/`en` tipados (chave faltando = erro de build).
+
+**Deixado de fora de propósito (não é regressão — nunca foi migrado):**
+- **Mensagens zod dos forms** (baby/medication/appointment/register schemas) — TODAS em pt. Localizar exige schema-factory `(t) => schema`. Fatia à parte.
+- **Snackbars dos mutation hooks** (`useCreate*`/`useUpdate*`/etc. — ex. "Consulta agendada") — TODOS em pt em todo o app. Precisa de `i18n.t` standalone. Fatia à parte.
+- **Backend** (cluster 4) — ver "Falta na i18n" abaixo.
 
 ---
 
@@ -30,7 +49,12 @@ Tudo validado (`tsc` + `eslint` + 22 testes verdes em cada commit) e verificado 
 - Migrado e seguindo o idioma: **abas, Início, Hoje, Vacinas, Saúde/Consultas, Remédios, Família, Alarmes, Onboarding, Login/Cadastro.** (PR #60 + **PR `feat/mobile-i18n-fatia2`** — Consultas/Remédios/Família/Alarmes/Onboarding/Auth).
 - Verificado no device (per-app locale `en-US`): a superfície migrada vira inglês com plural e datas corretos; revertido pro sistema depois.
 
-**Falta na i18n (fatia 3):** resto da aba Mais (Aparência/Permissões/Excluir conta/"Em breve"), EditProfile, Permissions, BabyForm/Detail, SleepScreen, sheets (ScheduleEditor/RegisterVaccine/VaccineDetail), pickers (DaysOfWeek/DoseUnit); mapas de domínio (`DOSE_UNIT_LABELS`, `DAY_LABELS`); e **i18n no backend** (`doseLabel`, nomes de vacinas, `daysOfWeekNames` — exigem `Accept-Language` no servidor).
+**Falta na i18n (depois da fatia 3 — 11 jun):** só o **backend** (cluster 4) e duas fatias transversais (zod dos forms; snackbars dos hooks). O resto da superfície visível do mobile está migrado.
+
+**i18n no backend (cluster 4) — decisão de arquitetura pendente:**
+- `daysOfWeekNames`: o mobile já tem `DAY_KEYS` — dá pra **derivar do `daysOfWeekMask` no cliente** e dispensar o campo do servidor (sem `Accept-Language`). *Recomendado.*
+- `doseLabel`: variantes ricas (`'Dose inicial'`, `'2ª dose (com varicela)'`, `'1º/2º reforço'`) vêm do **seed do banco** (migration PNI) — não dá pra derivar só de `doseNumber`/`isBooster`.
+- **Nomes + descrições das vacinas**: ~30 entradas seedadas em pt. Localizar exige **tabela de traduções** OU **catálogo no código** (com inglês médico preciso) + `Accept-Language` no servidor e header enviado pelo mobile.
 
 **Achado documentado:** o **lembrete de consulta JÁ funciona** — cron no backend (`AppointmentsReminderJob`, a cada 5 min) envia push FCM no offset configurado (default **24h antes**), idempotente via coluna `notified_at`. Depende de backend no ar + token FCM + permissão.
 
@@ -108,12 +132,11 @@ Público-alvo **18+** (não é app "para crianças" → fora do programa Familie
 
 ## ▶️ Próximas fases (ordem sugerida)
 
-### Fase E — i18n fatia 3 (curto prazo, baixo risco)
-Terminar a internacionalização (a infra já está pronta; é só seguir o padrão `t('namespace.key')` + catálogos pt/en):
-1. Resto da aba **Mais** (Aparência, Permissões, Excluir conta, "Em breve"), **EditProfile**, **Permissions**.
-2. **BabyForm/Detail**, **SleepScreen**, sheets (ScheduleEditor/RegisterVaccine/VaccineDetail), pickers (DaysOfWeek/DoseUnit).
-3. Mapas de domínio: `DOSE_UNIT_LABELS`, `DAY_LABELS`.
-4. **i18n no backend** (`Accept-Language`) pra traduzir `doseLabel`, nomes de vacinas e `daysOfWeekNames` — hoje vêm fixos em pt.
+### Fase E — i18n ✅ fatia 3 mobile FEITA (11 jun, branch `feat/mobile-i18n-fatia3`)
+Toda a superfície visível do mobile segue o idioma do sistema. Resta:
+1. **Backend (cluster 4)** — decisão de arquitetura pendente (ver "i18n no backend" acima). Provável melhor caminho: derivar `daysOfWeekNames` no cliente + decidir tabela-de-traduções vs catálogo-no-código pras vacinas. Deve virar **PR próprio** (mexe no contrato da API).
+2. **Mensagens zod dos forms** — schema-factory `(t) => schema`. Fatia transversal.
+3. **Snackbars dos mutation hooks** — via `i18n.t` standalone. Fatia transversal.
 
 ### Fase C — Infra de produção (NÃO iniciada) — *gate pra publicar*
 1. Postgres gerenciado (**Neon**) + rodar migrations em produção.
