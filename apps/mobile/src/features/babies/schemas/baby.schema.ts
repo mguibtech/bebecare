@@ -14,104 +14,100 @@
  */
 
 import { z } from 'zod';
+import type { TFunction } from 'i18next';
 
 import { AvatarStyle, BloodType, Sex } from '../types';
 
-/** Helper: valida data ISO YYYY-MM-DD e que não seja no futuro. */
-const birthDateSchema = z
-  .string({ required_error: 'Data de nascimento obrigatória' })
-  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato inválido (use AAAA-MM-DD)')
-  .refine(
-    (s) => {
-      const parsed = new Date(s + 'T00:00:00');
-      return !Number.isNaN(parsed.getTime()) && parsed <= new Date();
-    },
-    { message: 'Data de nascimento não pode ser no futuro' },
-  );
-
 /**
- * Schema do form de criacao. Os campos opcionais aceitam undefined
- * — o componente Form converte string vazia em undefined antes de submeter.
+ * Factory do schema do form de bebê (recebe `t` pra mensagens i18n).
+ * Campos opcionais aceitam undefined — o Form converte string vazia em
+ * undefined antes de submeter.
  */
-export const createBabySchema = z.object({
-  name: z
-    .string({ required_error: 'Nome obrigatório' })
-    .trim()
-    .min(1, 'Nome obrigatório')
-    .max(120, 'Nome muito longo'),
+export function makeBabySchema(t: TFunction) {
+  return z.object({
+    name: z
+      .string({ required_error: t('validation.nameRequired') })
+      .trim()
+      .min(1, t('validation.nameRequired'))
+      .max(120, t('validation.nameTooLong')),
 
-  sex: z.nativeEnum(Sex, {
-    errorMap: () => ({ message: 'Sexo obrigatório' }),
-  }),
+    sex: z.nativeEnum(Sex, {
+      errorMap: () => ({ message: t('validation.sexRequired') }),
+    }),
 
-  birthDate: birthDateSchema,
+    birthDate: z
+      .string({ required_error: t('validation.birthDateRequired') })
+      .regex(/^\d{4}-\d{2}-\d{2}$/, t('validation.dateFormat'))
+      .refine(
+        (s) => {
+          const parsed = new Date(s + 'T00:00:00');
+          return !Number.isNaN(parsed.getTime()) && parsed <= new Date();
+        },
+        { message: t('validation.birthDateFuture') },
+      ),
 
-  /**
-   * Number forms em RN chegam como string. preprocess converte string vazia
-   * para undefined (campo opcional) e strings numericas para Number.
-   * NaN cai no z.number() validation que rejeita.
-   */
-  birthWeightGrams: z.preprocess(
-    (v) => {
-      if (v === '' || v === null || v === undefined) return undefined;
-      const n = Number(v);
-      return Number.isNaN(n) ? v : n;
-    },
-    z
-      .number({ invalid_type_error: 'Peso inválido' })
-      .int('Peso em gramas (inteiro)')
-      .min(300, 'Peso mínimo 300g')
-      .max(8000, 'Peso máximo 8000g')
-      .optional(),
-  ),
+    /**
+     * Number forms em RN chegam como string. preprocess converte string vazia
+     * para undefined (campo opcional) e strings numericas para Number.
+     */
+    birthWeightGrams: z.preprocess(
+      (v) => {
+        if (v === '' || v === null || v === undefined) return undefined;
+        const n = Number(v);
+        return Number.isNaN(n) ? v : n;
+      },
+      z
+        .number({ invalid_type_error: t('validation.weightInvalid') })
+        .int(t('validation.weightInteger'))
+        .min(300, t('validation.weightMin'))
+        .max(8000, t('validation.weightMax'))
+        .optional(),
+    ),
 
-  birthHeightCm: z.preprocess(
-    (v) => {
-      if (v === '' || v === null || v === undefined) return undefined;
-      const n = Number(v);
-      return Number.isNaN(n) ? v : n;
-    },
-    z
-      .number({ invalid_type_error: 'Altura inválida' })
-      .min(20, 'Altura minima 20cm')
-      .max(70, 'Altura maxima 70cm')
-      .optional(),
-  ),
+    birthHeightCm: z.preprocess(
+      (v) => {
+        if (v === '' || v === null || v === undefined) return undefined;
+        const n = Number(v);
+        return Number.isNaN(n) ? v : n;
+      },
+      z
+        .number({ invalid_type_error: t('validation.heightInvalid') })
+        .min(20, t('validation.heightMin'))
+        .max(70, t('validation.heightMax'))
+        .optional(),
+    ),
 
-  bloodType: z.nativeEnum(BloodType).optional(),
+    bloodType: z.nativeEnum(BloodType).optional(),
 
-  allergies: z
-    .string()
-    .trim()
-    .max(500, 'Máximo 500 caracteres')
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
+    allergies: z
+      .string()
+      .trim()
+      .max(500, t('validation.max500'))
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
 
-  eyeColor: z
-    .string()
-    .trim()
-    .max(30, 'Máximo 30 caracteres')
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
+    eyeColor: z
+      .string()
+      .trim()
+      .max(30, t('validation.max30'))
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
 
-  notes: z
-    .string()
-    .trim()
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
+    notes: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
 
-  avatarStyle: z.nativeEnum(AvatarStyle).optional(),
+    avatarStyle: z.nativeEnum(AvatarStyle).optional(),
 
-  avatarSeed: z
-    .string()
-    .trim()
-    .max(100, 'Máximo 100 caracteres')
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
-});
+    avatarSeed: z
+      .string()
+      .trim()
+      .max(100, t('validation.max100'))
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
+  });
+}
 
-export type CreateBabyFormValues = z.infer<typeof createBabySchema>;
-
-/** Para edicao, mesmo schema mas todos campos opcionais. */
-export const updateBabySchema = createBabySchema.partial();
-export type UpdateBabyFormValues = z.infer<typeof updateBabySchema>;
+export type CreateBabyFormValues = z.infer<ReturnType<typeof makeBabySchema>>;

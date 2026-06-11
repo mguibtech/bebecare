@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { authApi } from '../api/auth.api';
 import type { UpdateProfileBody, UserPublic } from '../types';
@@ -18,7 +19,7 @@ export function useUpdateProfile() {
     mutationFn: (body) => authApi.updateProfile(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: qk.auth.me() });
-      snackbar.showSuccess('Perfil atualizado');
+      snackbar.showSuccess(i18n.t('feedback.profileUpdated'));
     },
   });
 }

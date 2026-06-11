@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { alarmsApi } from '../api/alarms.api';
 import type { Alarm, CreateAlarmBody, UpdateAlarmBody } from '../types';
@@ -19,7 +20,7 @@ export function useCreateAlarm() {
     mutationFn: (body) => alarmsApi.create(body),
     onSuccess: (alarm) => {
       queryClient.invalidateQueries({ queryKey: qk.alarms.all });
-      snackbar.showSuccess(`Despertador "${alarm.label}" criado`);
+      snackbar.showSuccess(i18n.t('feedback.alarmCreated', { label: alarm.label }));
     },
   });
 }
@@ -32,7 +33,7 @@ export function useUpdateAlarm() {
     mutationFn: ({ id, body }) => alarmsApi.update(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: qk.alarms.all });
-      snackbar.showSuccess('Despertador atualizado');
+      snackbar.showSuccess(i18n.t('feedback.alarmUpdated'));
     },
   });
 }

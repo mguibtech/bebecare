@@ -11,6 +11,7 @@
  */
 
 import { z } from 'zod';
+import type { TFunction } from 'i18next';
 
 import { REMINDER_OPTIONS } from '../types';
 
@@ -19,57 +20,58 @@ const reminderValues = REMINDER_OPTIONS.map((o) => o.value) as [
   ...number[],
 ];
 
-export const appointmentSchema = z.object({
-  title: z
-    .string({ required_error: 'Título obrigatório' })
-    .trim()
-    .min(1, 'Título obrigatório')
-    .max(120, 'Título muito longo'),
+export function makeAppointmentSchema(t: TFunction) {
+  return z.object({
+    title: z
+      .string({ required_error: t('validation.titleRequired') })
+      .trim()
+      .min(1, t('validation.titleRequired'))
+      .max(120, t('validation.titleTooLong')),
 
-  doctorName: z
-    .string()
-    .trim()
-    .max(120, 'Nome muito longo')
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
+    doctorName: z
+      .string()
+      .trim()
+      .max(120, t('validation.nameTooLong'))
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
 
-  specialty: z
-    .string()
-    .trim()
-    .max(80, 'Especialidade muito longa')
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
+    specialty: z
+      .string()
+      .trim()
+      .max(80, t('validation.specialtyTooLong'))
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
 
-  scheduledAt: z
-    .string({ required_error: 'Data e hora obrigatórias' })
-    .min(1, 'Data e hora obrigatórias')
-    // ISO 8601 basico (validar mais a fundo seria overkill).
-    .regex(
-      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/,
-      'Data e hora invalidas',
-    ),
+    scheduledAt: z
+      .string({ required_error: t('validation.dateTimeRequired') })
+      .min(1, t('validation.dateTimeRequired'))
+      // ISO 8601 basico (validar mais a fundo seria overkill).
+      .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/, t('validation.dateTimeInvalid')),
 
-  location: z
-    .string()
-    .trim()
-    .max(200, 'Local muito longo')
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
+    location: z
+      .string()
+      .trim()
+      .max(200, t('validation.locationTooLong'))
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
 
-  notes: z
-    .string()
-    .trim()
-    .optional()
-    .transform((v) => (v === '' ? undefined : v)),
+    notes: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => (v === '' ? undefined : v)),
 
-  reminderEnabled: z.boolean().default(true),
+    reminderEnabled: z.boolean().default(true),
 
-  reminderMinutesBefore: z
-    .number()
-    .refine((v) => reminderValues.includes(v), {
-      message: 'Opcao de lembrete inválida',
-    })
-    .default(1440),
-});
+    reminderMinutesBefore: z
+      .number()
+      .refine((v) => reminderValues.includes(v), {
+        message: t('validation.reminderInvalid'),
+      })
+      .default(1440),
+  });
+}
 
-export type AppointmentFormValues = z.infer<typeof appointmentSchema>;
+export type AppointmentFormValues = z.infer<
+  ReturnType<typeof makeAppointmentSchema>
+>;

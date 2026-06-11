@@ -12,6 +12,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { babiesApi } from '../api/babies.api';
 import { useBabySelectorStore } from '../store/baby-selector.store';
@@ -29,7 +30,7 @@ export function useDeleteBaby() {
       if (selectedBabyId === deletedId) {
         setSelected(null);
       }
-      snackbar.show('Bebê excluído');
+      snackbar.show(i18n.t('feedback.babyDeleted'));
     },
   });
 }

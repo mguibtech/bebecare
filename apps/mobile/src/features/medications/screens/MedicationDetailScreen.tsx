@@ -12,6 +12,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
@@ -39,7 +40,9 @@ import { useDeleteMedication } from '../hooks/useDeleteMedication';
 import { useMedication } from '../hooks/useMedication';
 import { ScheduleEditorSheet } from '../components/ScheduleEditorSheet';
 import {
+  DAY_KEYS,
   DOSE_UNIT_KEYS,
+  daysFromMask,
   type MedSchedule,
 } from '../types';
 
@@ -49,9 +52,11 @@ function formatDate(s: string | null): string {
   return `${d}/${m}/${y}`;
 }
 
-function daysSummary(schedule: MedSchedule): string {
-  // backend já manda nomes formatados em PT-BR
-  return schedule.daysOfWeekNames.join(', ');
+function daysSummary(schedule: MedSchedule, t: TFunction): string {
+  // Derivado da bitmask e localizado no cliente (DAY_KEYS).
+  return daysFromMask(schedule.daysOfWeekMask)
+    .map((d) => t(DAY_KEYS[d]))
+    .join(', ');
 }
 
 export function MedicationDetailScreen({
@@ -253,7 +258,7 @@ export function MedicationDetailScreen({
                       {schedule.time}
                     </Text>
                     <MutedText variant="bodySmall">
-                      {daysSummary(schedule)}
+                      {daysSummary(schedule, t)}
                     </MutedText>
                     <View style={styles.alarmRow}>
                       <Text variant="bodySmall">{t('meds.alarmLocal')}</Text>

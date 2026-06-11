@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { medicationsApi } from '../api/medications.api';
 import type { CreateMedicationBody, Medication } from '../types';
@@ -26,7 +27,7 @@ export function useCreateMedication() {
       // Dose logs são criados pelo cron — inválida pra refletir quando
       // o usuário voltar pra tela "Hoje".
       queryClient.invalidateQueries({ queryKey: qk.doseLogs.all });
-      snackbar.showSuccess(`${med.name} cadastrado`);
+      snackbar.showSuccess(i18n.t('feedback.medCreated', { name: med.name }));
     },
   });
 }

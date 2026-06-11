@@ -6,7 +6,7 @@
  *  - com appointmentId → EDIT (fetch via useAppointment, reset com defaults)
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
@@ -34,7 +34,7 @@ import { useAppointment } from '../hooks/useAppointment';
 import { useCreateAppointment } from '../hooks/useCreateAppointment';
 import { useUpdateAppointment } from '../hooks/useUpdateAppointment';
 import {
-  appointmentSchema,
+  makeAppointmentSchema,
   type AppointmentFormValues,
 } from '../schemas/appointment.schema';
 import type { CreateAppointmentBody, ReminderMinutes } from '../types';
@@ -60,6 +60,7 @@ export function AppointmentFormScreen({
   const create = useCreateAppointment();
   const update = useUpdateAppointment();
 
+  const appointmentSchema = useMemo(() => makeAppointmentSchema(t), [t]);
   const { control, handleSubmit, formState, reset, setValue, watch } =
     useForm<AppointmentFormValues>({
       resolver: zodResolver(appointmentSchema),

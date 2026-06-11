@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { medicationsApi } from '../api/medications.api';
 import type {
@@ -37,7 +38,7 @@ export function useCreateMedSchedule() {
       });
       queryClient.invalidateQueries({ queryKey: qk.medications.list(babyId) });
       queryClient.invalidateQueries({ queryKey: qk.doseLogs.all });
-      snackbar.showSuccess('Horário adicionado');
+      snackbar.showSuccess(i18n.t('feedback.scheduleAdded'));
     },
   });
 }
@@ -62,7 +63,7 @@ export function useUpdateMedSchedule() {
       });
       queryClient.invalidateQueries({ queryKey: qk.medications.list(babyId) });
       queryClient.invalidateQueries({ queryKey: qk.doseLogs.all });
-      snackbar.showSuccess('Horário atualizado');
+      snackbar.showSuccess(i18n.t('feedback.scheduleUpdated'));
     },
   });
 }

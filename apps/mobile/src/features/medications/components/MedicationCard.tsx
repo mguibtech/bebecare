@@ -20,9 +20,11 @@ import type { AppTheme } from '@/app/theme';
 
 import {
   ALL_DAYS_MASK,
+  DAY_KEYS,
   DOSE_UNIT_KEYS,
   WEEKDAYS_MASK,
   WEEKEND_MASK,
+  daysFromMask,
   type Medication,
 } from '../types';
 
@@ -42,8 +44,8 @@ function summarize(medication: Medication, t: TFunction): string {
     .sort()
     .join(', ');
 
-  // Detecta padrao mais comum dos dias. Nomes custom (daysOfWeekNames) vem do
-  // backend em pt — i18n completo deles exige localizacao no servidor.
+  // Detecta padrao mais comum dos dias. Dias custom são derivados da bitmask
+  // e localizados no cliente (DAY_KEYS) — sem depender de daysOfWeekNames do backend.
   const firstMask = first.daysOfWeekMask;
   const allSameMask = schedules.every(
     (s) => s.daysOfWeekMask === firstMask,
@@ -55,7 +57,9 @@ function summarize(medication: Medication, t: TFunction): string {
         ? t('meds.freqWeekdays')
         : firstMask === WEEKEND_MASK
           ? t('meds.freqWeekend')
-          : `${first.daysOfWeekNames.join(', ')}`
+          : daysFromMask(firstMask)
+              .map((d) => t(DAY_KEYS[d]))
+              .join(', ')
     : t('meds.freqVaried');
 
   return `${times} • ${daysLabel}`;

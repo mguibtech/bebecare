@@ -14,6 +14,7 @@
  */
 
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 import { kv } from '@/shared/storage/mmkv';
 
 import {
@@ -38,10 +39,10 @@ export async function promptAlarmPermissions(): Promise<void> {
   }
 
   if (!status.notifications) {
-    snackbar.show('Ative as notificações pra o alarme do remédio tocar.', {
+    snackbar.show(i18n.t('feedback.permNotifications'), {
       variant: 'error',
       action: {
-        label: 'Abrir ajustes',
+        label: i18n.t('feedback.permNotificationsAction'),
         onPress: () => {
           openNotificationSettings();
         },
@@ -51,10 +52,10 @@ export async function promptAlarmPermissions(): Promise<void> {
   }
 
   if (!status.exactAlarm) {
-    snackbar.show('Pra tocar na hora exata, ative "Alarmes e lembretes".', {
+    snackbar.show(i18n.t('feedback.permExact'), {
       variant: 'info',
       action: {
-        label: 'Ativar',
+        label: i18n.t('feedback.permExactAction'),
         onPress: () => {
           openExactAlarmSettings();
         },
@@ -66,11 +67,11 @@ export async function promptAlarmPermissions(): Promise<void> {
   if (!kv.getBool(FULL_SCREEN_TIP_KEY)) {
     kv.setBool(FULL_SCREEN_TIP_KEY, true);
     snackbar.show(
-      'Dica: pra o alarme abrir em tela cheia na tela bloqueada, ative "tela cheia" nas configurações.',
+      i18n.t('feedback.permFullScreen'),
       {
         variant: 'info',
         action: {
-          label: 'Abrir',
+          label: i18n.t('feedback.permFullScreenAction'),
           onPress: () => {
             openFullScreenIntentSettings();
           },

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { medicationsApi } from '../api/medications.api';
 import type { Medication, UpdateMedicationBody } from '../types';
@@ -25,7 +26,7 @@ export function useUpdateMedication() {
       );
       queryClient.invalidateQueries({ queryKey: qk.medications.all });
       queryClient.invalidateQueries({ queryKey: qk.doseLogs.all });
-      snackbar.showSuccess('Medicamento atualizado');
+      snackbar.showSuccess(i18n.t('feedback.medUpdated'));
     },
   });
 }

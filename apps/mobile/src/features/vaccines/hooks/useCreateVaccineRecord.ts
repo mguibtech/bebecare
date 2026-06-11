@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { vaccineRecordsApi } from '../api/vaccine-records.api';
 import type { CreateVaccineRecordBody, VaccineRecord } from '../types';
@@ -32,7 +33,7 @@ export function useCreateVaccineRecord() {
     onSuccess: (data, { babyId }) => {
       queryClient.invalidateQueries({ queryKey: qk.vaccines.schedule(babyId) });
       queryClient.invalidateQueries({ queryKey: qk.vaccines.records(babyId) });
-      snackbar.showSuccess(`${data.vaccine.name} marcada como aplicada`);
+      snackbar.showSuccess(i18n.t('feedback.vaccineApplied', { name: data.vaccine.name }));
     },
   });
 }

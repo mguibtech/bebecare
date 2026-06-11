@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { appointmentsApi } from '../api/appointments.api';
 import type {
@@ -34,7 +35,7 @@ export function useCompleteAppointment() {
         data,
       );
       queryClient.invalidateQueries({ queryKey: qk.appointments.all });
-      snackbar.showSuccess('Consulta marcada como realizada');
+      snackbar.showSuccess(i18n.t('feedback.appointmentCompleted'));
     },
   });
 }

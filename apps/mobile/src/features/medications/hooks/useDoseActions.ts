@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { qk } from '@/shared/api/queryKeys';
 import { snackbar } from '@/shared/feedback';
+import i18n from '@/shared/i18n';
 
 import { doseLogsApi } from '../api/dose-logs.api';
 import type { MedDoseLog, SkipDoseBody } from '../types';
@@ -23,7 +24,7 @@ export function useTakeDose() {
     mutationFn: ({ babyId, id }) => doseLogsApi.take(babyId, id),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: qk.doseLogs.all });
-      snackbar.showSuccess(`${data.medication.name} marcada como tomada`);
+      snackbar.showSuccess(i18n.t('feedback.doseTaken', { name: data.medication.name }));
     },
   });
 }
