@@ -24,10 +24,7 @@ Branch **`feat/mobile-i18n-fatia3`** (a partir da `main`, com a fatia2/#61 já m
 
 **Padrão adotado** (igual fatia2): mapa **enum→chave i18n** local (`const X_KEY = {...} as const` → `t(X_KEY[v])`); formatadores compartilhados recebem `t`/usam `i18n.t`; catálogos `pt`/`en` tipados (chave faltando = erro de build).
 
-**Deixado de fora de propósito (não é regressão — nunca foi migrado):**
-- **Mensagens zod dos forms** (baby/medication/appointment/register schemas) — TODAS em pt. Localizar exige schema-factory `(t) => schema`. Fatia à parte.
-- **Snackbars dos mutation hooks** (`useCreate*`/`useUpdate*`/etc. — ex. "Consulta agendada") — TODOS em pt em todo o app. Precisa de `i18n.t` standalone. Fatia à parte.
-- **Backend** (cluster 4) — ver "Falta na i18n" abaixo.
+**Fechado no closeout (`feat/mobile-i18n-closeout`, mesmo dia):** dias da semana derivados no cliente (E1), mensagens zod via schema-factory (E2) e snackbars dos hooks via `i18n.t` (E3). Único pendente da i18n: **backend** (cluster 4) — ver "Falta na i18n" abaixo.
 
 ---
 
@@ -49,7 +46,7 @@ Tudo validado (`tsc` + `eslint` + 22 testes verdes em cada commit) e verificado 
 - Migrado e seguindo o idioma: **abas, Início, Hoje, Vacinas, Saúde/Consultas, Remédios, Família, Alarmes, Onboarding, Login/Cadastro.** (PR #60 + **PR `feat/mobile-i18n-fatia2`** — Consultas/Remédios/Família/Alarmes/Onboarding/Auth).
 - Verificado no device (per-app locale `en-US`): a superfície migrada vira inglês com plural e datas corretos; revertido pro sistema depois.
 
-**Falta na i18n (depois da fatia 3 — 11 jun):** só o **backend** (cluster 4) e duas fatias transversais (zod dos forms; snackbars dos hooks). O resto da superfície visível do mobile está migrado.
+**Falta na i18n (depois do closeout — 11 jun):** só o **backend** (cluster 4). O mobile inteiro (incl. zod dos forms e snackbars dos hooks) está migrado.
 
 **i18n no backend (cluster 4) — decisão de arquitetura pendente:**
 - `daysOfWeekNames`: o mobile já tem `DAY_KEYS` — dá pra **derivar do `daysOfWeekMask` no cliente** e dispensar o campo do servidor (sem `Accept-Language`). *Recomendado.*
@@ -132,11 +129,13 @@ Público-alvo **18+** (não é app "para crianças" → fora do programa Familie
 
 ## ▶️ Próximas fases (ordem sugerida)
 
-### Fase E — i18n ✅ fatia 3 mobile FEITA (11 jun, branch `feat/mobile-i18n-fatia3`)
-Toda a superfície visível do mobile segue o idioma do sistema. Resta:
-1. **Backend (cluster 4)** — decisão de arquitetura pendente (ver "i18n no backend" acima). Provável melhor caminho: derivar `daysOfWeekNames` no cliente + decidir tabela-de-traduções vs catálogo-no-código pras vacinas. Deve virar **PR próprio** (mexe no contrato da API).
-2. **Mensagens zod dos forms** — schema-factory `(t) => schema`. Fatia transversal.
-3. **Snackbars dos mutation hooks** — via `i18n.t` standalone. Fatia transversal.
+### Fase E — i18n: ✅ mobile 100% (fatia3 #61 + closeout `feat/mobile-i18n-closeout`)
+O mobile inteiro segue o idioma do sistema. O closeout (11 jun) fechou as 3 pontas que faltavam:
+- **E1** — dias da semana derivados no cliente (`daysOfWeekMask` + `DAY_KEYS`); `daysOfWeekNames` do backend ficou `@deprecated` (some no cluster 4).
+- **E2** — mensagens zod dos forms via schema-factory `makeXSchema(t)` (namespace `validation.*`).
+- **E3** — snackbars dos mutation hooks via `i18n.t` standalone (namespace `feedback.*`).
+
+**Resta só o backend (cluster 4)** — decisão de arquitetura pendente (ver "i18n no backend" acima). Como `daysOfWeekNames` já é derivado no cliente, sobra `doseLabel` + nomes/descrições das vacinas (seed em pt): decidir **tabela-de-traduções vs catálogo-no-código** + `Accept-Language`. **PR próprio** (mexe no contrato da API).
 
 ### Fase C — Infra de produção (NÃO iniciada) — *gate pra publicar*
 1. Postgres gerenciado (**Neon**) + rodar migrations em produção.
