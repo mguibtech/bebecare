@@ -452,6 +452,23 @@ export const pt = {
     selectorEmpty: 'Nenhum bebê cadastrado ainda.',
     viewProfileA11y: 'Ver perfil',
   },
+  sleep: {
+    title: 'Modo Soninho',
+    subtitle: 'Sons que ajudam o bebê a dormir. Tocam com a tela apagada.',
+    stopsIn: 'Para em {{time}}',
+    soundWhite: 'Ruído branco',
+    soundBrown: 'Ruído marrom',
+    soundRain: 'Chuva',
+    soundFan: 'Ventilador',
+    soundHeartbeat: 'Batimento',
+    soundWomb: 'Útero',
+    soundOcean: 'Mar',
+    soundCar: 'Carro',
+    timer15: '15 min',
+    timer30: '30 min',
+    timer60: '1 h',
+    timerOff: 'Sem parar',
+  },
 };
 
 export type TranslationCatalog = typeof pt;

@@ -8,30 +8,27 @@
  * tocar (ver assets/áudio/CREDITS.md). V1 e Android-only.
  */
 
-export type SleepSound = {
-  key: string;
-  label: string;
-  /** Ícone MaterialCommunityIcons. */
-  icon: string;
-  /** Nome do recurso em android/app/src/main/res/raw/<rawName>.ogg (sem extensao). */
-  rawName: string;
-};
+/**
+ * `labelKey` é a chave i18n do nome do som — resolvida com t() na tela e com
+ * i18n.t() no player (título da notificação nativa, fora do React).
+ */
+export const SLEEP_SOUNDS = [
+  { key: 'white', labelKey: 'sleep.soundWhite', icon: 'waveform', rawName: 'sleep_white' },
+  { key: 'brown', labelKey: 'sleep.soundBrown', icon: 'sine-wave', rawName: 'sleep_brown' },
+  { key: 'rain', labelKey: 'sleep.soundRain', icon: 'weather-pouring', rawName: 'sleep_rain' },
+  { key: 'fan', labelKey: 'sleep.soundFan', icon: 'fan', rawName: 'sleep_fan' },
+  { key: 'heartbeat', labelKey: 'sleep.soundHeartbeat', icon: 'heart-pulse', rawName: 'sleep_heartbeat' },
+  { key: 'womb', labelKey: 'sleep.soundWomb', icon: 'baby-face-outline', rawName: 'sleep_womb' },
+  { key: 'ocean', labelKey: 'sleep.soundOcean', icon: 'waves', rawName: 'sleep_ocean' },
+  { key: 'car', labelKey: 'sleep.soundCar', icon: 'car', rawName: 'sleep_car' },
+] as const;
 
-export const SLEEP_SOUNDS: SleepSound[] = [
-  { key: 'white', label: 'Ruído branco', icon: 'waveform', rawName: 'sleep_white' },
-  { key: 'brown', label: 'Ruído marrom', icon: 'sine-wave', rawName: 'sleep_brown' },
-  { key: 'rain', label: 'Chuva', icon: 'weather-pouring', rawName: 'sleep_rain' },
-  { key: 'fan', label: 'Ventilador', icon: 'fan', rawName: 'sleep_fan' },
-  { key: 'heartbeat', label: 'Batimento', icon: 'heart-pulse', rawName: 'sleep_heartbeat' },
-  { key: 'womb', label: 'Útero', icon: 'baby-face-outline', rawName: 'sleep_womb' },
-  { key: 'ocean', label: 'Mar', icon: 'waves', rawName: 'sleep_ocean' },
-  { key: 'car', label: 'Carro', icon: 'car', rawName: 'sleep_car' },
-];
+export type SleepSound = (typeof SLEEP_SOUNDS)[number];
 
 /** Opções de timer (minutos). 0 = sem parar. */
 export const SLEEP_TIMERS = [
-  { minutes: 15, label: '15 min' },
-  { minutes: 30, label: '30 min' },
-  { minutes: 60, label: '1 h' },
-  { minutes: 0, label: 'Sem parar' },
+  { minutes: 15, labelKey: 'sleep.timer15' },
+  { minutes: 30, labelKey: 'sleep.timer30' },
+  { minutes: 60, labelKey: 'sleep.timer60' },
+  { minutes: 0, labelKey: 'sleep.timerOff' },
 ] as const;
