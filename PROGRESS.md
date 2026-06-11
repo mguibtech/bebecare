@@ -147,10 +147,11 @@ Nada pendente na i18n. Próxima fatia transversal (se um dia precisar): localiza
 4. **Mobile release:** gerar keystore + aplicar o `signingConfigs.release` no `build.gradle` + workflow `mobile-release.yml` + secrets (tudo documentado no DEPLOY.md — não comitado porque depende do keystore).
 
 ### Fase D — Play Store
+**Ficha pronta pra colar em [PLAY_STORE.md](PLAY_STORE.md)** (título, descrições pt-BR, Data Safety consolidado, classificação 18+, specs de assets, release notes, checklist).
 1. Conta Google Play Developer (US$ 25).
-2. **Data Safety form** (checklist pronto acima).
-3. Ficha do app (descrição, categoria Saúde, screenshots, ícone, feature graphic).
-4. Release assinado (keystore, versionCode=1, internal → closed → production).
+2. **Data Safety form** + classificação IARC (respostas no PLAY_STORE.md).
+3. Ficha do app (copy pronto no PLAY_STORE.md) + assets: ícone 512, feature graphic 1024×500, ≥2 screenshots (ficam melhores após o polimento do DESIGN_REVIEW).
+4. Release assinado (keystore + signing — ver DEPLOY.md; `versionCode` dinâmico via CI; internal → closed → production).
 
 ### Assets / polimento (paralelo, sem bloquear)
 - **8 áudios do Modo Soninho** (`.ogg` CC0) — ver `apps/mobile/assets/audio/CREDITS.md`.
