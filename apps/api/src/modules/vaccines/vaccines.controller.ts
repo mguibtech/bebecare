@@ -1,6 +1,7 @@
 import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Lang } from '../../common/i18n/lang';
 import { User } from '../users/entities/user.entity';
 import { BabyVaccineScheduleDto } from './dto/baby-vaccine-schedule.dto';
 import { VaccineCatalogItemDto } from './dto/vaccine-catalog-item.dto';
@@ -18,8 +19,8 @@ export class VaccinesController {
     summary: 'Catálogo PNI completo (cacheável no mobile — muda raramente)',
   })
   @ApiResponse({ status: 200, type: [VaccineCatalogItemDto] })
-  async getCatalog(): Promise<VaccineCatalogItemDto[]> {
-    return this.vaccines.getCatalog();
+  async getCatalog(@Lang() lang: Lang): Promise<VaccineCatalogItemDto[]> {
+    return this.vaccines.getCatalog(lang);
   }
 
   // ----- GET /babies/:babyId/vaccine-schedule -----
@@ -31,7 +32,8 @@ export class VaccinesController {
   async getSchedule(
     @CurrentUser() user: User,
     @Param('babyId', ParseUUIDPipe) babyId: string,
+    @Lang() lang: Lang,
   ): Promise<BabyVaccineScheduleDto> {
-    return this.vaccines.buildScheduleForBaby(babyId, user.familyId);
+    return this.vaccines.buildScheduleForBaby(babyId, user.familyId, lang);
   }
 }
