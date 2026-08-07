@@ -29,7 +29,9 @@ function buildUser(overrides: Partial<User> = {}): User {
     deletedAt: null,
     assignUuid: () => undefined,
     ...overrides,
-  } as User;
+    // `as unknown as` porque o literal não deriva de BaseEntity (assignUuid é
+    // protected) — sem isso o `tsc --noEmit` acusa TS2352.
+  } as unknown as User;
 }
 
 describe('AuthService', () => {

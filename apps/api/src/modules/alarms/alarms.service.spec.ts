@@ -20,7 +20,9 @@ function buildAlarm(overrides: Partial<Alarm> = {}): Alarm {
     deletedAt: null,
     assignUuid: () => undefined,
     ...overrides,
-  } as Alarm;
+    // `as unknown as` porque o literal não deriva de BaseEntity (assignUuid é
+    // protected) — sem isso o `tsc --noEmit` acusa TS2352.
+  } as unknown as Alarm;
 }
 
 describe('AlarmsService', () => {
@@ -43,10 +45,7 @@ describe('AlarmsService', () => {
     };
 
     const module = await Test.createTestingModule({
-      providers: [
-        AlarmsService,
-        { provide: getRepositoryToken(Alarm), useValue: repo },
-      ],
+      providers: [AlarmsService, { provide: getRepositoryToken(Alarm), useValue: repo }],
     }).compile();
 
     service = module.get(AlarmsService);
@@ -74,16 +73,12 @@ describe('AlarmsService', () => {
 
   it('findOne: lança NotFound quando não existe', async () => {
     repo.findOne.mockResolvedValue(null);
-    await expect(service.findOne('x', 'user-1')).rejects.toThrow(
-      NotFoundException,
-    );
+    await expect(service.findOne('x', 'user-1')).rejects.toThrow(NotFoundException);
   });
 
   it('findOne: lança Forbidden quando é de outro usuário', async () => {
     repo.findOne.mockResolvedValue(buildAlarm({ userId: 'outro' }));
-    await expect(service.findOne('alarm-1', 'user-1')).rejects.toThrow(
-      ForbiddenException,
-    );
+    await expect(service.findOne('alarm-1', 'user-1')).rejects.toThrow(ForbiddenException);
   });
 
   it('update: aplica só os campos enviados', async () => {
