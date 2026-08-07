@@ -68,8 +68,12 @@ ajuste):
 ```
 NODE_ENV=production
 # Railway injeta PORT sozinho — o main.ts já lê process.env.PORT.
-# URL privada: não sai pra internet pública e não gera egress.
-DATABASE_URL=${{Postgres.DATABASE_PRIVATE_URL}}
+# O service Postgres do Railway expõe PGHOST/PGPORT/PGUSER/PGPASSWORD/
+# PGDATABASE/DATABASE_URL. A DATABASE_URL já aponta pro host privado
+# (postgres.railway.internal) — não passa pela internet nem gera egress.
+# ⚠️ Não existe DATABASE_PRIVATE_URL: uma reference com nome inexistente
+# resolve pra vazio e o deploy morre com ECONNREFUSED 127.0.0.1.
+DATABASE_URL=${{Postgres.DATABASE_URL}}
 JWT_SECRET=...           # gere: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=30d

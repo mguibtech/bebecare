@@ -41,7 +41,7 @@ export function buildPostgresConnectionOptions(
   if (environment.NODE_ENV === 'production' && !environment.POSTGRES_HOST) {
     throw new Error(
       'Nenhuma configuração de banco encontrada em produção. Defina DATABASE_URL ' +
-        '(no Railway: DATABASE_URL=${{Postgres.DATABASE_PRIVATE_URL}}) ou as vars ' +
+        '(no Railway: DATABASE_URL=${{Postgres.DATABASE_URL}}) ou as vars ' +
         'POSTGRES_HOST/PORT/USER/PASSWORD/DB. Ver DEPLOY.md.',
     );
   }
