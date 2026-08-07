@@ -5,11 +5,13 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 // Os nomes (POSTGRES_*) são os mesmos usados pelo docker-compose da raiz,
 // evitando uma segunda fonte de verdade.
 export const typeOrmConfig = (config: ConfigService): TypeOrmModuleOptions => {
-  // Postgres gerenciado (Neon/Render) exige TLS. Liga automaticamente em prod,
-  // ou manualmente via POSTGRES_SSL=true (ex.: staging apontando pro Neon).
+  // Postgres gerenciado geralmente exige TLS. Liga automaticamente em prod,
+  // ou manualmente via POSTGRES_SSL=true. POSTGRES_SSL=false desliga MESMO em
+  // prod (ex.: Railway via rede privada, onde o TLS pode não estar disponível).
+  const sslSetting = config.get<string>('POSTGRES_SSL');
   const sslEnabled =
-    config.get<string>('POSTGRES_SSL') === 'true' ||
-    config.get<string>('NODE_ENV') === 'production';
+    sslSetting === 'true' ||
+    (sslSetting !== 'false' && config.get<string>('NODE_ENV') === 'production');
 
   return {
     type: 'postgres',
