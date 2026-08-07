@@ -36,6 +36,16 @@ export function buildPostgresConnectionOptions(
     return { type: 'postgres', url, ssl };
   }
 
+  // Em produção, cair nos defaults de dev vira `ECONNREFUSED 127.0.0.1:5432`
+  // no pre-deploy — erro que não diz o que está faltando. Falha explicando.
+  if (environment.NODE_ENV === 'production' && !environment.POSTGRES_HOST) {
+    throw new Error(
+      'Nenhuma configuração de banco encontrada em produção. Defina DATABASE_URL ' +
+        '(no Railway: DATABASE_URL=${{Postgres.DATABASE_PRIVATE_URL}}) ou as vars ' +
+        'POSTGRES_HOST/PORT/USER/PASSWORD/DB. Ver DEPLOY.md.',
+    );
+  }
+
   return {
     type: 'postgres',
     host: environment.POSTGRES_HOST ?? 'localhost',

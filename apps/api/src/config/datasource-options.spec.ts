@@ -62,7 +62,7 @@ describe('buildPostgresConnectionOptions', () => {
       });
     });
 
-    it('cai nos defaults do docker-compose quando nada é informado', () => {
+    it('cai nos defaults do docker-compose quando nada é informado (dev)', () => {
       const options = buildPostgresConnectionOptions(env());
 
       expect(options).toMatchObject({
@@ -72,11 +72,27 @@ describe('buildPostgresConnectionOptions', () => {
         database: 'bebecare',
       });
     });
+
+    it('em produção, falha explicando quando não há nem URL nem POSTGRES_HOST', () => {
+      // Sem isso o deploy morreria com um ECONNREFUSED 127.0.0.1 sem contexto.
+      expect(() => buildPostgresConnectionOptions(env({ NODE_ENV: 'production' }))).toThrow(
+        /DATABASE_URL/,
+      );
+    });
+
+    it('em produção, POSTGRES_HOST explícito continua valendo', () => {
+      expect(
+        buildPostgresConnectionOptions(env({ NODE_ENV: 'production', POSTGRES_HOST: 'db.interno' }))
+          .host,
+      ).toBe('db.interno');
+    });
   });
 
   describe('TLS', () => {
     it('liga sozinho em produção', () => {
-      expect(buildPostgresConnectionOptions(env({ NODE_ENV: 'production' })).ssl).toEqual({
+      expect(
+        buildPostgresConnectionOptions(env({ NODE_ENV: 'production', POSTGRES_HOST: 'db' })).ssl,
+      ).toEqual({
         rejectUnauthorized: false,
       });
     });
@@ -87,7 +103,9 @@ describe('buildPostgresConnectionOptions', () => {
 
     it('POSTGRES_SSL=false desliga MESMO em produção (rede privada)', () => {
       expect(
-        buildPostgresConnectionOptions(env({ NODE_ENV: 'production', POSTGRES_SSL: 'false' })).ssl,
+        buildPostgresConnectionOptions(
+          env({ NODE_ENV: 'production', POSTGRES_SSL: 'false', POSTGRES_HOST: 'db' }),
+        ).ssl,
       ).toBe(false);
     });
 
