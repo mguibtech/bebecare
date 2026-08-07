@@ -13,16 +13,24 @@ Runbook pra colocar o BebeCare no ar. O **código já está pronto pra produçã
   App mobile (Android)
         │  HTTPS + Accept-Language
         ▼
-  API NestJS  ──────►  Postgres gerenciado (Neon)
-  (Render Web Service)
+  API NestJS  ──────►  Postgres (mesmo projeto, rede privada)
+  (Railway service)
         │
         └──►  Firebase Admin (FCM push)
+
+  Distribuição do app: Firebase App Distribution (Play Store adiada)
 ```
 
-- **API:** Render (Web Service) — Node, build do Nest, `start:prod`.
-- **Banco:** Neon (Postgres serverless, free tier serve pra V1).
+- **API:** Railway — Node (Railpack), config as code em `apps/api/railway.json`.
+- **Banco:** Postgres do próprio Railway (service no mesmo projeto).
 - **Push:** Firebase Admin SDK (service account de produção).
-- **Mobile:** APK/AAB assinado → Google Play (faixa interna → fechada → produção).
+- **Mobile:** APK release assinado → **Firebase App Distribution** (testers por
+  e-mail, `npm run distribute`). Play Store fica pra uma fase futura —
+  [PLAY_STORE.md](PLAY_STORE.md) continua válido pra quando chegar a hora.
+
+> Decisão de 7 ago 2026: Render/Neon → **Railway** (banco + API juntos) e
+> Play Store → **App Distribution**. O `render.yaml` da raiz fica como
+> referência histórica.
 
 ---
 
@@ -30,52 +38,37 @@ Runbook pra colocar o BebeCare no ar. O **código já está pronto pra produçã
 
 | Serviço | Pra quê | Custo V1 |
 |---|---|---|
-| [Neon](https://neon.tech) | Postgres gerenciado | Free |
-| [Render](https://render.com) | Hospedar a API | Free (dorme após inatividade) ou Starter |
-| [Firebase](https://console.firebase.google.com) | Push (FCM) — service account de prod | Free |
-| [Google Play Console](https://play.google.com/console) | Publicar o app | US$ 25 (única vez) |
+| [Railway](https://railway.com) | API + Postgres | Hobby ~US$ 5/mês (inclui US$ 5 de uso); serviços não dormem |
+| [Firebase](https://console.firebase.google.com) | Push (FCM) + App Distribution | Free |
 
 ---
 
-## Passo 1 — Banco (Neon)
+## Passo 1 — Projeto no Railway (API + banco)
 
-1. Crie um projeto no Neon → ele gera uma connection string tipo:
-   `postgresql://USER:PASSWORD@HOST/DBNAME?sslmode=require`
-2. A API usa **vars discretas** (não a URL inteira). Quebre a string e guarde:
-   - `POSTGRES_HOST` = host do Neon (ex.: `ep-xxx.us-east-2.aws.neon.tech`)
-   - `POSTGRES_PORT` = `5432`
-   - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`
-3. SSL é obrigatório no Neon — o código liga automaticamente quando
-   `NODE_ENV=production` (ou `POSTGRES_SSL=true`). Nada a fazer aqui.
-   > Nota de segurança: a conexão usa `ssl: { rejectUnauthorized: false }` —
-   > criptografa o tráfego (TLS) mas não valida o certificado/hostname do
-   > servidor. Aceitável entre Render↔Neon (rede gerenciada). Hardening futuro:
-   > passar o CA bundle do Neon com `rejectUnauthorized: true`.
+1. [railway.com](https://railway.com) → **New Project → Deploy from GitHub repo**
+   → conecte o repo do BebeCare. (O 1º deploy vai falhar — normal, falta o
+   root directory e o banco.)
+2. No service criado → **Settings → Source → Root Directory = `apps/api`**.
+   A partir daí o Railway lê o **`apps/api/railway.json`** (build, start,
+   healthcheck `/api/health`, migrations no pre-deploy) — não precisa
+   configurar comando nenhum no painel.
+3. No mesmo projeto: **Create → Database → PostgreSQL**. Cria o service
+   `Postgres` já com as vars `PGHOST/PGUSER/PGPASSWORD/...`.
+4. API↔banco conversam pela **rede privada** do projeto (sem egress).
 
-## Passo 2 — API (Render)
+## Passo 2 — Env vars da API (Railway)
 
-> ⚡ **Atalho:** o repo tem um **`render.yaml`** (blueprint) na raiz. No Render:
-> **New → Blueprint → conecte o repo**. Ele já cria o Web Service com
-> build/start/health/migrations e pede só os segredos (`POSTGRES_*`, `FIREBASE_*`).
-> Aí pode pular os detalhes manuais abaixo (que ficam como referência).
-
-Configuração manual (equivalente ao blueprint) — **Web Service**, root `apps/api`:
-
-- **Build Command:** `npm ci && npm run build`
-- **Start Command:** `npm run start:prod`  ⚠️ **não** use `npm start` (tem
-  `prestart` que sobe docker — quebra no Render).
-- **Health Check Path:** `/api/health`  (já retorna 503 se o banco cair).
-- **Environment** (env vars):
+No service da API → **Variables**. Pros valores do Postgres, use **references**
+(sintaxe `${{Postgres.VAR}}` — se o service do banco tiver outro nome, ajuste):
 
 ```
 NODE_ENV=production
-# Render injeta PORT sozinho — o main.ts já lê process.env.PORT.
-POSTGRES_HOST=...        # do Neon
-POSTGRES_PORT=5432
-POSTGRES_USER=...
-POSTGRES_PASSWORD=...
-POSTGRES_DB=...
-# POSTGRES_SSL não precisa: NODE_ENV=production já liga TLS.
+# Railway injeta PORT sozinho — o main.ts já lê process.env.PORT.
+POSTGRES_HOST=${{Postgres.PGHOST}}
+POSTGRES_PORT=${{Postgres.PGPORT}}
+POSTGRES_USER=${{Postgres.PGUSER}}
+POSTGRES_PASSWORD=${{Postgres.PGPASSWORD}}
+POSTGRES_DB=${{Postgres.PGDATABASE}}
 JWT_SECRET=...           # gere: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=30d
@@ -84,46 +77,55 @@ FIREBASE_CLIENT_EMAIL=...
 FIREBASE_PRIVATE_KEY=...
 ```
 
+> **SSL:** `NODE_ENV=production` liga TLS na conexão. A imagem de Postgres do
+> Railway aceita TLS (cert self-signed — coberto pelo
+> `rejectUnauthorized: false`). Se o deploy falhar com erro de SSL na rede
+> privada, defina `POSTGRES_SSL=false` — desde 7 ago o `false` explícito
+> desliga o TLS mesmo em prod (`database.config.ts` + `data-source.ts`).
+>
 > A API sobe sem as 3 vars do Firebase (push entra em modo "desabilitado",
 > loga avisos). Configure-as quando o push de produção for necessário.
+
+Por fim: **Settings → Networking → Generate Domain** → anote a URL pública
+(`https://<algo>.up.railway.app`) — o mobile vai apontar pra ela (seção Mobile,
+item 0).
 
 ## Passo 3 — Firebase (service account de produção)
 
 1. Console do Firebase → **Configurações do projeto → Contas de serviço**.
 2. **Gerar nova chave privada** → baixa um JSON.
-3. Copie 3 campos do JSON pras env vars do Render:
+3. Copie 3 campos do JSON pras env vars do Railway:
    - `project_id`   → `FIREBASE_PROJECT_ID`
    - `client_email` → `FIREBASE_CLIENT_EMAIL`
-   - `private_key`  → `FIREBASE_PRIVATE_KEY` (mantenha os `\n` literais; no
-     Render cole o valor com as quebras escapadas como `\n`).
+   - `private_key`  → `FIREBASE_PRIVATE_KEY` (mantenha os `\n` literais —
+     cole o valor exatamente como está no JSON, com as quebras escapadas).
 
 ## Passo 4 — Migrations em produção
 
 As tabelas + o seed do PNI vêm das migrations (não há `synchronize`).
 
-- Rode **uma vez** (e a cada deploy com migration nova), com as env vars do
-  Neon apontadas e SSL ligado:
+**No Railway é automático:** o `railway.json` define como `preDeployCommand`
+`npx typeorm migration:run -d dist/database/data-source.js` — usa o **JS já
+compilado** pelo build (não depende de ts-node/devDeps) e roda antes de cada
+deploy ir ao ar, com as mesmas env vars do service. Idempotente: sem migration
+nova, não faz nada. Confira nos logs do deploy a fase "pre-deploy".
+
+Pra rodar manualmente contra o banco de prod (raro — debug): habilite o **TCP
+proxy público** no service Postgres (Settings → Public Networking) e use as
+credenciais dele com SSL:
 
 ```bash
 cd apps/api
-POSTGRES_SSL=true POSTGRES_HOST=... POSTGRES_USER=... POSTGRES_PASSWORD=... \
-POSTGRES_DB=... npm run migration:run
+POSTGRES_SSL=true POSTGRES_HOST=<xxx>.proxy.rlwy.net POSTGRES_PORT=<porta_do_proxy> \
+POSTGRES_USER=... POSTGRES_PASSWORD=... POSTGRES_DB=railway npm run migration:run
 ```
-
-- No Render, já vem no `render.yaml` como **`preDeployCommand`** (roda sozinho
-  antes de cada deploy ir ao ar). Se configurar manual, use o **Pre-Deploy
-  Command**: `npm run migration:run`.
-  ⚠️ `migration:run` roda via **ts-node** (está em `devDependencies`), então
-  precisa que as devDeps estejam presentes — o Pre-Deploy do Render roda **antes**
-  do prune de devDeps, então funciona. Se der `ts-node not found`, é porque
-  rodou após o prune: rode as migrations num passo que ainda tenha as devDeps.
-- `migration:run` usa `src/database/data-source.ts` (já com SSL condicional).
 
 ## Passo 5 — 🔐 Segurança (fazer agora)
 
-- **Rotacionar a chave do Firebase** que apareceu no chat: gere uma nova
-  (Passo 3), atualize o `apps/api/.env` local + as vars do Render, e **apague
-  a antiga** no Google Cloud → IAM → Contas de serviço.
+- **Rotacionar a chave do Firebase** que apareceu no chat (service account do
+  projeto `bebecareapp-61508`, exposta em 27 mai): gere uma nova (Passo 3),
+  atualize o `apps/api/.env` local + as vars do Railway, e **apague a antiga**
+  no Google Cloud → IAM → Contas de serviço → chaves.
 - O `apps/api/.env` **não está versionado** (confirmado: coberto pelo
   `.gitignore`). Mantenha assim — segredos só em `.env` local e nos painéis.
 
@@ -134,7 +136,9 @@ POSTGRES_DB=... npm run migration:run
 | Item | Onde |
 |---|---|
 | Porta dinâmica (`process.env.PORT`) + bind `0.0.0.0` | `apps/api/src/main.ts` |
-| SSL no Postgres em prod | `database.config.ts` + `data-source.ts` |
+| SSL no Postgres em prod (`POSTGRES_SSL=false` desliga se precisar) | `database.config.ts` + `data-source.ts` |
+| Config as code do Railway (build/start/health/migrations) | `apps/api/railway.json` |
+| Script de distribuição (APK → App Distribution) | `apps/mobile/scripts/distribute.mjs` (`npm run distribute`) |
 | Healthcheck `GET /api/health` (503 se DB cair) | `apps/api/src/health/` |
 | Cron de limpeza de convites (diário 3h) | `families/jobs/family-invites-cleanup.job.ts` |
 | Lembrete de consulta (cron 5 min, FCM) | `appointments/jobs/appointments-reminder.job.ts` |
@@ -143,45 +147,86 @@ POSTGRES_DB=... npm run migration:run
 
 ---
 
-## Mobile — release Android assinado
+## Mobile — distribuição via Firebase App Distribution
 
-> O `build.gradle` **já está pronto** pra release assinado (signing + versionCode
-> dinâmico, com fallback pro debug). Falta só **você gerar o keystore** e prover
-> as credenciais (props do Gradle / secrets do CI). Teste `npm run android`
-> (debug) localmente depois de pegar o repo — deve seguir funcionando sem keystore.
+> Fase atual: **sem Play Store**. Builds de release vão pros testers (a família)
+> pelo **Firebase App Distribution** — um comando local, testers recebem e-mail
+> com o link do APK. O `build.gradle` **já está pronto** pra release assinado
+> (signing + versionCode dinâmico, com fallback pro debug). `npm run android`
+> (debug) segue funcionando sem keystore.
 
 ### 0. Apontar o app pra API de produção ⚠️
 
-O `apps/mobile/src/shared/config/env.ts` agora escolhe a URL por build:
+O `apps/mobile/src/shared/config/env.ts` escolhe a URL por build:
 release (`__DEV__ === false`) usa `API_BASE_URL_PROD`; dev usa `localhost`.
-**Antes do release**, troque o placeholder `API_BASE_URL_PROD` pela URL real do
-Render (ex.: `https://bebecare-api.onrender.com/api`). Sem isso o app de
-produção aponta pro placeholder e não conecta.
+**Antes do primeiro build distribuído**, troque o valor de `API_BASE_URL_PROD`
+(hoje aponta pro placeholder antigo do Render) pelo domínio gerado no Railway,
+mantendo o sufixo `/api` — ex.: `https://<algo>.up.railway.app/api`.
 
 ### 1. Gerar o upload keystore (uma vez)
+
+Num diretório **fora do repo** (ex.: `C:\keys`):
 
 ```bash
 keytool -genkeypair -v -keystore bebecare-upload.keystore \
   -alias bebecare -keyalg RSA -keysize 2048 -validity 10000
 ```
-Guarde o arquivo + as senhas num cofre. **Perder o keystore = não conseguir
-atualizar o app na Play.**
 
-### 2. Signing de release no `build.gradle` — ✅ JÁ APLICADO
+Guarde o arquivo + as senhas num cofre. **Perder o keystore = testers precisam
+desinstalar/reinstalar** (e é o mesmo keystore que vai pra Play depois).
 
-O `apps/mobile/android/app/build.gradle` já tem o `signingConfigs.release` lendo
-as props `BEBECARE_UPLOAD_*`, com **fallback pro debug** quando elas não existem
-(dev/CI sem keystore continuam compilando). Você só precisa **fornecer as props**
-de duas formas:
+### 2. Fornecer as props de assinatura (uma vez)
 
-- **Local:** num `gradle.properties` (gitignored) ou via `-PBEBECARE_UPLOAD_STORE_FILE=... -PBEBECARE_UPLOAD_STORE_PASSWORD=...` etc.
-- **CI:** como env vars com o prefixo `ORG_GRADLE_PROJECT_` (o Gradle as mapeia
-  pra propriedades) — ver o workflow abaixo.
+O `build.gradle` lê as props `BEBECARE_UPLOAD_*` (fallback pro debug quando
+ausentes). Coloque no **`%USERPROFILE%\.gradle\gradle.properties`** (global do
+Gradle, fora do repo — crie o arquivo se não existir):
 
-Props necessárias: `BEBECARE_UPLOAD_STORE_FILE`, `BEBECARE_UPLOAD_STORE_PASSWORD`,
-`BEBECARE_UPLOAD_KEY_ALIAS`, `BEBECARE_UPLOAD_KEY_PASSWORD`.
+```properties
+BEBECARE_UPLOAD_STORE_FILE=C:/keys/bebecare-upload.keystore
+BEBECARE_UPLOAD_STORE_PASSWORD=...
+BEBECARE_UPLOAD_KEY_ALIAS=bebecare
+BEBECARE_UPLOAD_KEY_PASSWORD=...
+# opcional: suba manualmente a cada build distribuído (fallback 1)
+BEBECARE_VERSION_CODE=1
+```
 
-### 3. Workflow de build (`.github/workflows/mobile-release.yml`)
+> Caminho absoluto com barras normais (`C:/...`) — o `file()` do Gradle resolve
+> relativo a `android/app`, então relativo quebraria.
+
+### 3. App Distribution (console do Firebase, uma vez)
+
+1. [Console](https://console.firebase.google.com) → projeto → **App Distribution**
+   → **Começar** (no app Android `com.bebecare`).
+2. Aba **Testadores e grupos** → criar grupo com alias **`familia`** (é o alias
+   que o script usa) → adicionar os e-mails dos testers.
+3. Na sua máquina: `npm i -g firebase-tools && firebase login` (mesma conta
+   Google do projeto).
+
+### 4. Distribuir (cada build)
+
+```bash
+cd apps/mobile
+npm run distribute                      # notas = última msg de commit
+npm run distribute -- --notes "texto"   # notas customizadas
+```
+
+O script (`scripts/distribute.mjs`) roda `gradlew assembleRelease` (avisa se o
+keystore de release não estiver configurado) e sobe o APK pro grupo `familia`.
+Cada tester recebe e-mail → aceita o convite → baixa e instala o APK (o Android
+pede permissão pra "instalar apps desconhecidos" na primeira vez — normal).
+
+> Atualizações instalam por cima enquanto a **assinatura for a mesma** (por isso
+> o keystore no passo 1). Subir o `BEBECARE_VERSION_CODE` não é obrigatório pro
+> App Distribution, mas ajuda a identificar builds.
+
+---
+
+## Play Store — ⏸️ ADIADO
+
+Quando decidirmos publicar: [PLAY_STORE.md](PLAY_STORE.md) tem a ficha pronta,
+e as seções abaixo (CI de release + passos da Play) valem como estavam.
+
+### Workflow de build (`.github/workflows/mobile-release.yml`) — futuro
 
 Manual (`workflow_dispatch`) + por tag `mobile-v*`. Gated nos secrets — não roda
 sozinho, então não vira ruído nem check obrigatório:
@@ -231,13 +276,13 @@ Secrets necessários: `ANDROID_KEYSTORE_BASE64` (`base64 -w0 bebecare-upload.key
 > env `ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_*` (esse prefixo é o que vira property
 > no Gradle). São espaços de nome distintos de propósito — não precisam coincidir.
 
-### 4. versionCode dinâmico — ✅ JÁ APLICADO
+### versionCode dinâmico — ✅ JÁ APLICADO
 
 O `build.gradle` já lê `versionCode` da prop `BEBECARE_VERSION_CODE` (fallback 1).
-O workflow acima passa `ORG_GRADLE_PROJECT_BEBECARE_VERSION_CODE=${{ github.run_number }}`,
-então cada build de release tem um `versionCode` crescente (a Play exige).
+No CI futuro, `ORG_GRADLE_PROJECT_BEBECARE_VERSION_CODE=${{ github.run_number }}`
+dá `versionCode` crescente (a Play exige); local, a prop no gradle.properties.
 
-### 5. Play Store
+### Passos da Play (quando for a hora)
 
 Conta Developer (US$ 25) → criar app → **Data Safety** (checklist no
 [PROGRESS.md](PROGRESS.md)) → ficha (descrição, categoria Saúde, screenshots,
@@ -247,13 +292,14 @@ pra fechada → produção. URL de privacidade:
 
 ---
 
-## Checklist de go-live
+## Checklist de go-live (Railway + App Distribution)
 
-- [ ] Neon criado + vars discretas anotadas
-- [ ] Render Web Service (build/start/health corretos) + env vars
-- [ ] `migration:run` rodado contra o Neon (tabelas + seed PNI)
-- [ ] Firebase service account de prod nas env vars
-- [ ] 🔐 Chave do Firebase antiga rotacionada
-- [ ] `API_BASE_URL_PROD` (em `env.ts`) trocado pela URL do Render (release usa via `__DEV__`)
-- [ ] Keystore gerado + signing de release aplicado + secrets no GitHub
-- [ ] AAB assinado subido na faixa interna da Play
+- [ ] Projeto no Railway: repo conectado, root `apps/api`, Postgres criado
+- [ ] Env vars da API (references do Postgres + `JWT_SECRET` + `FIREBASE_*`)
+- [ ] Deploy verde: logs do pre-deploy mostram migrations + `GET /api/health` OK no domínio gerado
+- [ ] 🔐 Chave antiga do Firebase revogada; service account nova nas vars
+- [ ] `API_BASE_URL_PROD` (em `env.ts`) apontando pro domínio do Railway (com `/api`)
+- [ ] Keystore gerado + props `BEBECARE_UPLOAD_*` no `%USERPROFILE%\.gradle\gradle.properties`
+- [ ] App Distribution ativado + grupo `familia` com os testers
+- [ ] `firebase-tools` instalado + `firebase login` feito
+- [ ] `npm run distribute` → e-mail chegou nos testers e o app conecta na API
