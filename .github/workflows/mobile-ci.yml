@@ -34,7 +34,7 @@ jobs:
 
       # engines.node = ">= 22.11.0" (RN 0.85). Mantém alinhado com o local.
       - name: Setup Node 22
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: npm
