@@ -52,6 +52,9 @@ Runbook pra colocar o BebeCare no ar. O **código já está pronto pra produçã
    A partir daí o Railway lê o **`apps/api/railway.json`** (build, start,
    healthcheck `/api/health`, migrations no pre-deploy) — não precisa
    configurar comando nenhum no painel.
+   > ⚠️ O deploy segue a branch conectada (**`main`** por padrão). Enquanto o
+   > `railway.json` estiver só numa branch de trabalho, o build falha — faça o
+   > merge na `main` antes de clicar em **Deploy**.
 3. No mesmo projeto: **Create → Database → PostgreSQL**. Cria o service
    `Postgres` já com as vars `PGHOST/PGUSER/PGPASSWORD/...`.
 4. API↔banco conversam pela **rede privada** do projeto (sem egress).
