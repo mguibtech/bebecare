@@ -61,17 +61,15 @@ Runbook pra colocar o BebeCare no ar. O **código já está pronto pra produçã
 
 ## Passo 2 — Env vars da API (Railway)
 
-No service da API → **Variables**. Pros valores do Postgres, use **references**
-(sintaxe `${{Postgres.VAR}}` — se o service do banco tiver outro nome, ajuste):
+No service da API → **Variables**. A conexão com o banco vai numa **única
+reference** (`${{Postgres.VAR}}` — se o service do banco tiver outro nome,
+ajuste):
 
 ```
 NODE_ENV=production
 # Railway injeta PORT sozinho — o main.ts já lê process.env.PORT.
-POSTGRES_HOST=${{Postgres.PGHOST}}
-POSTGRES_PORT=${{Postgres.PGPORT}}
-POSTGRES_USER=${{Postgres.PGUSER}}
-POSTGRES_PASSWORD=${{Postgres.PGPASSWORD}}
-POSTGRES_DB=${{Postgres.PGDATABASE}}
+# URL privada: não sai pra internet pública e não gera egress.
+DATABASE_URL=${{Postgres.DATABASE_PRIVATE_URL}}
 JWT_SECRET=...           # gere: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 JWT_ACCESS_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=30d
@@ -83,11 +81,17 @@ FIREBASE_PRIVATE_KEY=...
 # CORS_ALLOWED_ORIGINS=https://admin.exemplo.com,https://site.exemplo.com
 ```
 
+> **Conexão:** `DATABASE_URL` (ou `DATABASE_PRIVATE_URL`) tem prioridade; sem
+> ela, o código monta a conexão pelas `POSTGRES_HOST/PORT/USER/PASSWORD/DB`
+> (é o caminho do docker-compose local). Usar as cinco vars discretas em
+> produção é frágil: **uma faltando** faz o TypeORM cair no default `localhost`
+> e o deploy morre com `ECONNREFUSED 127.0.0.1:5432` no pre-deploy.
+>
 > **SSL:** `NODE_ENV=production` liga TLS na conexão. A imagem de Postgres do
 > Railway aceita TLS (cert self-signed — coberto pelo
 > `rejectUnauthorized: false`). Se o deploy falhar com erro de SSL na rede
-> privada, defina `POSTGRES_SSL=false` — desde 7 ago o `false` explícito
-> desliga o TLS mesmo em prod (`database.config.ts` + `data-source.ts`).
+> privada, defina `POSTGRES_SSL=false` — o `false` explícito desliga o TLS
+> mesmo em prod (`src/config/datasource-options.ts`).
 >
 > A API sobe sem as 3 vars do Firebase (push entra em modo "desabilitado",
 > loga avisos). Configure-as quando o push de produção for necessário.
@@ -109,6 +113,10 @@ item 0).
 ## Passo 4 — Migrations em produção
 
 As tabelas + o seed do PNI vêm das migrations (não há `synchronize`).
+
+> ⚠️ O `buildCommand` do `railway.json` roda `npm ci --include=dev`: o
+> `@nestjs/cli` está em devDependencies e, com `NODE_ENV=production`, o npm as
+> omitiria — o `nest build` falharia com "nest: not found".
 
 **No Railway é automático:** o `railway.json` define como `preDeployCommand`
 `npx typeorm migration:run -d dist/database/data-source.js` — usa o **JS já

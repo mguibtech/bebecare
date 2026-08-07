@@ -1,25 +1,16 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { buildPostgresConnectionOptions } from './datasource-options';
 
 // Factory de configuração do TypeORM, lendo do ConfigService.
-// Os nomes (POSTGRES_*) são os mesmos usados pelo docker-compose da raiz,
-// evitando uma segunda fonte de verdade.
+// A conexão em si (URL vs POSTGRES_*, SSL) vive em datasource-options.ts,
+// compartilhada com o DataSource do CLI de migrations.
 export const typeOrmConfig = (config: ConfigService): TypeOrmModuleOptions => {
-  // Postgres gerenciado geralmente exige TLS. Liga automaticamente em prod,
-  // ou manualmente via POSTGRES_SSL=true. POSTGRES_SSL=false desliga MESMO em
-  // prod (ex.: Railway via rede privada, onde o TLS pode não estar disponível).
-  const sslSetting = config.get<string>('POSTGRES_SSL');
-  const sslEnabled =
-    sslSetting === 'true' ||
-    (sslSetting !== 'false' && config.get<string>('NODE_ENV') === 'production');
+  // O ConfigService já reflete process.env (+ .env carregado pelo ConfigModule).
+  const connection = buildPostgresConnectionOptions(process.env);
 
   return {
-    type: 'postgres',
-    host: config.get<string>('POSTGRES_HOST', 'localhost'),
-    port: config.get<number>('POSTGRES_PORT', 5432),
-    username: config.get<string>('POSTGRES_USER', 'bebecare'),
-    password: config.get<string>('POSTGRES_PASSWORD', 'bebecare_dev_pwd'),
-    database: config.get<string>('POSTGRES_DB', 'bebecare'),
+    ...connection,
     // Entities serão registradas via TypeOrmModule.forFeature em cada módulo.
     // Em produção, prefira passar `entities: [...]` explicitamente ao invés de autoload.
     autoLoadEntities: true,
@@ -28,6 +19,5 @@ export const typeOrmConfig = (config: ConfigService): TypeOrmModuleOptions => {
     migrations: [__dirname + '/../database/migrations/*.{ts,js}'],
     migrationsRun: false,
     logging: config.get<string>('NODE_ENV') !== 'production',
-    ssl: sslEnabled ? { rejectUnauthorized: false } : false,
   };
 };
