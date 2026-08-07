@@ -46,7 +46,9 @@ export class MedDoseAlarmsJob {
       .where('log.notified_at IS NULL')
       .andWhere('log.status = :status', { status: DoseStatus.PENDING })
       .andWhere('schedule.use_alarm = true')
-      .andWhere(`log.scheduled_for BETWEEN NOW() - INTERVAL '1 minute' AND NOW() + INTERVAL '1 minute'`)
+      .andWhere(
+        `log.scheduled_for BETWEEN NOW() - INTERVAL '1 minute' AND NOW() + INTERVAL '1 minute'`,
+      )
       .getMany();
 
     let sent = 0;
@@ -62,9 +64,7 @@ export class MedDoseAlarmsJob {
         await this.doseLogs.save(log);
         sent += 1;
       } catch (err) {
-        this.logger.error(
-          `Falha ao enviar alarme da dose ${log.id}: ${(err as Error).message}`,
-        );
+        this.logger.error(`Falha ao enviar alarme da dose ${log.id}: ${(err as Error).message}`);
       }
     }
     return sent;

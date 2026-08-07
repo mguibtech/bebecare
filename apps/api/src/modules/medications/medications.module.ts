@@ -15,7 +15,10 @@ import { CreateDailyDoseLogsJob } from './jobs/create-daily-dose-logs.job';
 import { MedDoseAlarmsJob } from './jobs/med-dose-alarms.job';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Medication, MedSchedule, MedDoseLog, Baby]), NotificationsModule],
+  imports: [
+    TypeOrmModule.forFeature([Medication, MedSchedule, MedDoseLog, Baby]),
+    NotificationsModule,
+  ],
   controllers: [MedicationsController, MedSchedulesController, MedDoseLogsController],
   providers: [
     MedicationsService,

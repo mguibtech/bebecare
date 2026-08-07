@@ -28,7 +28,8 @@ export class CreateAlarmDto {
     example: 127,
     minimum: 1,
     maximum: 127,
-    description: 'Bitmask de dias (dom=1, seg=2, ter=4, qua=8, qui=16, sex=32, sáb=64). 127 = todos.',
+    description:
+      'Bitmask de dias (dom=1, seg=2, ter=4, qua=8, qui=16, sex=32, sáb=64). 127 = todos.',
   })
   @IsInt()
   @Min(1)

@@ -36,10 +36,7 @@ export class AlarmsController {
   @Post()
   @ApiOperation({ summary: 'Cria um despertador' })
   @ApiResponse({ status: 201, type: AlarmResponseDto })
-  async create(
-    @CurrentUser() user: User,
-    @Body() dto: CreateAlarmDto,
-  ): Promise<AlarmResponseDto> {
+  async create(@CurrentUser() user: User, @Body() dto: CreateAlarmDto): Promise<AlarmResponseDto> {
     const alarm = await this.alarms.create(user.id, dto);
     return this.toResponse(alarm);
   }
@@ -70,10 +67,7 @@ export class AlarmsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Soft-delete de um despertador' })
-  async remove(
-    @CurrentUser() user: User,
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  async remove(@CurrentUser() user: User, @Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.alarms.remove(id, user.id);
   }
 

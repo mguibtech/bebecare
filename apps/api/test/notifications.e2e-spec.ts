@@ -46,7 +46,7 @@ describe('Notifications / push (e2e)', () => {
     await app.init();
     http = app.getHttpServer();
 
-    stub = app.get(PUSH_SENDER) as StubSender;
+    stub = app.get(PUSH_SENDER);
     reminderJob = app.get(AppointmentsReminderJob);
     alarmsJob = app.get(MedDoseAlarmsJob);
     doseLogsService = app.get(MedDoseLogsService);

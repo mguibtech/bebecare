@@ -84,10 +84,7 @@ export class VaccineRecordsController {
   // -------------------------------------------------------------------
   // HELPERS
   // -------------------------------------------------------------------
-  private toResponse(
-    record: VaccineRecord,
-    lang: Lang = 'pt',
-  ): VaccineRecordResponseDto {
+  private toResponse(record: VaccineRecord, lang: Lang = 'pt'): VaccineRecordResponseDto {
     const text = record.vaccine
       ? translateVaccine(record.vaccine, lang)
       : { name: '', description: null, doseLabel: '' };
