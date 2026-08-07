@@ -73,11 +73,47 @@ describe('buildPostgresConnectionOptions', () => {
       });
     });
 
-    it('em produção, falha explicando quando não há nem URL nem POSTGRES_HOST', () => {
+    it('aceita as PG* do libpq (nomes que o Railway expõe) como fallback', () => {
+      const options = buildPostgresConnectionOptions(
+        env({
+          PGHOST: 'postgres.railway.internal',
+          PGPORT: '5432',
+          PGUSER: 'postgres',
+          PGPASSWORD: 'pwd',
+          PGDATABASE: 'railway',
+        }),
+      );
+
+      expect(options).toMatchObject({
+        host: 'postgres.railway.internal',
+        port: 5432,
+        username: 'postgres',
+        database: 'railway',
+      });
+    });
+
+    it('POSTGRES_* tem prioridade sobre PG* quando as duas existem', () => {
+      const options = buildPostgresConnectionOptions(
+        env({ POSTGRES_HOST: 'explicito', PGHOST: 'ignorado' }),
+      );
+
+      expect(options.host).toBe('explicito');
+    });
+
+    it('em produção, falha explicando quando não há nem URL nem host', () => {
       // Sem isso o deploy morreria com um ECONNREFUSED 127.0.0.1 sem contexto.
       expect(() => buildPostgresConnectionOptions(env({ NODE_ENV: 'production' }))).toThrow(
         /DATABASE_URL/,
       );
+    });
+
+    it('a falha lista os nomes das vars de banco presentes (diagnóstico)', () => {
+      // Ajuda a ver se a reference do painel resolveu pra vazio.
+      expect(() =>
+        buildPostgresConnectionOptions(
+          env({ NODE_ENV: 'production', POSTGRES_SSL: 'true', DATABASE_URL: '' }),
+        ),
+      ).toThrow(/DATABASE_URL, POSTGRES_SSL/);
     });
 
     it('em produção, POSTGRES_HOST explícito continua valendo', () => {

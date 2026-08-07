@@ -36,23 +36,34 @@ export function buildPostgresConnectionOptions(
     return { type: 'postgres', url, ssl };
   }
 
+  // Terceira forma: as PG* padrão do libpq. O service Postgres do Railway
+  // expõe exatamente esses nomes, então referenciá-los direto também funciona.
+  const host = environment.POSTGRES_HOST ?? environment.PGHOST;
+
   // Em produção, cair nos defaults de dev vira `ECONNREFUSED 127.0.0.1:5432`
-  // no pre-deploy — erro que não diz o que está faltando. Falha explicando.
-  if (environment.NODE_ENV === 'production' && !environment.POSTGRES_HOST) {
+  // no pre-deploy — erro que não diz o que está faltando. Falha explicando,
+  // e lista as variáveis relacionadas que EXISTEM (só nomes, nunca valores)
+  // pra deixar óbvio se a reference do painel não resolveu.
+  if (environment.NODE_ENV === 'production' && !host) {
+    const seen = Object.keys(environment)
+      .filter((name) => /^(DATABASE|PG|POSTGRES)/.test(name))
+      .sort();
+
     throw new Error(
       'Nenhuma configuração de banco encontrada em produção. Defina DATABASE_URL ' +
         '(no Railway: DATABASE_URL=${{Postgres.DATABASE_URL}}) ou as vars ' +
-        'POSTGRES_HOST/PORT/USER/PASSWORD/DB. Ver DEPLOY.md.',
+        'POSTGRES_HOST/PORT/USER/PASSWORD/DB. Ver DEPLOY.md. ' +
+        `Variáveis de banco presentes no ambiente: ${seen.length ? seen.join(', ') : '(nenhuma)'}.`,
     );
   }
 
   return {
     type: 'postgres',
-    host: environment.POSTGRES_HOST ?? 'localhost',
-    port: Number(environment.POSTGRES_PORT ?? 5432),
-    username: environment.POSTGRES_USER ?? 'bebecare',
-    password: environment.POSTGRES_PASSWORD ?? 'bebecare_dev_pwd',
-    database: environment.POSTGRES_DB ?? 'bebecare',
+    host: host ?? 'localhost',
+    port: Number(environment.POSTGRES_PORT ?? environment.PGPORT ?? 5432),
+    username: environment.POSTGRES_USER ?? environment.PGUSER ?? 'bebecare',
+    password: environment.POSTGRES_PASSWORD ?? environment.PGPASSWORD ?? 'bebecare_dev_pwd',
+    database: environment.POSTGRES_DB ?? environment.PGDATABASE ?? 'bebecare',
     ssl,
   };
 }
