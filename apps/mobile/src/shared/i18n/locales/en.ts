@@ -531,6 +531,7 @@ export const en: TranslationCatalog = {
     dateFormat: 'Invalid format (YYYY-MM-DD)',
     birthDateRequired: 'Date of birth is required',
     birthDateFuture: 'Date of birth cannot be in the future',
+    birthDateInvalid: 'Invalid date of birth',
     sexRequired: 'Sex is required',
     weightInvalid: 'Invalid weight',
     weightInteger: 'Weight in grams (integer)',

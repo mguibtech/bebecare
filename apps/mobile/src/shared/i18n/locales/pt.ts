@@ -532,6 +532,7 @@ export const pt = {
     dateFormat: 'Formato inválido (AAAA-MM-DD)',
     birthDateRequired: 'Data de nascimento obrigatória',
     birthDateFuture: 'Data de nascimento não pode ser no futuro',
+    birthDateInvalid: 'Data de nascimento inválida',
     sexRequired: 'Sexo obrigatório',
     weightInvalid: 'Peso inválido',
     weightInteger: 'Peso em gramas (inteiro)',

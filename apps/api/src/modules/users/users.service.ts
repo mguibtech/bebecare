@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -39,7 +39,9 @@ export class UsersService {
       // Default da seed: parte do email antes do @, com fallback pro nome.
       avatarSeed:
         data.avatarSeed?.trim() ||
-        data.email.split('@')[0]?.toLowerCase() ||
+        // Usa o email já normalizado (trim + lowercase) — senão um email com
+        // espaço na ponta geraria uma seed com espaço.
+        data.email.trim().toLowerCase().split('@')[0] ||
         data.name.toLowerCase().replace(/\s+/g, '-'),
     });
 
@@ -80,7 +82,8 @@ export class UsersService {
   ): Promise<User> {
     const user = await this.users.findOne({ where: { id: userId } });
     if (!user) {
-      throw new Error('Usuário não encontrado');
+      // NotFoundException (404) — um Error cru viraria 500 no filtro do Nest.
+      throw new NotFoundException('Usuário não encontrado');
     }
 
     if (data.name !== undefined) user.name = data.name.trim();

@@ -12,6 +12,7 @@
 import { z } from 'zod';
 import type { TFunction } from 'i18next';
 
+import { parseNumericInput } from '../../../shared/utils/number';
 import { DoseUnit } from '../types';
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -25,13 +26,12 @@ export function makeMedicationSchema(t: TFunction) {
         .min(1, t('validation.nameRequired'))
         .max(120, t('validation.nameTooLong')),
 
-      /** Aceita string (input em RN) e converte pra number antes da validacao. */
+      /**
+       * Aceita string (input em RN) e converte pra number antes da validacao.
+       * Vírgula decimal ("2,5") é aceita — teclado numérico pt-BR.
+       */
       dose: z.preprocess(
-        (v) => {
-          if (v === '' || v === null || v === undefined) return undefined;
-          const n = Number(v);
-          return Number.isNaN(n) ? v : n;
-        },
+        parseNumericInput,
         z
           .number({
             required_error: t('validation.doseRequired'),
