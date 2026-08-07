@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -40,8 +41,9 @@ export class FamiliesController {
   async getMe(@CurrentUser() user: User): Promise<FamilyDetailsDto> {
     const family = await this.families.findByIdWithMembers(user.familyId);
     if (!family) {
-      // Não deveria acontecer (invariante: todo user tem família)
-      throw new Error('Família do usuário não encontrada — estado inconsistente');
+      // Não deveria acontecer (invariante: todo user tem família).
+      // NotFoundException (404) em vez de Error cru, que viraria 500.
+      throw new NotFoundException('Família do usuário não encontrada — estado inconsistente');
     }
     const pending = await this.invites.listPendingForFamily(user.familyId);
 

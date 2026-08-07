@@ -16,6 +16,7 @@
 import { z } from 'zod';
 import type { TFunction } from 'i18next';
 
+import { parseNumericInput } from '../../../shared/utils/number';
 import { AvatarStyle, BloodType, Sex } from '../types';
 
 /**
@@ -35,27 +36,29 @@ export function makeBabySchema(t: TFunction) {
       errorMap: () => ({ message: t('validation.sexRequired') }),
     }),
 
+    // Dois refines separados de propósito: uma data impossível ("2026-13-40")
+    // passa no regex de máscara, e um refine único acusaria "não pode ser no
+    // futuro" — mensagem enganosa. O primeiro pega a data inválida.
     birthDate: z
       .string({ required_error: t('validation.birthDateRequired') })
       .regex(/^\d{4}-\d{2}-\d{2}$/, t('validation.dateFormat'))
+      .refine((s) => !Number.isNaN(new Date(s + 'T00:00:00').getTime()), {
+        message: t('validation.birthDateInvalid'),
+      })
       .refine(
         (s) => {
           const parsed = new Date(s + 'T00:00:00');
-          return !Number.isNaN(parsed.getTime()) && parsed <= new Date();
+          return Number.isNaN(parsed.getTime()) || parsed <= new Date();
         },
         { message: t('validation.birthDateFuture') },
       ),
 
     /**
-     * Number forms em RN chegam como string. preprocess converte string vazia
-     * para undefined (campo opcional) e strings numericas para Number.
+     * Number forms em RN chegam como string. `parseNumericInput` converte
+     * string vazia para undefined (campo opcional) e aceita vírgula decimal.
      */
     birthWeightGrams: z.preprocess(
-      (v) => {
-        if (v === '' || v === null || v === undefined) return undefined;
-        const n = Number(v);
-        return Number.isNaN(n) ? v : n;
-      },
+      parseNumericInput,
       z
         .number({ invalid_type_error: t('validation.weightInvalid') })
         .int(t('validation.weightInteger'))
@@ -65,11 +68,7 @@ export function makeBabySchema(t: TFunction) {
     ),
 
     birthHeightCm: z.preprocess(
-      (v) => {
-        if (v === '' || v === null || v === undefined) return undefined;
-        const n = Number(v);
-        return Number.isNaN(n) ? v : n;
-      },
+      parseNumericInput,
       z
         .number({ invalid_type_error: t('validation.heightInvalid') })
         .min(20, t('validation.heightMin'))

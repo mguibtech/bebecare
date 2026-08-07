@@ -16,17 +16,11 @@ const FALLBACK: Lang = 'pt';
 export function resolveLang(header?: string): Lang {
   if (!header) return FALLBACK;
   const base = header.split(',')[0]?.trim().split('-')[0]?.toLowerCase() ?? '';
-  return (SUPPORTED as readonly string[]).includes(base)
-    ? (base as Lang)
-    : FALLBACK;
+  return (SUPPORTED as readonly string[]).includes(base) ? (base as Lang) : FALLBACK;
 }
 
 /** Param decorator: injeta o `Lang` resolvido do Accept-Language. */
-export const Lang = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext): Lang => {
-    const req = ctx
-      .switchToHttp()
-      .getRequest<{ headers: Record<string, string | undefined> }>();
-    return resolveLang(req.headers['accept-language']);
-  },
-);
+export const Lang = createParamDecorator((_data: unknown, ctx: ExecutionContext): Lang => {
+  const req = ctx.switchToHttp().getRequest<{ headers: Record<string, string | undefined> }>();
+  return resolveLang(req.headers['accept-language']);
+});

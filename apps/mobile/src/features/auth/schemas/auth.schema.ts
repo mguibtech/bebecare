@@ -11,11 +11,14 @@ import type { TFunction } from 'i18next';
 
 export function makeLoginSchema(t: TFunction) {
   return z.object({
+    // ⚠️ ORDEM IMPORTA: o zod aplica os checks na sequência declarada, então o
+    // .trim() vem ANTES do .email() — senão um email colado com espaço na ponta
+    // ("  a@b.co ", comum ao colar do teclado) reprovaria como inválido.
     email: z
       .string({ required_error: t('validation.emailRequired') })
+      .trim()
       .min(1, t('validation.emailRequired'))
       .email(t('validation.emailInvalid'))
-      .trim()
       .toLowerCase(),
     // Login aceita qualquer senha não-vazia — quem decide se é válida é o backend.
     password: z
@@ -26,11 +29,14 @@ export function makeLoginSchema(t: TFunction) {
 
 export function makeRegisterSchema(t: TFunction) {
   return z.object({
+    // ⚠️ ORDEM IMPORTA: o zod aplica os checks na sequência declarada, então o
+    // .trim() vem ANTES do .email() — senão um email colado com espaço na ponta
+    // ("  a@b.co ", comum ao colar do teclado) reprovaria como inválido.
     email: z
       .string({ required_error: t('validation.emailRequired') })
+      .trim()
       .min(1, t('validation.emailRequired'))
       .email(t('validation.emailInvalid'))
-      .trim()
       .toLowerCase(),
     name: z
       .string({ required_error: t('validation.nameRequired') })

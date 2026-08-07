@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { resolveCorsOptions } from './config/cors.config';
 
 // Bootstrap da aplicação BebeCare
 async function bootstrap() {
@@ -20,11 +21,9 @@ async function bootstrap() {
     }),
   );
 
-  // CORS liberado em dev — restringir em produção
-  app.enableCors({
-    origin: true,
-    credentials: true,
-  });
+  // Em produção só libera origens web declaradas em CORS_ALLOWED_ORIGINS.
+  // O app React Native não depende de CORS para consumir a API.
+  app.enableCors(resolveCorsOptions());
 
   // Swagger em /api/docs (somente em desenvolvimento)
   if (process.env.NODE_ENV !== 'production') {
@@ -39,7 +38,7 @@ async function bootstrap() {
     SwaggerModule.setup('api/docs', app, document);
   }
 
-  // Render/managed hosts injetam PORT — respeitar antes do API_PORT do .env.
+  // Railway e outros hosts gerenciados injetam PORT — respeitar antes do API_PORT.
   const port = Number(process.env.PORT ?? process.env.API_PORT ?? 3000);
   // 0.0.0.0 pra aceitar conexões externas no container de produção.
   await app.listen(port, '0.0.0.0');

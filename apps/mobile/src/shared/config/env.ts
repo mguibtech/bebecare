@@ -1,9 +1,8 @@
 /**
  * Configuracao de ambiente do app.
  *
- * NOTA: usando constantes inline por enquanto. Quando precisarmos de
- * builds separados (dev/staging/prod) substituir por react-native-config
- * com arquivos .env.* na raiz de apps/mobile.
+ * A URL de produção é inserida pelo Babel durante o build de distribuição,
+ * sem ficar gravada no repositório. Ver scripts/distribute.mjs e DEPLOY.md.
  */
 
 import { Platform } from 'react-native';
@@ -30,14 +29,48 @@ const API_BASE_URL_DEV = Platform.select({
 });
 
 /**
- * URL pública da API em produção (Render). TROCAR pela URL real antes do
- * release build. Builds de release (`__DEV__ === false`) usam esta
- * automaticamente; dev usa localhost. Inclui o prefixo '/api'. Ver DEPLOY.md.
+ * Marcador substituído pelo plugin Babel por BEBECARE_API_BASE_URL no build de
+ * release. A URL é pública (não é segredo), mas só passa a existir depois que
+ * o Railway gerar o domínio do serviço.
  */
-const API_BASE_URL_PROD = 'https://bebecare-api.onrender.com/api';
+declare const __BEBECARE_API_BASE_URL__: string;
+const API_BASE_URL_PROD = __BEBECARE_API_BASE_URL__;
+
+/** Valida e normaliza a URL pública que será embutida no APK de release. */
+export function resolveProductionApiBaseUrl(value: string): string {
+  const rawValue = value.trim();
+  if (!rawValue) {
+    throw new Error(
+      'URL da API de produção ausente. Configure BEBECARE_API_BASE_URL antes de gerar o APK.',
+    );
+  }
+
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(rawValue);
+  } catch {
+    throw new Error('BEBECARE_API_BASE_URL deve ser uma URL HTTPS válida.');
+  }
+
+  const path = parsedUrl.pathname.replace(/\/+$/, '');
+  if (
+    parsedUrl.protocol !== 'https:' ||
+    path !== '/api' ||
+    parsedUrl.search ||
+    parsedUrl.hash
+  ) {
+    throw new Error(
+      'BEBECARE_API_BASE_URL deve usar HTTPS, terminar em /api e não ter query ou fragment.',
+    );
+  }
+
+  return `${parsedUrl.origin}${path}`;
+}
 
 export const env = {
-  API_BASE_URL: __DEV__ ? API_BASE_URL_DEV : API_BASE_URL_PROD,
+  API_BASE_URL: __DEV__
+    ? API_BASE_URL_DEV
+    : resolveProductionApiBaseUrl(API_BASE_URL_PROD),
   APP_NAME: 'BebeCare',
   // Tempo em ms apos o qual um cache do React Query e considerado stale.
   QUERY_STALE_TIME: 1000 * 60 * 5, // 5 min

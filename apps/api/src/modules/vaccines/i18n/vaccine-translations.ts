@@ -19,8 +19,7 @@ export type VaccineText = {
 const EN: Record<string, VaccineText> = {
   BCG: {
     name: 'BCG',
-    description:
-      'Prevents severe forms of tuberculosis. Given at the maternity ward.',
+    description: 'Prevents severe forms of tuberculosis. Given at the maternity ward.',
     doseLabel: 'Single dose',
   },
   HEPB_BIRTH: {
@@ -47,8 +46,7 @@ const EN: Record<string, VaccineText> = {
   },
   PCV10_1: {
     name: 'Pneumococcal 10v',
-    description:
-      'Prevents pneumonia, meningitis and other pneumococcal diseases.',
+    description: 'Prevents pneumonia, meningitis and other pneumococcal diseases.',
     doseLabel: '1st dose',
   },
   MENC_1: {

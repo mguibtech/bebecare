@@ -18,9 +18,7 @@ describe('HealthController', () => {
 
   it('lança ServiceUnavailable (503) quando o banco cai', async () => {
     const controller = makeController(() => Promise.reject(new Error('down')));
-    await expect(controller.check()).rejects.toBeInstanceOf(
-      ServiceUnavailableException,
-    );
+    await expect(controller.check()).rejects.toBeInstanceOf(ServiceUnavailableException);
   });
 
   it('o corpo do 503 preserva o status degraded + db down', async () => {

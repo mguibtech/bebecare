@@ -52,6 +52,9 @@ Runbook pra colocar o BebeCare no ar. O **código já está pronto pra produçã
    A partir daí o Railway lê o **`apps/api/railway.json`** (build, start,
    healthcheck `/api/health`, migrations no pre-deploy) — não precisa
    configurar comando nenhum no painel.
+   > ⚠️ O deploy segue a branch conectada (**`main`** por padrão). Enquanto o
+   > `railway.json` estiver só numa branch de trabalho, o build falha — faça o
+   > merge na `main` antes de clicar em **Deploy**.
 3. No mesmo projeto: **Create → Database → PostgreSQL**. Cria o service
    `Postgres` já com as vars `PGHOST/PGUSER/PGPASSWORD/...`.
 4. API↔banco conversam pela **rede privada** do projeto (sem egress).
@@ -75,6 +78,9 @@ JWT_REFRESH_EXPIRES_IN=30d
 FIREBASE_PROJECT_ID=...      # ver Passo 3
 FIREBASE_CLIENT_EMAIL=...
 FIREBASE_PRIVATE_KEY=...
+# Opcional: apenas se futuramente houver painel/site web consumindo a API.
+# Sem esta variável, browsers externos não recebem CORS; o app nativo funciona normalmente.
+# CORS_ALLOWED_ORIGINS=https://admin.exemplo.com,https://site.exemplo.com
 ```
 
 > **SSL:** `NODE_ENV=production` liga TLS na conexão. A imagem de Postgres do
@@ -155,13 +161,13 @@ POSTGRES_USER=... POSTGRES_PASSWORD=... POSTGRES_DB=railway npm run migration:ru
 > (signing + versionCode dinâmico, com fallback pro debug). `npm run android`
 > (debug) segue funcionando sem keystore.
 
-### 0. Apontar o app pra API de produção ⚠️
+### 0. Informar a API de produção no build de distribuição ⚠️
 
-O `apps/mobile/src/shared/config/env.ts` escolhe a URL por build:
-release (`__DEV__ === false`) usa `API_BASE_URL_PROD`; dev usa `localhost`.
-**Antes do primeiro build distribuído**, troque o valor de `API_BASE_URL_PROD`
-(hoje aponta pro placeholder antigo do Render) pelo domínio gerado no Railway,
-mantendo o sufixo `/api` — ex.: `https://<algo>.up.railway.app/api`.
+O APK de release recebe a URL pública durante o build; ela não fica gravada no
+repositório. Depois que o Railway gerar o domínio, configure
+`BEBECARE_API_BASE_URL` com HTTPS e o sufixo `/api`, por exemplo:
+`https://<algo>.up.railway.app/api`. O script de distribuição valida esse valor
+e para antes de gerar um APK se ele estiver ausente ou inválido.
 
 ### 1. Gerar o upload keystore (uma vez)
 
@@ -175,7 +181,7 @@ keytool -genkeypair -v -keystore bebecare-upload.keystore \
 Guarde o arquivo + as senhas num cofre. **Perder o keystore = testers precisam
 desinstalar/reinstalar** (e é o mesmo keystore que vai pra Play depois).
 
-### 2. Fornecer as props de assinatura (uma vez)
+### 2. Fornecer as props de assinatura e URL (uma vez)
 
 O `build.gradle` lê as props `BEBECARE_UPLOAD_*` (fallback pro debug quando
 ausentes). Coloque no **`%USERPROFILE%\.gradle\gradle.properties`** (global do
@@ -188,10 +194,13 @@ BEBECARE_UPLOAD_KEY_ALIAS=bebecare
 BEBECARE_UPLOAD_KEY_PASSWORD=...
 # opcional: suba manualmente a cada build distribuído (fallback 1)
 BEBECARE_VERSION_CODE=1
+# URL pública gerada pelo Railway; não é segredo.
+BEBECARE_API_BASE_URL=https://<algo>.up.railway.app/api
 ```
 
 > Caminho absoluto com barras normais (`C:/...`) — o `file()` do Gradle resolve
-> relativo a `android/app`, então relativo quebraria.
+> relativo a `android/app`, então relativo quebraria. A URL é lida pelo script
+> `npm run distribute` e inserida no bundle JavaScript do APK.
 
 ### 3. App Distribution (console do Firebase, uma vez)
 
@@ -210,8 +219,9 @@ npm run distribute                      # notas = última msg de commit
 npm run distribute -- --notes "texto"   # notas customizadas
 ```
 
-O script (`scripts/distribute.mjs`) roda `gradlew assembleRelease` (avisa se o
-keystore de release não estiver configurado) e sobe o APK pro grupo `familia`.
+O script (`scripts/distribute.mjs`) valida `BEBECARE_API_BASE_URL`, roda
+`gradlew assembleRelease` (avisa se o keystore de release não estiver
+configurado) e sobe o APK pro grupo `familia`.
 Cada tester recebe e-mail → aceita o convite → baixa e instala o APK (o Android
 pede permissão pra "instalar apps desconhecidos" na primeira vez — normal).
 
@@ -258,6 +268,9 @@ jobs:
         # Prefixo ORG_GRADLE_PROJECT_ → o Gradle expõe cada um como project
         # property (ex.: BEBECARE_UPLOAD_STORE_FILE). É isso que o build.gradle lê.
         env:
+          # Variável de Actions (não é segredo): URL Railway + /api.
+          # O Babel a insere no bundle de release.
+          BEBECARE_API_BASE_URL: ${{ vars.BEBECARE_API_BASE_URL }}
           ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_STORE_FILE: bebecare-upload.keystore
           ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ORG_GRADLE_PROJECT_BEBECARE_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -295,11 +308,11 @@ pra fechada → produção. URL de privacidade:
 ## Checklist de go-live (Railway + App Distribution)
 
 - [ ] Projeto no Railway: repo conectado, root `apps/api`, Postgres criado
-- [ ] Env vars da API (references do Postgres + `JWT_SECRET` + `FIREBASE_*`)
+- [ ] Env vars da API (references do Postgres + `JWT_SECRET` + `FIREBASE_*`; CORS vazio salvo painel web)
 - [ ] Deploy verde: logs do pre-deploy mostram migrations + `GET /api/health` OK no domínio gerado
 - [ ] 🔐 Chave antiga do Firebase revogada; service account nova nas vars
-- [ ] `API_BASE_URL_PROD` (em `env.ts`) apontando pro domínio do Railway (com `/api`)
-- [ ] Keystore gerado + props `BEBECARE_UPLOAD_*` no `%USERPROFILE%\.gradle\gradle.properties`
+- [ ] `BEBECARE_API_BASE_URL` aponta para o domínio Railway com `/api`
+- [ ] Keystore gerado + props `BEBECARE_UPLOAD_*` e `BEBECARE_API_BASE_URL` no `%USERPROFILE%\.gradle\gradle.properties`
 - [ ] App Distribution ativado + grupo `familia` com os testers
 - [ ] `firebase-tools` instalado + `firebase login` feito
 - [ ] `npm run distribute` → e-mail chegou nos testers e o app conecta na API
