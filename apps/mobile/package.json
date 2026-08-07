@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "adb": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9090 tcp:9090",
     "start": "react-native start",
+    "distribute": "node scripts/distribute.mjs",
     "test": "jest",
     "postinstall": "patch-package"
   },

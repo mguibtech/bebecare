@@ -46,6 +46,12 @@ apps/mobile/ios/Pods/
 **/GoogleService-Info.plist
 **/firebase-adminsdk-*.json
 
+# Assinatura Android — upload keystore e props locais NUNCA no repo
+# (o recomendado é nem deixar dentro do repo: %USERPROFILE%\.gradle — ver DEPLOY.md)
+*.keystore
+!**/debug.keystore
+keystore.properties
+
 # Agentes locais / scratchpads
 .claude/
 
