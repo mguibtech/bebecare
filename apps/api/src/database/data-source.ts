@@ -13,8 +13,11 @@ loadEnv();
 // Por isso só temos `export default` — não criar `export const` adicional.
 //
 // SSL liga em prod ou via POSTGRES_SSL=true — necessário pra rodar as
-// migrations contra um Postgres gerenciado (Neon/Render).
-const sslEnabled = process.env.POSTGRES_SSL === 'true' || process.env.NODE_ENV === 'production';
+// migrations contra um Postgres gerenciado. POSTGRES_SSL=false desliga MESMO
+// em prod (ex.: Railway via rede privada). Manter alinhado com database.config.ts.
+const sslEnabled =
+  process.env.POSTGRES_SSL === 'true' ||
+  (process.env.POSTGRES_SSL !== 'false' && process.env.NODE_ENV === 'production');
 
 export default new DataSource({
   type: 'postgres',
