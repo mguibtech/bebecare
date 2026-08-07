@@ -29,6 +29,7 @@ const isWindows = process.platform === 'win32';
 // debug keystore em silêncio, e trocar de assinatura depois força todo tester a
 // desinstalar/reinstalar o app.
 const globalGradleProps = resolve(homedir(), '.gradle', 'gradle.properties');
+const productionApiBaseUrl = readProductionApiBaseUrl();
 const hasUploadKeystore =
   existsSync(globalGradleProps) &&
   readFileSync(globalGradleProps, 'utf8').includes('BEBECARE_UPLOAD_STORE_FILE');
@@ -46,7 +47,12 @@ const releaseNotes =
     ? process.argv[notesFlag + 1]
     : execSync('git log -1 --pretty=%s', { cwd: mobileRoot }).toString().trim();
 
-run(isWindows ? 'gradlew.bat' : './gradlew', ['assembleRelease'], androidDir);
+run(
+  isWindows ? 'gradlew.bat' : './gradlew',
+  ['assembleRelease'],
+  androidDir,
+  { ...process.env, BEBECARE_API_BASE_URL: productionApiBaseUrl },
+);
 
 if (!existsSync(apkPath)) {
   console.error(`❌ APK não encontrado em ${apkPath}`);
@@ -70,9 +76,59 @@ run(
 
 console.log('\n✅ Build distribuído! Os testers recebem e-mail do Firebase com o link.');
 
-function run(cmd, args, cwd) {
+function readProductionApiBaseUrl() {
+  const value =
+    process.env.BEBECARE_API_BASE_URL ||
+    readGradleProperty('BEBECARE_API_BASE_URL');
+  if (!value) {
+    console.error(
+      '\n❌ BEBECARE_API_BASE_URL não configurada.' +
+        '\n   Depois de gerar o domínio Railway, adicione em ~/.gradle/gradle.properties:' +
+        '\n   BEBECARE_API_BASE_URL=https://<dominio>.up.railway.app/api\n',
+    );
+    process.exit(1);
+  }
+
+  let url;
+  try {
+    url = new URL(value.trim());
+  } catch {
+    console.error('\n❌ BEBECARE_API_BASE_URL deve ser uma URL HTTPS válida.\n');
+    process.exit(1);
+  }
+
+  const path = url.pathname.replace(/\/+$/, '');
+  if (url.protocol !== 'https:' || path !== '/api' || url.search || url.hash) {
+    console.error(
+      '\n❌ BEBECARE_API_BASE_URL deve usar HTTPS, terminar em /api e não ter query ou fragment.\n',
+    );
+    process.exit(1);
+  }
+
+  return `${url.origin}${path}`;
+}
+
+function readGradleProperty(name) {
+  if (!existsSync(globalGradleProps)) {
+    return undefined;
+  }
+
+  const property = readFileSync(globalGradleProps, 'utf8')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.startsWith(`${name}=`));
+
+  return property?.slice(name.length + 1).trim();
+}
+
+function run(cmd, args, cwd, env = process.env) {
   console.log(`\n> ${cmd} ${args.join(' ')}\n`);
-  const result = spawnSync(cmd, args, { cwd, stdio: 'inherit', shell: isWindows });
+  const result = spawnSync(cmd, args, {
+    cwd,
+    env,
+    stdio: 'inherit',
+    shell: isWindows,
+  });
   if (result.status !== 0) {
     if (result.error?.code === 'ENOENT') {
       console.error(`❌ Comando "${cmd}" não encontrado. Instalou o firebase-tools? (npm i -g firebase-tools)`);
